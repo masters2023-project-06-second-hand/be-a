@@ -57,7 +57,7 @@ public class ProductController {
 	}
 
 	@PutMapping("/products/{productId}/status")
-	public ResponseEntity<Void> updateStatus(@PathVariable Long productId,
+	public ResponseEntity updateStatus(@PathVariable Long productId,
 		@RequestBody ProductUpdateRequest productUpdateRequest) {
 		productService.updateStatus(productId, productUpdateRequest);
 		return ResponseEntity.ok().build();
