@@ -31,7 +31,8 @@ public class Image {
 	private String imgUrl;
 
 	@Builder
-	public Image(Product product, String imgUrl) {
+	public Image(Long id ,Product product, String imgUrl) {
+		this.id = id;
 		this.product = product;
 		this.imgUrl = imgUrl;
 	}

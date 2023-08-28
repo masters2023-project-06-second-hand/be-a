@@ -3,11 +3,14 @@ package com.codesquad.secondhand.domain.product.controller;
 import java.util.Collections;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -35,5 +38,11 @@ public class ProductController {
 	public ResponseEntity<ProductDetailResponse> findDetail(@PathVariable Long productId) {
 		ProductDetailResponse productDetailResponse = productService.findDetail(productId);
 		return ResponseEntity.ok().body(productDetailResponse);
+	}
+
+	@PutMapping("/products/{productId}")
+	public ResponseEntity update(@PathVariable Long productId, @Valid @RequestBody ProductSaveRequestDto request){
+		productService.update(productId,request);
+		return ResponseEntity.ok().build();
 	}
 }
