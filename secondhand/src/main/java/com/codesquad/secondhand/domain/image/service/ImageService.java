@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.codesquad.secondhand.domain.image.dto.response.ImageFileResponseDto;
+import com.codesquad.secondhand.domain.image.dto.response.ImageFileResponse;
 import com.codesquad.secondhand.domain.product.entity.Image;
 import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
@@ -28,7 +28,7 @@ public class ImageService {
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
-	public ImageFileResponseDto uploadImg(MultipartFile multipartFile) {
+	public ImageFileResponse uploadImg(MultipartFile multipartFile) {
 		validateFileExists(multipartFile);
 
 		String uniqueFileName = generateUniqueFileName();
@@ -37,7 +37,7 @@ public class ImageService {
 		String imageUrl = uploadToS3AndGetUrl(multipartFile, uniqueFileName, metadata);
 		Long imageId = saveImageToDatabase(imageUrl);
 
-		return ImageFileResponseDto.of(imageId, imageUrl);
+		return ImageFileResponse.of(imageId, imageUrl);
 	}
 
 	private void validateFileExists(MultipartFile multipartFile) {
@@ -76,7 +76,8 @@ public class ImageService {
 	}
 
 	public void delete(Long imageId) {
-		imageJpaRepository.findById(imageId).orElseThrow(() -> new CustomRuntimeException(ImageException.IMAGE_NOT_FOUND));
+		imageJpaRepository.findById(imageId)
+			.orElseThrow(() -> new CustomRuntimeException(ImageException.IMAGE_NOT_FOUND));
 		imageJpaRepository.deleteById(imageId);
 	}
 }

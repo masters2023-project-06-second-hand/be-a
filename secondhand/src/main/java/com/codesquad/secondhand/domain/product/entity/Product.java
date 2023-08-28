@@ -19,7 +19,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import com.codesquad.secondhand.domain.category.entity.Category;
 import com.codesquad.secondhand.domain.member.entity.Member;
-import com.codesquad.secondhand.domain.product.dto.request.ProductSaveRequestDto;
+import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.region.entity.Region;
 
 import lombok.AccessLevel;
@@ -70,7 +70,7 @@ public class Product {
 		this.viewCount = viewCount;
 	}
 
-	public void updateFromDto(ProductSaveRequestDto requestDto, Category category, Region region) {
+	public void updateFromDto(ProductSaveAndUpdateRequest requestDto, Category category, Region region) {
 		this.name = requestDto.getName();
 		this.price = requestDto.getPrice();
 		this.content = requestDto.getContent();
@@ -80,7 +80,6 @@ public class Product {
 			.map(imageId -> Image.builder().id(imageId).product(this).build())
 			.collect(Collectors.toList());
 	}
-
 
 	public void changeStatus(int status) {
 		this.status = status;

@@ -15,7 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.annotation.IntegrationTest;
-import com.codesquad.secondhand.domain.image.dto.request.ImageDeleteRequestDto;
+import com.codesquad.secondhand.domain.image.dto.request.ImageDeleteRequest;
 import com.codesquad.secondhand.domain.image.service.ImageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -63,10 +63,12 @@ class ImageControllerTest {
 		MockMultipartFile mockMultipartFile = new MockMultipartFile(parameterName, originalFileName, contentType,
 			content);
 
-		ImageDeleteRequestDto requestDto = new ImageDeleteRequestDto(imageService.uploadImg(mockMultipartFile).getId());
+		ImageDeleteRequest requestDto = new ImageDeleteRequest(imageService.uploadImg(mockMultipartFile).getId());
 		String request = objectMapper.writeValueAsString(requestDto);
 
 		// when & then
-		mockMvc.perform(MockMvcRequestBuilders.delete("/api/images").contentType(MediaType.APPLICATION_JSON).content(request)).andExpect(status().isOk());
+		mockMvc.perform(
+				MockMvcRequestBuilders.delete("/api/images").contentType(MediaType.APPLICATION_JSON).content(request))
+			.andExpect(status().isOk());
 	}
 }

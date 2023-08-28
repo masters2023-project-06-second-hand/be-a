@@ -9,7 +9,7 @@ import com.codesquad.secondhand.domain.category.entity.Category;
 import com.codesquad.secondhand.domain.category.repository.CategoryJpaRepository;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
-import com.codesquad.secondhand.domain.product.dto.request.ProductSaveRequestDto;
+import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.entity.Product;
@@ -39,18 +39,18 @@ public class ProductService {
 	private final MemberJpaRepository memberJpaRepository;
 	private final ImageJpaRepository imageJpaRepository;
 
-	public Long save(ProductSaveRequestDto productSaveRequestDto) {
-		Category category = categoryJpaRepository.findById(productSaveRequestDto.getCategoryId())
+	public Long save(ProductSaveAndUpdateRequest productSaveAndUpdateRequest) {
+		Category category = categoryJpaRepository.findById(productSaveAndUpdateRequest.getCategoryId())
 			.orElseThrow(() -> new CustomRuntimeException(
 				CategoryException.CATEGORY_NOT_FOUND));
-		Region region = regionJpaRepository.findById(productSaveRequestDto.getRegionId())
+		Region region = regionJpaRepository.findById(productSaveAndUpdateRequest.getRegionId())
 			.orElseThrow(() -> new CustomRuntimeException(
 				RegionException.REGION_NOT_FOUND));
 		Member member = memberJpaRepository.findById(DUMMY_MEMBER_ID).orElseThrow(() -> new CustomRuntimeException(
 			MemberException.MEMBER_NOT_FOUND));
-		Product product = productSaveRequestDto.toEntity(category, region, member);
+		Product product = productSaveAndUpdateRequest.toEntity(category, region, member);
 
-		List<Long> images = productSaveRequestDto.getImagesId();
+		List<Long> images = productSaveAndUpdateRequest.getImagesId();
 
 		images.stream()
 			.map(imageId -> imageJpaRepository.findById(imageId).orElseThrow(() -> new CustomRuntimeException(
@@ -67,21 +67,24 @@ public class ProductService {
 		return productDetailResponse;
 	}
 
-	public void update(Long productId, ProductSaveRequestDto request) {
-		Product product = productJpaRepository.findById(productId).orElseThrow(()-> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
-		Category category = categoryJpaRepository.findById(request.getCategoryId()).orElseThrow(() -> new CustomRuntimeException(CategoryException.CATEGORY_NOT_FOUND));
-		Region region = regionJpaRepository.findById(request.getRegionId()).orElseThrow(() -> new CustomRuntimeException(RegionException.REGION_NOT_FOUND));
+	public void update(Long productId, ProductSaveAndUpdateRequest request) {
+		Product product = productJpaRepository.findById(productId)
+			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
+		Category category = categoryJpaRepository.findById(request.getCategoryId())
+			.orElseThrow(() -> new CustomRuntimeException(CategoryException.CATEGORY_NOT_FOUND));
+		Region region = regionJpaRepository.findById(request.getRegionId())
+			.orElseThrow(() -> new CustomRuntimeException(RegionException.REGION_NOT_FOUND));
 		request.getImagesId().stream()
 			.map(imageId -> imageJpaRepository.findById(imageId).orElseThrow(() -> new CustomRuntimeException(
 				ImageException.IMAGE_NOT_FOUND)))
 			.forEach(imageFromDb -> imageFromDb.updateProduct(product));
 		product.updateFromDto(request, category, region);
-  }
-  
-  public void delete(Long productId) {
+	}
+
+	public void delete(Long productId) {
 		productJpaRepository.deleteById(productId);
 	}
-  
+
 	public void updateStatus(Long productId, ProductUpdateRequest productUpdateRequest) {
 		Product product = productJpaRepository.findById(productId)
 			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
