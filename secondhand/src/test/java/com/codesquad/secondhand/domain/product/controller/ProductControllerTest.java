@@ -56,4 +56,24 @@ class ProductControllerTest {
 		imageJpaRepository.save(Image.builder().imgUrl(image).build());
 	}
 
+	@Test
+	@DisplayName("상품 상세 조회시 해당 상품의 정보를 포함하는 응답을 반환한다.")
+	void findDetail() throws Exception {
+		//given
+		ProductSaveRequestDto productSaveRequest = new ProductSaveRequestDto("상품명", 1L, 100000L, "상품내용", 1L,
+			Arrays.asList(1L, 2L));
+
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+
+		productService.save(productSaveRequest);
+
+		//when & then
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{productId}", 1L)
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$.productName").value(productSaveRequest.getName()))
+			.andExpect(jsonPath("$.content").value(productSaveRequest.getContent()))
+			.andExpect(jsonPath("$.price").value(productSaveRequest.getPrice()))
+			.andExpect(status().isOk());
+	}
 }
