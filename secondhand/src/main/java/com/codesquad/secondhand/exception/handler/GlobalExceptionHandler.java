@@ -17,9 +17,9 @@ import lombok.extern.slf4j.Slf4j;
 public class GlobalExceptionHandler {
 
 	@ExceptionHandler(CustomRuntimeException.class)
-	public ResponseEntity<Map<String, String>> customExceptionHandler(CustomRuntimeException e) {
+	public ResponseEntity<Map<String, Object>> customExceptionHandler(CustomRuntimeException e) {
 		log.info("api 예외발생! errorType: " + e.getCustomException().getName() + " errorMessage: " + e.getCustomException()
-			.errorMessage());
+			.getErrorMessage());
 		return e.sendError();
 	}
 

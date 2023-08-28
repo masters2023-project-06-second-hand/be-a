@@ -13,16 +13,16 @@ public enum ImageException implements CustomException {
 
 	@Override
 	public HttpStatus httpStatus() {
-		return null;
+		return status;
 	}
 
 	@Override
-	public String errorMessage() {
-		return null;
+	public Object getErrorMessage() {
+		return message;
 	}
 
 	@Override
 	public String getName() {
-		return null;
+		return name();
 	}
 }
