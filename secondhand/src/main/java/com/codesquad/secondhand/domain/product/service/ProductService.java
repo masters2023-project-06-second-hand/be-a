@@ -64,4 +64,8 @@ public class ProductService {
 				ProductException.NOT_FOUND_PRODUCT)));
 		return productDetailResponse;
 	}
+
+	public void delete(Long productId) {
+		productJpaRepository.deleteById(productId);
+	}
 }
