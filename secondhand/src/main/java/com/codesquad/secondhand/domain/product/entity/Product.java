@@ -82,4 +82,7 @@ public class Product {
 	}
 
 
+	public void changeStatus(int status) {
+		this.status = status;
+	}
 }

@@ -1,4 +1,4 @@
-package com.codesquad.secondhand.domain.image.dto;
+package com.codesquad.secondhand.domain.image.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
