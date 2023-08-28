@@ -67,6 +67,10 @@ public class ProductService {
 		return productDetailResponse;
 	}
 
+  public void delete(Long productId) {
+		productJpaRepository.deleteById(productId);
+	}
+  
 	public void update(Long productId, ProductUpdateRequest productUpdateRequest) {
 		Product product = productJpaRepository.findById(productId)
 			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));

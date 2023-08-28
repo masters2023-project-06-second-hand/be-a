@@ -78,25 +78,42 @@ class ProductControllerTest {
 			.andExpect(status().isOk());
 	}
 
+
 	@Test
-	@DisplayName("상품 상태 변경시 해당 상품의 상태가 변경 된다")
-	void updateStatus() throws Exception {
+	@DisplayName("등록한 상품을 id를 통해 삭제한다 ")
+	void deleteTest() throws Exception {
 		//given
 		ProductSaveRequestDto productSaveRequest = new ProductSaveRequestDto("상품명", 1L, 100000L, "상품내용", 1L,
 			Arrays.asList(1L, 2L));
 
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
-
 		productService.save(productSaveRequest);
 
-		ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("예약중");
-		String request = objectMapper.writeValueAsString(productUpdateRequest);
-
 		//when & then
-		mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productId}", 1L)
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(request))
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{productId}", 1L))
 			.andExpect(status().isOk());
 	}
+
+  @Test
+  @DisplayName("상품 상태 변경시 해당 상품의 상태가 변경 된다")
+  void updateStatus() throws Exception {
+    //given
+    ProductSaveRequestDto productSaveRequest = new ProductSaveRequestDto("상품명", 1L, 100000L, "상품내용", 1L,
+    Arrays.asList(1L, 2L));
+
+    saveDummyImage("imageTest1");
+    saveDummyImage("imageTest2");
+
+    productService.save(productSaveRequest);
+
+    ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("예약중");
+    String request = objectMapper.writeValueAsString(productUpdateRequest);
+
+    //when & then
+    mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productId}", 1L)
+    .contentType(MediaType.APPLICATION_JSON)
+    .content(request))
+    .andExpect(status().isOk());
+  }	
 }
