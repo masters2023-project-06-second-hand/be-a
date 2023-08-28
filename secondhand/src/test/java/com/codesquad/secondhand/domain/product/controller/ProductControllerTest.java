@@ -7,18 +7,18 @@ import java.util.Arrays;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.codesquad.secondhand.annotation.IntegrationTest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveRequestDto;
+import com.codesquad.secondhand.domain.product.entity.Image;
+import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
 import com.codesquad.secondhand.domain.product.service.ProductService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@SpringBootTest
-@AutoConfigureMockMvc
+@IntegrationTest
 class ProductControllerTest {
 
 	@Autowired
@@ -30,6 +30,9 @@ class ProductControllerTest {
 	@Autowired
 	ObjectMapper objectMapper;
 
+	@Autowired
+	ImageJpaRepository imageJpaRepository;
+
 	@Test
 	@DisplayName("상품등록시 해당 상품의 id를 반환한다.")
 	void saveTest() throws Exception {
@@ -38,12 +41,19 @@ class ProductControllerTest {
 			Arrays.asList(1L, 2L));
 		String request = objectMapper.writeValueAsString(productSaveRequest);
 
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
 			.andExpect(jsonPath("$.id").exists())
 			.andExpect(status().isCreated());
+	}
+
+	private void saveDummyImage(String image) {
+		imageJpaRepository.save(Image.builder().imgUrl(image).build());
 	}
 
 }
