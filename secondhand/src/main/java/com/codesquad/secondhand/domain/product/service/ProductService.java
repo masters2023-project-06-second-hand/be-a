@@ -10,6 +10,7 @@ import com.codesquad.secondhand.domain.category.repository.CategoryJpaRepository
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveRequestDto;
+import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.entity.Product;
 import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
 import com.codesquad.secondhand.domain.product.repository.ProductJpaRepository;
@@ -19,6 +20,7 @@ import com.codesquad.secondhand.exception.CustomRuntimeException;
 import com.codesquad.secondhand.exception.errorcode.CategoryException;
 import com.codesquad.secondhand.exception.errorcode.ImageException;
 import com.codesquad.secondhand.exception.errorcode.MemberException;
+import com.codesquad.secondhand.exception.errorcode.ProductException;
 import com.codesquad.secondhand.exception.errorcode.RegionException;
 
 import lombok.RequiredArgsConstructor;
@@ -56,4 +58,10 @@ public class ProductService {
 		return productJpaRepository.save(product).getId();
 	}
 
+	public ProductDetailResponse findDetail(Long productId) {
+		ProductDetailResponse productDetailResponse = ProductDetailResponse.from(
+			productJpaRepository.findById(productId).orElseThrow(() -> new CustomRuntimeException(
+				ProductException.NOT_FOUND_PRODUCT)));
+		return productDetailResponse;
+	}
 }

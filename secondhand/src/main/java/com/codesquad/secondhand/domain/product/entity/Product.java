@@ -40,7 +40,7 @@ public class Product {
 	@Column(updatable = false)
 	@CreationTimestamp
 	private LocalDateTime createdAt;
-	private Long status;
+	private int status;
 	private Long viewCount;
 	@ManyToOne
 	@JoinColumn(name = "region_id")
@@ -56,7 +56,7 @@ public class Product {
 
 	@Builder
 	public Product(Long id, Region region, Category category, Member member, String name, Long price,
-		String content, Long status, Long viewCount) {
+		String content, int status, Long viewCount) {
 		this.id = id;
 		this.region = region;
 		this.category = category;
