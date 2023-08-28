@@ -76,4 +76,21 @@ class ProductControllerTest {
 			.andExpect(jsonPath("$.price").value(productSaveRequest.getPrice()))
 			.andExpect(status().isOk());
 	}
+
+
+	@Test
+	@DisplayName("등록한 상품을 id를 통해 삭제한다 ")
+	void deleteTest() throws Exception {
+		//given
+		ProductSaveRequestDto productSaveRequest = new ProductSaveRequestDto("상품명", 1L, 100000L, "상품내용", 1L,
+			Arrays.asList(1L, 2L));
+
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+		productService.save(productSaveRequest);
+
+		//when & then
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/products/{productId}", 1L))
+			.andExpect(status().isOk());
+	}
 }
