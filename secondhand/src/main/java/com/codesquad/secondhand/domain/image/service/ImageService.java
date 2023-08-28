@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.image.service;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.codesquad.secondhand.domain.image.dto.response.ImageFileResponse;
 import com.codesquad.secondhand.domain.product.entity.Image;
+import com.codesquad.secondhand.domain.product.entity.Product;
 import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
 import com.codesquad.secondhand.exception.errorcode.FileUploadException;
@@ -80,4 +82,12 @@ public class ImageService {
 			.orElseThrow(() -> new CustomRuntimeException(ImageException.IMAGE_NOT_FOUND));
 		imageJpaRepository.deleteById(imageId);
 	}
+
+	public void updateProductId(List<Long> imagesId, Product product) {
+		imagesId.stream()
+			.map(imageId -> imageJpaRepository.findById(imageId).orElseThrow(() -> new CustomRuntimeException(
+				ImageException.IMAGE_NOT_FOUND)))
+			.forEach(imageFromDb -> imageFromDb.updateProduct(product));
+	}
+
 }
