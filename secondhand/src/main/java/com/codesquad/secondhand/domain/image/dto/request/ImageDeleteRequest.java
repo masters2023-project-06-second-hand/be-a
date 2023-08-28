@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ImageDeleteRequestDto {
+public class ImageDeleteRequest {
 	Long id;
 }

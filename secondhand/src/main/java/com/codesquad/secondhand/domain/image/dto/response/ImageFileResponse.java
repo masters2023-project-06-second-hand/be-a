@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ImageFileResponseDto {
+public class ImageFileResponse {
 	private Long id;
 	private String imgUrl;
 
-	public static ImageFileResponseDto of(Long id, String imgUrl) {
-		return new ImageFileResponseDto(id, imgUrl);
+	public static ImageFileResponse of(Long id, String imgUrl) {
+		return new ImageFileResponse(id, imgUrl);
 	}
 }

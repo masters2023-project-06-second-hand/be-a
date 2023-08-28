@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.codesquad.secondhand.domain.product.dto.request.ProductSaveRequestDto;
+import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.service.ProductService;
@@ -31,8 +31,9 @@ public class ProductController {
 	private final ProductService productService;
 
 	@PostMapping("/products")
-	public ResponseEntity<Map<String, Long>> save(@RequestBody ProductSaveRequestDto productSaveRequestDto) {
-		Long productId = productService.save(productSaveRequestDto);
+	public ResponseEntity<Map<String, Long>> save(
+		@RequestBody ProductSaveAndUpdateRequest productSaveAndUpdateRequest) {
+		Long productId = productService.save(productSaveAndUpdateRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("id", productId));
 	}
 
@@ -42,21 +43,21 @@ public class ProductController {
 		return ResponseEntity.ok().body(productDetailResponse);
 	}
 
+	@PutMapping("/products/{productId}")
+	public ResponseEntity update(@PathVariable Long productId,
+		@Valid @RequestBody ProductSaveAndUpdateRequest request) {
+		productService.update(productId, request);
+		return ResponseEntity.ok().build();
+	}
 
-	@PutMapping("/products/{productId}")
-	public ResponseEntity update(@PathVariable Long productId, @Valid @RequestBody ProductSaveRequestDto request){
-		productService.update(productId,request);
-    return ResponseEntity.ok().build();
-  }
-  
 	@DeleteMapping("/products/{productId}")
-	public ResponseEntity delete(@PathVariable Long productId ) {
+	public ResponseEntity delete(@PathVariable Long productId) {
 		productService.delete(productId);
-    return ResponseEntity.ok().build();
-  }
-  
-	@PutMapping("/products/{productId}")
-	public ResponseEntity<Void> updateStatus(@PathVariable Long productId,
+		return ResponseEntity.ok().build();
+	}
+
+	@PutMapping("/products/{productId}/status")
+	public ResponseEntity updateStatus(@PathVariable Long productId,
 		@RequestBody ProductUpdateRequest productUpdateRequest) {
 		productService.updateStatus(productId, productUpdateRequest);
 		return ResponseEntity.ok().build();
