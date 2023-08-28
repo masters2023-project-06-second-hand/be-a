@@ -67,4 +67,8 @@ public class Product {
 		this.status = status;
 		this.viewCount = viewCount;
 	}
+
+	public void changeStatus(int status) {
+		this.status = status;
+	}
 }
