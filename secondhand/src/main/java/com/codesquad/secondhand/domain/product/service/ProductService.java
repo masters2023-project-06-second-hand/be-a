@@ -10,10 +10,12 @@ import com.codesquad.secondhand.domain.category.repository.CategoryJpaRepository
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveRequestDto;
+import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.entity.Product;
 import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
 import com.codesquad.secondhand.domain.product.repository.ProductJpaRepository;
+import com.codesquad.secondhand.domain.product.utils.ProductStatus;
 import com.codesquad.secondhand.domain.region.entity.Region;
 import com.codesquad.secondhand.domain.region.repository.RegionJpaRepository;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
@@ -65,7 +67,14 @@ public class ProductService {
 		return productDetailResponse;
 	}
 
-	public void delete(Long productId) {
+  public void delete(Long productId) {
 		productJpaRepository.deleteById(productId);
+	}
+  
+	public void update(Long productId, ProductUpdateRequest productUpdateRequest) {
+		Product product = productJpaRepository.findById(productId)
+			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
+		ProductStatus productStatus = ProductStatus.fromDescription(productUpdateRequest.getStatus());
+		product.changeStatus(productStatus.getCode());
 	}
 }

@@ -27,7 +27,7 @@ public enum ProductStatus {
 
 	public static ProductStatus fromDescription(String description) {
 		for (ProductStatus productStatus : ProductStatus.values()) {
-			if (productStatus.getDescription() == description) {
+			if (productStatus.getDescription().equals(description)) {
 				return productStatus;
 			}
 		}
