@@ -28,9 +28,12 @@ public class Image {
 	private String imgUrl;
 
 	@Builder
-	public Image(Long id, Product product, String imgUrl) {
-		this.id = id;
+	public Image(Product product, String imgUrl) {
 		this.product = product;
 		this.imgUrl = imgUrl;
+	}
+
+	public void updateProduct(Product product) {
+		this.product = product;
 	}
 }

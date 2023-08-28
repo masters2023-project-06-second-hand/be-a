@@ -3,9 +3,9 @@ package com.codesquad.secondhand.exception.errorcode;
 import org.springframework.http.HttpStatus;
 
 public interface CustomException {
-    HttpStatus httpStatus();
+	HttpStatus httpStatus();
 
-    String errorMessage();
+	Object getErrorMessage();
 
-    String getName();
+	String getName();
 }
