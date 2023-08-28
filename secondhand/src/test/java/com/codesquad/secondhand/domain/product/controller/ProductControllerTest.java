@@ -76,4 +76,23 @@ class ProductControllerTest {
 			.andExpect(jsonPath("$.price").value(productSaveRequest.getPrice()))
 			.andExpect(status().isOk());
 	}
+
+	@Test
+	@DisplayName("수정 할 상품의 id와 내용을 받아 상품을 수정한다.")
+	void updateTest() throws Exception {
+		// Given
+		ProductSaveRequestDto productUpdateRequest = new ProductSaveRequestDto("수정", 2L, 100000L, "수정내용", 4L,
+			Arrays.asList(1L, 2L));
+
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+		Long productId = productService.save(productUpdateRequest);
+		String requestJson = objectMapper.writeValueAsString(productUpdateRequest);
+
+		// When & Then
+		mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productId}", productId)
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestJson))
+			.andExpect(status().isOk());
+	}
 }
