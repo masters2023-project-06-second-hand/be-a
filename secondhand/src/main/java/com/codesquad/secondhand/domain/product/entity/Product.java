@@ -3,6 +3,7 @@ package com.codesquad.secondhand.domain.product.entity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +19,7 @@ import org.hibernate.annotations.DynamicInsert;
 
 import com.codesquad.secondhand.domain.category.entity.Category;
 import com.codesquad.secondhand.domain.member.entity.Member;
+import com.codesquad.secondhand.domain.product.dto.request.ProductSaveRequestDto;
 import com.codesquad.secondhand.domain.region.entity.Region;
 
 import lombok.AccessLevel;
@@ -67,6 +69,18 @@ public class Product {
 		this.status = status;
 		this.viewCount = viewCount;
 	}
+
+	public void updateFromDto(ProductSaveRequestDto requestDto, Category category, Region region) {
+		this.name = requestDto.getName();
+		this.price = requestDto.getPrice();
+		this.content = requestDto.getContent();
+		this.category = category;
+		this.region = region;
+		this.images = requestDto.getImagesId().stream()
+			.map(imageId -> Image.builder().id(imageId).product(this).build())
+			.collect(Collectors.toList());
+	}
+
 
 	public void changeStatus(int status) {
 		this.status = status;

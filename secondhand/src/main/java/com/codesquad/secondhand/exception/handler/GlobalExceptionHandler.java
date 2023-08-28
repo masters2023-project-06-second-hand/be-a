@@ -1,9 +1,13 @@
 package com.codesquad.secondhand.exception.handler;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -33,6 +37,25 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 			.body(Map.of("errorType", e.getClass().getSimpleName(), "errorMessage",
 				"최대 파일 사이즈를 초과합니다."));
+	}
+
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	public ResponseEntity<Map<String, Object>> handleMethodArgumentNotValidException(
+		MethodArgumentNotValidException e) {
+		List<ObjectError> objectErrors = e.getBindingResult().getAllErrors();
+
+		StringBuilder errorMessage = new StringBuilder();
+		for (ObjectError error : objectErrors) {
+			errorMessage.append(error.getDefaultMessage()).append(",");
+		}
+		errorMessage.deleteCharAt(errorMessage.length() - 1);
+
+		Map<String, Object> responseMap = new LinkedHashMap<>();
+		responseMap.put("status", HttpStatus.BAD_REQUEST.toString());
+		responseMap.put("message", errorMessage.toString());
+
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+			.body(responseMap);
 	}
 
 }

@@ -67,11 +67,22 @@ public class ProductService {
 		return productDetailResponse;
 	}
 
+	public void update(Long productId, ProductSaveRequestDto request) {
+		Product product = productJpaRepository.findById(productId).orElseThrow(()-> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
+		Category category = categoryJpaRepository.findById(request.getCategoryId()).orElseThrow(() -> new CustomRuntimeException(CategoryException.CATEGORY_NOT_FOUND));
+		Region region = regionJpaRepository.findById(request.getRegionId()).orElseThrow(() -> new CustomRuntimeException(RegionException.REGION_NOT_FOUND));
+		request.getImagesId().stream()
+			.map(imageId -> imageJpaRepository.findById(imageId).orElseThrow(() -> new CustomRuntimeException(
+				ImageException.IMAGE_NOT_FOUND)))
+			.forEach(imageFromDb -> imageFromDb.updateProduct(product));
+		product.updateFromDto(request, category, region);
+  }
+  
   public void delete(Long productId) {
 		productJpaRepository.deleteById(productId);
 	}
   
-	public void update(Long productId, ProductUpdateRequest productUpdateRequest) {
+	public void updateStatus(Long productId, ProductUpdateRequest productUpdateRequest) {
 		Product product = productJpaRepository.findById(productId)
 			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
 		ProductStatus productStatus = ProductStatus.fromDescription(productUpdateRequest.getStatus());
