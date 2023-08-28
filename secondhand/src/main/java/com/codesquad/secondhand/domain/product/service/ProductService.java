@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class ProductService {
 
 	public static final long DUMMY_MEMBER_ID = 1L;
@@ -33,6 +33,7 @@ public class ProductService {
 	private final MemberService memberService;
 	private final ImageService imageService;
 
+	@Transactional
 	public Long save(ProductSaveAndUpdateRequest productSaveAndUpdateRequest) {
 		Category category = categoryService.findById(productSaveAndUpdateRequest.getCategoryId());
 		Region region = regionService.findById(productSaveAndUpdateRequest.getRegionId());
@@ -47,6 +48,7 @@ public class ProductService {
 		return ProductDetailResponse.from(findById(productId));
 	}
 
+	@Transactional
 	public void update(Long productId, ProductSaveAndUpdateRequest request) {
 		Product product = findById(productId);
 		Category category = categoryService.findById(request.getCategoryId());
@@ -55,10 +57,12 @@ public class ProductService {
 		product.updateFromDto(request, category, region);
 	}
 
+	@Transactional
 	public void delete(Long productId) {
 		productJpaRepository.deleteById(productId);
 	}
 
+	@Transactional
 	public void updateStatus(Long productId, ProductUpdateRequest productUpdateRequest) {
 		Product product = findById(productId);
 		ProductStatus productStatus = ProductStatus.fromDescription(productUpdateRequest.getStatus());

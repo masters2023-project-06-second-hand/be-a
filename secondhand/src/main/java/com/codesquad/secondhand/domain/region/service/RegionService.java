@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.region.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.region.entity.Region;
 import com.codesquad.secondhand.domain.region.repository.RegionJpaRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class RegionService {
 	private final RegionJpaRepository regionJpaRepository;
 

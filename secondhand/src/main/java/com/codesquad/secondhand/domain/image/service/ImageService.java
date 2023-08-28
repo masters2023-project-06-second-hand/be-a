@@ -23,13 +23,14 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class ImageService {
 	private final AmazonS3 amazonS3;
 	private final ImageJpaRepository imageJpaRepository;
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucket;
 
+	@Transactional
 	public ImageFileResponse uploadImg(MultipartFile multipartFile) {
 		validateFileExists(multipartFile);
 
@@ -77,12 +78,14 @@ public class ImageService {
 		return imageJpaRepository.save(image).getId();
 	}
 
+	@Transactional
 	public void delete(Long imageId) {
 		imageJpaRepository.findById(imageId)
 			.orElseThrow(() -> new CustomRuntimeException(ImageException.IMAGE_NOT_FOUND));
 		imageJpaRepository.deleteById(imageId);
 	}
 
+	@Transactional
 	public void updateProductId(List<Long> imagesId, Product product) {
 		imagesId.stream()
 			.map(imageId -> imageJpaRepository.findById(imageId).orElseThrow(() -> new CustomRuntimeException(
