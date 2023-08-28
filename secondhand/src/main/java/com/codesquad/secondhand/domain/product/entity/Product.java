@@ -1,6 +1,8 @@
 package com.codesquad.secondhand.domain.product.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.DynamicInsert;
 
@@ -44,6 +47,8 @@ public class Product {
 	@ManyToOne
 	@JoinColumn(name = "member_id")
 	private Member member;
+	@OneToMany(mappedBy = "product")
+	private List<Image> images = new ArrayList<>();
 
 	@Builder
 	public Product(Long id, Region region, Category category, Member member, String name, Long price,
