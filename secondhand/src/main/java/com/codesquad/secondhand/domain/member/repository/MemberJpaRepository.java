@@ -8,4 +8,6 @@ import com.codesquad.secondhand.domain.member.entity.Member;
 
 public interface MemberJpaRepository extends JpaRepository<Member, Long> {
 	Optional<Member> findByEmail(String email);
+
+	Boolean existsByNickname(String nickname);
 }

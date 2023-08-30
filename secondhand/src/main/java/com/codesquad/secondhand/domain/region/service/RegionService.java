@@ -1,5 +1,8 @@
 package com.codesquad.secondhand.domain.region.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,5 +22,12 @@ public class RegionService {
 	public Region findById(Long regionId) {
 		return regionJpaRepository.findById(regionId).orElseThrow(() -> new CustomRuntimeException(
 			RegionException.REGION_NOT_FOUND));
+	}
+
+	public List<Region> findByIds(List<Long> regionIds) {
+		return regionIds.stream()
+			.map(regionId -> regionJpaRepository.findById(regionId)
+				.orElseThrow(() -> new CustomRuntimeException(RegionException.REGION_NOT_FOUND)))
+			.collect(Collectors.toUnmodifiableList());
 	}
 }
