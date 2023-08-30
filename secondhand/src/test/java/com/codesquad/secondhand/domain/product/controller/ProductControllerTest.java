@@ -36,7 +36,7 @@ class ProductControllerTest {
 
 	@Test
 	@DisplayName("상품등록시 해당 상품의 id를 반환한다.")
-	void saveTest() throws Exception {
+	void save() throws Exception {
 		//given
 		ProductSaveAndUpdateRequest productSaveAndUpdateRequest = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L,
 			"상품내용", 1L,
@@ -82,7 +82,7 @@ class ProductControllerTest {
 
 	@Test
 	@DisplayName("수정 할 상품의 id와 내용을 받아 상품을 수정한다.")
-	void updateTest() throws Exception {
+	void update() throws Exception {
 		// Given
 		ProductSaveAndUpdateRequest productUpdateRequest = new ProductSaveAndUpdateRequest("수정", 2L, 100000L, "수정내용",
 			4L,
@@ -102,7 +102,7 @@ class ProductControllerTest {
 
 	@Test
 	@DisplayName("등록한 상품을 id를 통해 삭제한다 ")
-	void deleteTest() throws Exception {
+	void delete() throws Exception {
 		//given
 		ProductSaveAndUpdateRequest productSaveAndUpdateRequest = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L,
 			"상품내용", 1L,
