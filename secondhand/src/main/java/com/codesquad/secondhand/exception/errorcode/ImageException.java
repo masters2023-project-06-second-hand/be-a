@@ -17,7 +17,7 @@ public enum ImageException implements CustomException {
 	}
 
 	@Override
-	public Object getErrorMessage() {
+	public String getErrorMessage() {
 		return message;
 	}
 

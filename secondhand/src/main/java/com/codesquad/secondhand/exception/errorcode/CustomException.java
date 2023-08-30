@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 public interface CustomException {
 	HttpStatus httpStatus();
 
-	Object getErrorMessage();
+	String getErrorMessage();
 
 	String getName();
 }
