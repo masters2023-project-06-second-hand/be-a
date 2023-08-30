@@ -1,8 +1,8 @@
 spring:
   profiles:
     group:
-      local: localDB,jpa,aws
-      test: localDB,jpa,aws
+      local: localDB,jpa,aws,oauth,jwt
+      test: localDB,jpa,aws,oauth,jwt
     active: local
   servlet:
     multipart:
