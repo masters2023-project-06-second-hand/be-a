@@ -1,7 +1,11 @@
 package com.codesquad.secondhand.domain.member.repository;
 
-import com.codesquad.secondhand.domain.member.entity.Member;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface MemberJpaRepository extends JpaRepository<Member,Long> {
+import com.codesquad.secondhand.domain.member.entity.Member;
+
+public interface MemberJpaRepository extends JpaRepository<Member, Long> {
+	Optional<Member> findByEmail(String email);
 }
