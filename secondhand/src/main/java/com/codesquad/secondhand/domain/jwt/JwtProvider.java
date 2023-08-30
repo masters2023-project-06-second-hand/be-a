@@ -50,6 +50,11 @@ public class JwtProvider {
 		return new Jwt(accessToken, refreshToken);
 	}
 
+	public Jwt createSignUpToken(Map<String, Object> claims) {
+		String signUpToken = createToken(claims, getExpireDateAccessToken());
+		return new Jwt(signUpToken);
+	}
+
 	public Jwt reissueAccessToken(Map<String, Object> claims, String refreshToken) {
 		String accessToken = createToken(claims, getExpireDateAccessToken());
 		return new Jwt(accessToken, refreshToken);
