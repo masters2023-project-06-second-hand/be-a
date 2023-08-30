@@ -19,7 +19,7 @@ public enum FileUploadException implements CustomException {
 	}
 
 	@Override
-	public Object getErrorMessage() {
+	public String getErrorMessage() {
 		return message;
 	}
 

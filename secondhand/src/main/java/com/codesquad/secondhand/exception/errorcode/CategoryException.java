@@ -17,7 +17,7 @@ public enum CategoryException implements CustomException {
 	}
 
 	@Override
-	public Object getErrorMessage() {
+	public String getErrorMessage() {
 		return message;
 	}
 
