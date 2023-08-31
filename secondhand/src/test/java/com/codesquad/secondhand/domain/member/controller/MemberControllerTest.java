@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -27,6 +28,18 @@ class MemberControllerTest extends BaseControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
 			.andExpect(status().isCreated());
+	}
+
+	@Test
+	@DisplayName("로그아웃 요청시 해당 access_token을 blackList에 등록한다.")
+	void signOut() throws Exception {
+		//when & then
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/members/signout")
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk());
+
+		Assertions.assertThat(redisUtil.hasKeyBlackList(jwt.getAccessToken())).isTrue();
 	}
 
 	private static SignupRequest DummySignUpRequest() {

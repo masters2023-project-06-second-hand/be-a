@@ -1,5 +1,7 @@
 package com.codesquad.secondhand.common;
 
+import static com.codesquad.secondhand.common.util.RequestParser.*;
+
 import java.io.IOException;
 
 import javax.servlet.Filter;
@@ -33,8 +35,7 @@ public class JwtFilter implements Filter {
 	private static final String MEMBER_ID = "memberId";
 	private static final String[] whiteListUris = {
 		"/api/members/signup",
-		"/",
-		"/**"
+		"/"
 	};
 	public static final String OPTIONS = "OPTIONS";
 
@@ -76,11 +77,6 @@ public class JwtFilter implements Filter {
 		} catch (RuntimeException e) {
 			sendJwtExceptionResponse(response, e);
 		}
-	}
-
-	public String extractAccessToken(HttpServletRequest request) {
-		String authorizationHeader = request.getHeader("Authorization");
-		return authorizationHeader.substring(7);
 	}
 
 	private Long convertMemberIdToLong(Claims claims) {
