@@ -3,6 +3,7 @@ package com.codesquad.secondhand.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
@@ -22,6 +23,7 @@ public class S3Config {
 	private String region;
 
 	@Bean
+	@Primary
 	public AmazonS3Client amazonS3Client() {
 		BasicAWSCredentials credentials = new BasicAWSCredentials(accessKey, secretKey);
 
