@@ -11,8 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
+import com.codesquad.secondhand.annotation.IntegrationTest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 
+@IntegrationTest
 class MemberControllerTest extends BaseControllerTest {
 
 	@Test

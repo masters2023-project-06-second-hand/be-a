@@ -33,9 +33,9 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void signUp(SignupRequest signupRequest) {
+	public void signUp(SignupRequest signupRequest, String email) {
 		validDuplicatedName(signupRequest.getNickname());
-		Member member = signupRequest.toEntity();
+		Member member = signupRequest.toEntity(email);
 
 		memberJpaRepository.save(member);
 		List<Region> regions = regionService.findByIds(signupRequest.getRegionsId());

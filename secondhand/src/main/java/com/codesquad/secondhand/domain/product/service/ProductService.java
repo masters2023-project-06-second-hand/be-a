@@ -26,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class ProductService {
 
-	public static final long DUMMY_MEMBER_ID = 1L;
 	private final ProductJpaRepository productJpaRepository;
 	private final CategoryService categoryService;
 	private final RegionService regionService;
@@ -34,10 +33,10 @@ public class ProductService {
 	private final ImageService imageService;
 
 	@Transactional
-	public Long save(ProductSaveAndUpdateRequest productSaveAndUpdateRequest) {
+	public Long save(ProductSaveAndUpdateRequest productSaveAndUpdateRequest, Long memberId) {
 		Category category = categoryService.findById(productSaveAndUpdateRequest.getCategoryId());
 		Region region = regionService.findById(productSaveAndUpdateRequest.getRegionId());
-		Member member = memberService.findById(DUMMY_MEMBER_ID);
+		Member member = memberService.findById(memberId);
 		Product product = productSaveAndUpdateRequest.toEntity(category, region, member);
 		imageService.updateProductId(productSaveAndUpdateRequest.getImagesId(), product);
 

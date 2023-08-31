@@ -28,8 +28,9 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@PostMapping("/members/signup")
-	public ResponseEntity signUp(@RequestBody @Valid SignupRequest signupRequest) {
-		memberService.signUp(signupRequest);
+	public ResponseEntity signUp(@RequestBody @Valid SignupRequest signupRequest, HttpServletRequest request) {
+		String email = extractEmail(request);
+		memberService.signUp(signupRequest, email);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 

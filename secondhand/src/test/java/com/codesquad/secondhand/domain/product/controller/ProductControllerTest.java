@@ -54,7 +54,7 @@ class ProductControllerTest extends BaseControllerTest {
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
 
-		productService.save(productSaveAndUpdateRequest);
+		productService.save(productSaveAndUpdateRequest, MEMBER_ID);
 
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{productId}", 1L)
@@ -76,7 +76,7 @@ class ProductControllerTest extends BaseControllerTest {
 
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
-		Long productId = productService.save(productUpdateRequest);
+		Long productId = productService.save(productUpdateRequest, MEMBER_ID);
 		String requestJson = objectMapper.writeValueAsString(productUpdateRequest);
 
 		// When & Then
@@ -98,7 +98,7 @@ class ProductControllerTest extends BaseControllerTest {
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
 
-		Long productId = productService.save(productSaveAndUpdateRequest);
+		Long productId = productService.save(productSaveAndUpdateRequest, MEMBER_ID);
 		String requestJson = objectMapper.writeValueAsString(productSaveAndUpdateRequest);
 
 		// When & Then
@@ -120,7 +120,7 @@ class ProductControllerTest extends BaseControllerTest {
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
 
-		productService.save(productSaveAndUpdateRequest);
+		productService.save(productSaveAndUpdateRequest, MEMBER_ID);
 
 		ProductUpdateRequest productUpdateRequest = new ProductUpdateRequest("예약중");
 		String request = objectMapper.writeValueAsString(productUpdateRequest);

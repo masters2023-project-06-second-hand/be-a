@@ -54,6 +54,9 @@ public class JwtFilter implements Filter {
 		}
 
 		if (whiteListCheck(httpServletRequest.getRequestURI())) {
+			if (isSignupRequest(httpServletRequest)) {
+				handleSignupRequest(httpServletRequest, response);
+			}
 			chain.doFilter(request, response);
 			return;
 		}
@@ -69,20 +72,11 @@ public class JwtFilter implements Filter {
 		}
 
 		try {
-			String token = extractAccessToken(httpServletRequest);
-			Claims claims = jwtProvider.getClaims(token);
-			Long memberId = convertMemberIdToLong(claims);
-			request.setAttribute(MEMBER_ID, memberId);
+			handleRequest(request, response, httpServletRequest);
 			chain.doFilter(request, response);
 		} catch (RuntimeException e) {
 			sendJwtExceptionResponse(response, e);
 		}
-	}
-
-	private Long convertMemberIdToLong(Claims claims) {
-		Object memberIdObj = claims.get(MEMBER_ID);
-		Long memberId = Long.valueOf(memberIdObj.toString());
-		return memberId;
 	}
 
 	private boolean whiteListCheck(String uri) {
@@ -92,6 +86,45 @@ public class JwtFilter implements Filter {
 	private boolean isContainToken(HttpServletRequest request) {
 		String authorization = request.getHeader(HEADER_AUTHORIZATION);
 		return authorization != null && authorization.startsWith(TOKEN_PREFIX);
+	}
+
+	private boolean isSignupRequest(HttpServletRequest request) {
+		return "/api/members/signup".equals(request.getRequestURI());
+	}
+
+	private void handleSignupRequest(HttpServletRequest request, ServletResponse response) throws IOException {
+		if (!isContainToken(request)) {
+			sendJwtExceptionResponse(response, new MalformedJwtException(""));
+			return;
+		}
+
+		String token = extractAccessToken(request);
+		Claims claims = jwtProvider.getClaims(token);
+		Object email = claims.get("email");
+
+		if (email == null) {
+			sendJwtExceptionResponse(response, new MalformedJwtException(""));
+			return;
+		}
+
+		request.setAttribute("email", email);
+	}
+
+	private void handleRequest(ServletRequest request, ServletResponse response,
+		HttpServletRequest httpServletRequest) throws IOException {
+		String token = extractAccessToken(httpServletRequest);
+		Claims claims = jwtProvider.getClaims(token);
+		Long memberId = convertMemberIdToLong(claims);
+		if (memberId == null) {
+			sendJwtExceptionResponse(response, new MalformedJwtException(""));
+		}
+		request.setAttribute(MEMBER_ID, memberId);
+	}
+
+	private Long convertMemberIdToLong(Claims claims) {
+		Object memberIdObj = claims.get(MEMBER_ID);
+		Long memberId = Long.valueOf(String.valueOf(memberIdObj));
+		return memberId;
 	}
 
 	private void sendJwtExceptionResponse(ServletResponse response, RuntimeException e) throws IOException {

@@ -1,6 +1,6 @@
 package com.codesquad.secondhand;
 
-import java.util.Collections;
+import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +23,7 @@ public abstract class BaseControllerTest {
 	public static final long MEMBER_ID = 1L;
 	public static final String AUTHORIZATION = "Authorization";
 	public static final String JWT_TOKEN_PREFIX = "Bearer ";
+	public static final String TEST_EMAIL = "test@test.com";
 
 	@Autowired
 	public MockMvc mockMvc;
@@ -55,6 +56,6 @@ public abstract class BaseControllerTest {
 
 	@BeforeEach
 	void init() {
-		jwt = jwtProvider.createTokens(Collections.singletonMap("memberId", MEMBER_ID));
+		jwt = jwtProvider.createTokens(Map.of("memberId", MEMBER_ID, "email", TEST_EMAIL));
 	}
 }
