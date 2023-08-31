@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.jwt;
 
 import java.security.Key;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,8 +30,15 @@ public class JwtProvider {
 	}
 
 	public String createToken(Map<String, Object> claims, Date expireDate) {
+		long currentTimeMillis = System.currentTimeMillis();
+
+		Map<String, Object> modifiableClaims = new HashMap<>(claims);
+		modifiableClaims.put("createdMillis", currentTimeMillis);
+
+		Map<String, Object> immutableClaims = Collections.unmodifiableMap(modifiableClaims);
+
 		return Jwts.builder()
-			.setClaims(claims)
+			.setClaims(immutableClaims)
 			.setExpiration(expireDate)
 			.signWith(key)
 			.compact();

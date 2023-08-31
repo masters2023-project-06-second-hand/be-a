@@ -1,8 +1,11 @@
 package com.codesquad.secondhand.domain.product.controller;
 
+import static com.codesquad.secondhand.common.util.RequestParser.*;
+
 import java.util.Collections;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -32,8 +35,10 @@ public class ProductController {
 
 	@PostMapping("/products")
 	public ResponseEntity<Map<String, Long>> save(
-		@RequestBody ProductSaveAndUpdateRequest productSaveAndUpdateRequest) {
-		Long productId = productService.save(productSaveAndUpdateRequest);
+		@RequestBody ProductSaveAndUpdateRequest productSaveAndUpdateRequest,
+		HttpServletRequest request) {
+		Long memberId = extractMemberId(request);
+		Long productId = productService.save(productSaveAndUpdateRequest, memberId);
 		return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("id", productId));
 	}
 
@@ -47,19 +52,19 @@ public class ProductController {
 	public ResponseEntity update(@PathVariable Long productId,
 		@Valid @RequestBody ProductSaveAndUpdateRequest request) {
 		productService.update(productId, request);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/products/{productId}")
 	public ResponseEntity delete(@PathVariable Long productId) {
 		productService.delete(productId);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/products/{productId}/status")
 	public ResponseEntity updateStatus(@PathVariable Long productId,
 		@RequestBody ProductUpdateRequest productUpdateRequest) {
 		productService.updateStatus(productId, productUpdateRequest);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 }

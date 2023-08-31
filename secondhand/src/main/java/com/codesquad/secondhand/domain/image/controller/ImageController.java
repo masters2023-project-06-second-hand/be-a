@@ -1,5 +1,6 @@
 package com.codesquad.secondhand.domain.image.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,12 +26,12 @@ public class ImageController {
 	@PostMapping("/images")
 	public ResponseEntity<ImageFileResponse> uploadImg(@RequestPart(value = "file") MultipartFile multipartFile) {
 		ImageFileResponse response = imageService.uploadImg(multipartFile);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
 	@DeleteMapping("/images")
 	public ResponseEntity delete(@RequestBody ImageDeleteRequest requestDto) {
 		imageService.delete(requestDto.getId());
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 }

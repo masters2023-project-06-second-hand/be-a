@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
@@ -24,6 +25,7 @@ public class MemberService {
 	private final MemberJpaRepository memberJpaRepository;
 	private final RegionService regionService;
 	private final MemberRegionService memberRegionService;
+	private final JwtService jwtService;
 
 	public Member findById(Long memberId) {
 		return memberJpaRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(
@@ -31,9 +33,9 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void signUp(SignupRequest signupRequest) {
+	public void signUp(SignupRequest signupRequest, String email) {
 		validDuplicatedName(signupRequest.getNickname());
-		Member member = signupRequest.toEntity();
+		Member member = signupRequest.toEntity(email);
 
 		memberJpaRepository.save(member);
 		List<Region> regions = regionService.findByIds(signupRequest.getRegionsId());
@@ -45,5 +47,10 @@ public class MemberService {
 		if (memberJpaRepository.existsByNickname(nickname)) {
 			throw new CustomRuntimeException(MemberException.MEMBER_NICKNAME_EXIST);
 		}
+	}
+
+	public void signOut(String accessToken, Long memberId) {
+		jwtService.deleteRefreshToken(memberId);
+		jwtService.setBlackList(accessToken);
 	}
 }

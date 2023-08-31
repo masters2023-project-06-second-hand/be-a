@@ -18,11 +18,10 @@ public class SignupRequest {
 	private String profileImg;
 	@NotNull(message = "필수로 하나의 지역은 선택 해야 합니다.")
 	private List<Long> regionsId;
-	public static final String TEST_EMAIL = "test@naver.com";
 
-	public Member toEntity() {
+	public Member toEntity(String email) {
 		return Member.builder()
-			.email(TEST_EMAIL)
+			.email(email)
 			.nickname(this.getNickname())
 			.profileImg(this.getProfileImg())
 			.selectedRegion(this.getRegionsId().get(0))

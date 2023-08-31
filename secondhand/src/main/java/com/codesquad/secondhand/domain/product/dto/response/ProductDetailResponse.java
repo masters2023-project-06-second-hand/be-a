@@ -18,7 +18,7 @@ public class ProductDetailResponse {
 	private List<Image> images;
 	private String productName;
 	private String categoryName;
-	private String region;
+	private String regionName;
 	private LocalDateTime createdAt;
 	private String status;
 	private String content;
@@ -31,7 +31,7 @@ public class ProductDetailResponse {
 			.images(product.getImages())
 			.productName(product.getName())
 			.categoryName(product.getCategory().getName())
-			.region(product.getRegion().getName())
+			.regionName(product.getRegion().getName())
 			.createdAt(product.getCreatedAt())
 			.status(ProductStatus.fromCode(product.getStatus()).getDescription())
 			.content(product.getContent())
