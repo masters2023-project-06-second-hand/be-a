@@ -1,5 +1,8 @@
 package com.codesquad.secondhand.domain.member.controller;
 
+import java.util.Collections;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -25,6 +28,14 @@ public class MemberController {
 	public ResponseEntity signUp(@RequestBody @Valid SignupRequest signupRequest) {
 		memberService.signUp(signupRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@PostMapping("/members/signout")
+	public ResponseEntity<Map<String, String>> signOut() {
+		String accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtZW1iZXJJZCI6IjEiLCJpYXQiOjE1MTYyMzkwMjIyfQ.qPHKZ-3h3tqgEixkOThShfAE2pUBI5xcc7O5EykUBsk";
+		Long memberId = 1L;
+		memberService.signOut(accessToken, memberId);
+		return ResponseEntity.ok(Collections.singletonMap("message", "로그아웃 성공"));
 	}
 
 }

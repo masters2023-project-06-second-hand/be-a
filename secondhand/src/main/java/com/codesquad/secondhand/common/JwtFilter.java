@@ -18,6 +18,7 @@ import org.springframework.util.PatternMatchUtils;
 import com.codesquad.secondhand.domain.jwt.JwtProvider;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
 import com.codesquad.secondhand.exception.errorcode.JwtException;
+import com.codesquad.secondhand.redis.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
@@ -38,6 +39,7 @@ public class JwtFilter implements Filter {
 
 	private final JwtProvider jwtProvider;
 	private final ObjectMapper objectMapper;
+	private final RedisUtil redisUtil;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -56,6 +58,11 @@ public class JwtFilter implements Filter {
 
 		if (!isContainToken(httpServletRequest)) {
 			sendJwtExceptionResponse(response, new MalformedJwtException(""));
+			return;
+		}
+
+		if (redisUtil.hasKeyBlackList(extractAccessToken(httpServletRequest))) {
+			sendJwtExceptionResponse(response, new CustomRuntimeException(JwtException.BLACKLISTED_JWT_EXCEPTION));
 			return;
 		}
 
