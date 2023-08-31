@@ -34,7 +34,7 @@ class ImageControllerTest extends BaseControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/images")
 				.file(mockMultipartFile)
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken()))
-			.andExpect(status().isOk());
+			.andExpect(status().isCreated());
 	}
 
 	@Test
@@ -58,6 +58,6 @@ class ImageControllerTest extends BaseControllerTest {
 				MockMvcRequestBuilders.delete("/api/images")
 					.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 					.contentType(MediaType.APPLICATION_JSON).content(request))
-			.andExpect(status().isOk());
+			.andExpect(status().isNoContent());
 	}
 }

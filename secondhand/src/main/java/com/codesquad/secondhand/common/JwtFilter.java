@@ -33,7 +33,8 @@ public class JwtFilter implements Filter {
 	private static final String MEMBER_ID = "memberId";
 	private static final String[] whiteListUris = {
 		"/api/members/signup",
-		"/"
+		"/",
+		"/**"
 	};
 	public static final String OPTIONS = "OPTIONS";
 

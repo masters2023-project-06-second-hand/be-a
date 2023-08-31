@@ -47,19 +47,19 @@ public class ProductController {
 	public ResponseEntity update(@PathVariable Long productId,
 		@Valid @RequestBody ProductSaveAndUpdateRequest request) {
 		productService.update(productId, request);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@DeleteMapping("/products/{productId}")
 	public ResponseEntity delete(@PathVariable Long productId) {
 		productService.delete(productId);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@PutMapping("/products/{productId}/status")
 	public ResponseEntity updateStatus(@PathVariable Long productId,
 		@RequestBody ProductUpdateRequest productUpdateRequest) {
 		productService.updateStatus(productId, productUpdateRequest);
-		return ResponseEntity.ok().build();
+		return ResponseEntity.noContent().build();
 	}
 }

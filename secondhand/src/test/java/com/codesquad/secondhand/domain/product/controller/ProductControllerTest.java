@@ -84,7 +84,7 @@ class ProductControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
-			.andExpect(status().isOk());
+			.andExpect(status().isNoContent());
 	}
 
 	@Test
@@ -106,7 +106,7 @@ class ProductControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
-			.andExpect(status().isOk());
+			.andExpect(status().isNoContent());
 	}
 
 	@Test
@@ -130,6 +130,6 @@ class ProductControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
-			.andExpect(status().isOk());
+			.andExpect(status().isNoContent());
 	}
 }
