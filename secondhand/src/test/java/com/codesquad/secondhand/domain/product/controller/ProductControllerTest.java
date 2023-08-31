@@ -6,33 +6,17 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import com.codesquad.secondhand.BaseControllerTest;
 import com.codesquad.secondhand.annotation.IntegrationTest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.entity.Image;
-import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
-import com.codesquad.secondhand.domain.product.service.ProductService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @IntegrationTest
-class ProductControllerTest {
-
-	@Autowired
-	MockMvc mockMvc;
-
-	@Autowired
-	ProductService productService;
-
-	@Autowired
-	ObjectMapper objectMapper;
-
-	@Autowired
-	ImageJpaRepository imageJpaRepository;
+class ProductControllerTest extends BaseControllerTest {
 
 	@Test
 	@DisplayName("상품등록시 해당 상품의 id를 반환한다.")
@@ -48,6 +32,7 @@ class ProductControllerTest {
 
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/products")
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
 			.andExpect(jsonPath("$.id").exists())
@@ -73,6 +58,7 @@ class ProductControllerTest {
 
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{productId}", 1L)
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(jsonPath("$.productName").value(productSaveAndUpdateRequest.getName()))
 			.andExpect(jsonPath("$.content").value(productSaveAndUpdateRequest.getContent()))
@@ -95,6 +81,7 @@ class ProductControllerTest {
 
 		// When & Then
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productId}", productId)
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
 			.andExpect(status().isOk());
@@ -116,6 +103,7 @@ class ProductControllerTest {
 
 		// When & Then
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productId}", productId)
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
 			.andExpect(status().isOk());
@@ -139,6 +127,7 @@ class ProductControllerTest {
 
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.put("/api/products/{productId}/status", 1L)
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
 			.andExpect(status().isOk());

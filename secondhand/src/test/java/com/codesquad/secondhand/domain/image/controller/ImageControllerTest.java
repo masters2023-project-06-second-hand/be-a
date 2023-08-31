@@ -8,28 +8,14 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.codesquad.secondhand.annotation.IntegrationTest;
+import com.codesquad.secondhand.BaseControllerTest;
 import com.codesquad.secondhand.domain.image.dto.request.ImageDeleteRequest;
-import com.codesquad.secondhand.domain.image.service.ImageService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-@IntegrationTest
-class ImageControllerTest {
-
-	@Autowired
-	MockMvc mockMvc;
-
-	@Autowired
-	ImageService imageService;
-
-	@Autowired
-	ObjectMapper objectMapper;
+class ImageControllerTest extends BaseControllerTest {
 
 	@Test
 	@DisplayName("이미지를 S3에 업로드후 이미지 URL을 DB에 저장한다음 DB에 저장된 이미지의 ID를 응답으로 전송한다.")
@@ -46,7 +32,8 @@ class ImageControllerTest {
 
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.multipart("/api/images")
-				.file(mockMultipartFile))
+				.file(mockMultipartFile)
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken()))
 			.andExpect(status().isOk());
 	}
 
@@ -68,7 +55,9 @@ class ImageControllerTest {
 
 		// when & then
 		mockMvc.perform(
-				MockMvcRequestBuilders.delete("/api/images").contentType(MediaType.APPLICATION_JSON).content(request))
+				MockMvcRequestBuilders.delete("/api/images")
+					.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+					.contentType(MediaType.APPLICATION_JSON).content(request))
 			.andExpect(status().isOk());
 	}
 }

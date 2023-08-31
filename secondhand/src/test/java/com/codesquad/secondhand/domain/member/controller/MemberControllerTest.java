@@ -6,27 +6,13 @@ import java.util.Arrays;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
-import com.codesquad.secondhand.annotation.IntegrationTest;
+import com.codesquad.secondhand.BaseControllerTest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
-import com.codesquad.secondhand.domain.member.service.MemberService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-@IntegrationTest
-class MemberControllerTest {
-
-	@Autowired
-	MockMvc mockMvc;
-
-	@Autowired
-	ObjectMapper objectMapper;
-
-	@Autowired
-	MemberService memberService;
+class MemberControllerTest extends BaseControllerTest {
 
 	@Test
 	@DisplayName("회원가입 요청시 회원가입이 가능하다.")
@@ -37,6 +23,7 @@ class MemberControllerTest {
 
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/members/signup")
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
 			.andExpect(status().isCreated());
