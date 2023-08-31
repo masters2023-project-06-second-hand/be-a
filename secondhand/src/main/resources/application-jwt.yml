@@ -1,0 +1,3 @@
+jwt:
+  token:
+    secret-key: ENC(oPSAVeWHmCr1pcq/34qs4cV9zLJ5yrt93IfuCYk9hQH/LjZN/b9ssKwrMJEfn2EqjW9sgDIINi8=)
