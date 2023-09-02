@@ -13,8 +13,10 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
+import com.codesquad.secondhand.annotation.IntegrationTest;
 import com.codesquad.secondhand.domain.image.dto.request.ImageDeleteRequest;
 
+@IntegrationTest
 class ImageControllerTest extends BaseControllerTest {
 
 	@Test
