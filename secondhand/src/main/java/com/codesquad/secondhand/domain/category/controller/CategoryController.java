@@ -20,7 +20,7 @@ public class CategoryController {
 
 	private final CategoryService categoryService;
 
-	@GetMapping(value = "/categories")
+	@GetMapping("/categories")
 	public ResponseEntity<List<CategoryResponse>> findAll(@RequestParam Boolean includeImages) {
 		List<CategoryResponse> categories = categoryService.findAll(includeImages);
 		return ResponseEntity.ok().body(categories);
