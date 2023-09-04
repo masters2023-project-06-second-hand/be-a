@@ -1,5 +1,6 @@
 package com.codesquad.secondhand.domain.member_region.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,5 @@ public interface MemberRegionJpaRepository extends JpaRepository<MemberRegion, L
 	Boolean existsByMemberAndRegion(Member member, Region region);
 	int countByMember(Member member);
 	Optional<MemberRegion> findByMemberAndRegion(Member member, Region region);
+	List<MemberRegion> findAllByMemberId(Long memberId);
 }

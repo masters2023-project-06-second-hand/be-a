@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.member.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -8,6 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
+import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
+import com.codesquad.secondhand.domain.member.dto.response.Regions;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
 import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
@@ -81,5 +84,18 @@ public class MemberService {
 		Region region = regionService.findById(regionRequest.getId());
 		memberRegionService.findByMemberAndRegion(member,region);
 		member.addSelectedRegion(region.getId());
+	}
+
+	public RegionResponse getRegion(Long memberId) {
+		Member member = findById(memberId);
+		Long selectedRegionId = member.getSelectedRegion();
+		List<MemberRegion> memberRegions = memberRegionService.findAllMemberRegion(memberId);
+		List<Regions> regions = memberRegions.stream()
+			.map(Regions::from)
+			.collect(Collectors.toList());
+		return RegionResponse.builder()
+			.selectedRegionId(selectedRegionId)
+			.regions(regions)
+			.build();
 	}
 }

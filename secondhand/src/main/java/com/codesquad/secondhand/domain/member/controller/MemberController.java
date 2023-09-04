@@ -11,6 +11,7 @@ import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
+import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
 import com.codesquad.secondhand.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -62,6 +64,12 @@ public class MemberController {
 	public ResponseEntity setSelectedRegion(@PathVariable Long memberId, @RequestBody RegionRequest regionRequest) {
 		memberService.setSelectedRegion(memberId,regionRequest);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/members/{memberId}/regions")
+	public ResponseEntity<RegionResponse> getRegions(@PathVariable Long memberId) {
+		RegionResponse response = memberService.getRegion(memberId);
+		return ResponseEntity.ok(response);
 	}
 
 }

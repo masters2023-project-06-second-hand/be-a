@@ -58,4 +58,8 @@ public class MemberRegionService {
 	public MemberRegion findByMemberAndRegion(Member member, Region region) {
 		return memberRegionJpaRepository.findByMemberAndRegion(member,region).orElseThrow(() -> new CustomRuntimeException(RegionException.MEMBER_REGION_NOT_ADDED));
 	}
+
+	public List<MemberRegion> findAllMemberRegion(Long memberId) {
+		return memberRegionJpaRepository.findAllByMemberId(memberId);
+	}
 }
