@@ -91,6 +91,28 @@ class MemberControllerTest extends BaseControllerTest {
 			.andExpect(status().isNoContent());
 	}
 
+	@Test
+	@DisplayName("회원이 등록한 지역들과 대표지역을 출력한다.")
+	void getSelectedRegionAndRegions() throws Exception{
+		// when & then
+		Long memberId = 1L;
+		// 나의 지역 저장
+		RegionRequest requestSaveDto1 = new RegionRequest(3L);
+		RegionRequest requestSaveDto2 = new RegionRequest(4L);
+		memberService.addRegion(memberId,requestSaveDto1);
+		memberService.addRegion(memberId,requestSaveDto2);
+		// 나의 대표 지역 설정
+		RegionRequest setRegionDto = new RegionRequest(4L);
+		memberService.setSelectedRegion(memberId,setRegionDto);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/members/1/regions")
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(jsonPath("$.selectedRegionId").exists())
+			.andExpect(jsonPath("$.regions").exists())
+			.andExpect(status().isOk());
+	}
+
 	private static SignupRequest DummySignUpRequest() {
 		return SignupRequest.builder()
 			.nickname("nickname")
