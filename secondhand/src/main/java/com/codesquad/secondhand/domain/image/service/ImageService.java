@@ -88,9 +88,13 @@ public class ImageService {
 	@Transactional
 	public void updateProductId(List<Long> imagesId, Product product) {
 		imagesId.stream()
-			.map(imageId -> imageJpaRepository.findById(imageId).orElseThrow(() -> new CustomRuntimeException(
-				ImageException.IMAGE_NOT_FOUND)))
+			.map(this::findById)
 			.forEach(imageFromDb -> imageFromDb.updateProduct(product));
+	}
+
+	public Image findById(Long id) {
+		return imageJpaRepository.findById(id).orElseThrow(() -> new CustomRuntimeException(
+			ImageException.IMAGE_NOT_FOUND));
 	}
 
 }

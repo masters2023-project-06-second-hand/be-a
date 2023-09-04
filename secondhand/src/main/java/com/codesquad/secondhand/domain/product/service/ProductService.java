@@ -11,8 +11,10 @@ import com.codesquad.secondhand.domain.member.service.MemberService;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
+import com.codesquad.secondhand.domain.product.entity.Image;
 import com.codesquad.secondhand.domain.product.entity.Product;
 import com.codesquad.secondhand.domain.product.repository.ProductJpaRepository;
+import com.codesquad.secondhand.domain.product.repository.ProductQueryRepository;
 import com.codesquad.secondhand.domain.product.utils.ProductStatus;
 import com.codesquad.secondhand.domain.region.entity.Region;
 import com.codesquad.secondhand.domain.region.service.RegionService;
@@ -27,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductService {
 
 	private final ProductJpaRepository productJpaRepository;
+	private final ProductQueryRepository productQueryRepository;
 	private final CategoryService categoryService;
 	private final RegionService regionService;
 	private final MemberService memberService;
@@ -37,7 +40,8 @@ public class ProductService {
 		Category category = categoryService.findById(productSaveAndUpdateRequest.getCategoryId());
 		Region region = regionService.findById(productSaveAndUpdateRequest.getRegionId());
 		Member member = memberService.findById(memberId);
-		Product product = productSaveAndUpdateRequest.toEntity(category, region, member);
+		Image thumbnailImage = imageService.findById(productSaveAndUpdateRequest.getImagesId().get(0));
+		Product product = productSaveAndUpdateRequest.toEntity(category, region, member, thumbnailImage);
 		imageService.updateProductId(productSaveAndUpdateRequest.getImagesId(), product);
 
 		return productJpaRepository.save(product).getId();
@@ -48,12 +52,13 @@ public class ProductService {
 	}
 
 	@Transactional
-	public void update(Long productId, ProductSaveAndUpdateRequest request) {
+	public void update(Long productId, ProductSaveAndUpdateRequest productSaveAndUpdateRequest) {
 		Product product = findById(productId);
-		Category category = categoryService.findById(request.getCategoryId());
-		Region region = regionService.findById(request.getRegionId());
-		imageService.updateProductId(request.getImagesId(), product);
-		product.updateFromDto(request, category, region);
+		Category category = categoryService.findById(productSaveAndUpdateRequest.getCategoryId());
+		Region region = regionService.findById(productSaveAndUpdateRequest.getRegionId());
+		Image thumbnailImage = imageService.findById(productSaveAndUpdateRequest.getImagesId().get(0));
+		imageService.updateProductId(productSaveAndUpdateRequest.getImagesId(), product);
+		product.updateFromDto(productSaveAndUpdateRequest, category, region, thumbnailImage);
 	}
 
 	@Transactional
