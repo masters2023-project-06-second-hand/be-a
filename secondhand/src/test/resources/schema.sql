@@ -95,7 +95,7 @@ CREATE TABLE member
     id              BIGINT      NOT NULL AUTO_INCREMENT PRIMARY KEY,
     nickname        VARCHAR(20) NOT NULL,
     email           VARCHAR(50) NOT NULL,
-    selected_region VARCHAR(50) NULL,
+    selected_region BiGINT NULL,
     profile_img     VARCHAR(1000) NULL
 );
 
