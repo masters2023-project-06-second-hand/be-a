@@ -8,7 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
+import com.codesquad.secondhand.annotation.IntegrationTest;
 
+@IntegrationTest
 class CategoryControllerTest extends BaseControllerTest {
 
 	@Test
@@ -36,5 +38,4 @@ class CategoryControllerTest extends BaseControllerTest {
 			.andExpect(jsonPath("$[0].imgUrl").doesNotExist())
 			.andExpect(status().isOk());
 	}
-
 }
