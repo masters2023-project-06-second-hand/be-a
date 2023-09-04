@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddRegionRequest {
+public class RegionRequest {
 	private Long id;
 }
