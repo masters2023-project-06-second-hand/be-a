@@ -12,7 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
 import com.codesquad.secondhand.annotation.IntegrationTest;
-import com.codesquad.secondhand.domain.member.dto.request.AddRegionRequest;
+import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 
 @IntegrationTest
@@ -49,13 +49,28 @@ class MemberControllerTest extends BaseControllerTest {
 	@DisplayName("회원의 아이디와 지역 아이디를 입력받아 회원의 지역을 추가 할 수 있다.")
 	void addRegion() throws Exception{
 		// when & then
-		AddRegionRequest requestDto = new AddRegionRequest(3L);
+		RegionRequest requestDto = new RegionRequest(3L);
 		String request = objectMapper.writeValueAsString(requestDto);
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/members/1/regions")
 			.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(request))
 			.andExpect(status().isCreated());
+	}
+
+	@Test
+	@DisplayName("회원의 아이디와 지역 아이디를 입력받아 회원의 지역을 삭제 할 수 있다.")
+	void deleteRegion() throws Exception{
+		// when & then
+		Long memberId = 1L;
+		RegionRequest requestDto = new RegionRequest(4L);
+		memberService.addRegion(memberId,requestDto);
+		String request = objectMapper.writeValueAsString(requestDto);
+		mockMvc.perform(MockMvcRequestBuilders.delete("/api/members/1/regions")
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(request))
+			.andExpect(status().isNoContent());
 	}
 
 	private static SignupRequest DummySignUpRequest() {
