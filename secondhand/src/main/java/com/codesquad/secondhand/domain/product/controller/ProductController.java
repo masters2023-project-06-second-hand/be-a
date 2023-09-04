@@ -76,4 +76,10 @@ public class ProductController {
 		@RequestParam(required = false) Long categoryId) {
 		return ResponseEntity.ok().body(productService.findAll(regionId, categoryId));
 	}
+
+	@GetMapping("/members/{memberId}/sales")
+	public ResponseEntity<List<ProductFindAllResponse>> findSalesProducts(@PathVariable Long memberId,
+		@RequestParam(required = false) Integer statusId) {
+		return ResponseEntity.ok().body(productService.findSalesProducts(memberId, statusId));
+	}
 }
