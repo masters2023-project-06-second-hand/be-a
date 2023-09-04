@@ -14,6 +14,7 @@ import com.codesquad.secondhand.domain.member.service.MemberService;
 import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
 import com.codesquad.secondhand.domain.product.service.ProductService;
 import com.codesquad.secondhand.domain.reaction.service.ReactionService;
+import com.codesquad.secondhand.domain.region.service.RegionService;
 import com.codesquad.secondhand.redis.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -50,6 +51,8 @@ public abstract class BaseControllerTest {
 
 	@Autowired
 	public ReactionService reactionService;
+	@Autowired
+	public RegionService regionService;
 
 	public Jwt jwt;
 
