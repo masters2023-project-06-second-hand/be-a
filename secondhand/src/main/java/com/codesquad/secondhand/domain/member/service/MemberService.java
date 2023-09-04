@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
+import com.codesquad.secondhand.domain.member.dto.request.AddRegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
@@ -52,5 +53,17 @@ public class MemberService {
 	public void signOut(String accessToken, Long memberId) {
 		jwtService.deleteRefreshToken(memberId);
 		jwtService.setBlackList(accessToken);
+	}
+
+	@Transactional
+	public void addRegion(Long memberId,AddRegionRequest addRegionRequest) {
+		Member member = findById(memberId);
+		Region region = regionService.findById(addRegionRequest.getId());
+		MemberRegion memberRegion = MemberRegion.builder()
+			.member(member)
+			.region(region)
+			.build();
+		memberRegionService.save(memberRegion);
+
 	}
 }

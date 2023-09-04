@@ -10,11 +10,13 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codesquad.secondhand.domain.member.dto.request.AddRegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.service.MemberService;
 
@@ -40,6 +42,12 @@ public class MemberController {
 		Long memberId = extractMemberId(request);
 		memberService.signOut(accessToken, memberId);
 		return ResponseEntity.ok(Collections.singletonMap("message", "로그아웃 성공"));
+	}
+
+	@PostMapping("/members/{memberId}/regions")
+	public ResponseEntity addRegion(@PathVariable Long memberId, @RequestBody AddRegionRequest addRegionRequest) {
+		memberService.addRegion(memberId,addRegionRequest);
+		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 }
