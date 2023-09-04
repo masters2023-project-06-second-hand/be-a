@@ -4,9 +4,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.util.Arrays;
 
+import org.assertj.core.api.Assertions;
+import org.json.JSONArray;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
@@ -131,5 +134,96 @@ class ProductControllerTest extends BaseControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
 			.andExpect(status().isNoContent());
+	}
+
+	@Test
+	@DisplayName("카데고리별 상품 목록 조회 api를 통해 특정지역 및 카테고리에 해당하는 모든 상품을 조회할수 있다.")
+	void findAll() throws Exception {
+		// Given
+
+		//1. 이미지 저장
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+
+		//2. 상품 저장
+		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
+			1L, Arrays.asList(1L, 2L));
+		productService.save(productRequestCat1Reg1, MEMBER_ID);
+
+		ProductSaveAndUpdateRequest productRequestCat2Reg1 = new ProductSaveAndUpdateRequest("상품명", 2L, 100000L, "상품내용",
+			1L, Arrays.asList(1L, 2L));
+		productService.save(productRequestCat2Reg1, MEMBER_ID);
+
+		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
+			2L, Arrays.asList(1L, 2L));
+		productService.save(productRequestCat1Reg2, MEMBER_ID);
+
+		//when & then
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/products")
+				.param("regionId", "1")
+				.param("categoryId", "1")
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].id").exists())
+			.andExpect(jsonPath("$[0].writerId").exists())
+			.andExpect(jsonPath("$[0].thumbnailUrl").exists())
+			.andExpect(jsonPath("$[0].name").exists())
+			.andExpect(jsonPath("$[0].region").exists())
+			.andExpect(jsonPath("$[0].createdAt").exists())
+			.andExpect(jsonPath("$[0].status").exists())
+			.andExpect(jsonPath("$[0].price").exists())
+			.andExpect(jsonPath("$[0].likeCount").exists())
+			.andExpect(jsonPath("$[0].chattingCount").exists())
+			.andReturn();
+
+		String responseBody = result.getResponse().getContentAsString();
+		JSONArray jsonArray = new JSONArray(responseBody);
+		Assertions.assertThat(jsonArray.length()).isEqualTo(1);
+	}
+
+	@Test
+	@DisplayName("카데고리별 상품 목록 조회 요청시 categoryId 가 null 이면 특정 지역에 관련된 모든 상품목록을 응답으로 전송한다.")
+	void findAllWithNoCategoryId() throws Exception {
+		// Given
+
+		//1. 이미지 저장
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+
+		//2. 상품 저장
+		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
+			1L, Arrays.asList(1L, 2L));
+		productService.save(productRequestCat1Reg1, MEMBER_ID);
+
+		ProductSaveAndUpdateRequest productRequestCat2Reg1 = new ProductSaveAndUpdateRequest("상품명", 2L, 100000L, "상품내용",
+			1L, Arrays.asList(1L, 2L));
+		productService.save(productRequestCat2Reg1, MEMBER_ID);
+
+		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
+			2L, Arrays.asList(1L, 2L));
+		productService.save(productRequestCat1Reg2, MEMBER_ID);
+
+		//when & then
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/products")
+				.param("regionId", "1")
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].id").exists())
+			.andExpect(jsonPath("$[0].writerId").exists())
+			.andExpect(jsonPath("$[0].thumbnailUrl").exists())
+			.andExpect(jsonPath("$[0].name").exists())
+			.andExpect(jsonPath("$[0].region").exists())
+			.andExpect(jsonPath("$[0].createdAt").exists())
+			.andExpect(jsonPath("$[0].status").exists())
+			.andExpect(jsonPath("$[0].price").exists())
+			.andExpect(jsonPath("$[0].likeCount").exists())
+			.andExpect(jsonPath("$[0].chattingCount").exists())
+			.andReturn();
+
+		String responseBody = result.getResponse().getContentAsString();
+		JSONArray jsonArray = new JSONArray(responseBody);
+		Assertions.assertThat(jsonArray.length()).isEqualTo(2);
 	}
 }

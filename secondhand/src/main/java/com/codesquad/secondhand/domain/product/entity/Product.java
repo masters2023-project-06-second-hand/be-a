@@ -43,6 +43,7 @@ public class Product {
 	private LocalDateTime createdAt;
 	private int status;
 	private Long viewCount;
+	private String thumbnailImage;
 	@ManyToOne
 	@JoinColumn(name = "region_id")
 	private Region region;
@@ -57,7 +58,7 @@ public class Product {
 
 	@Builder
 	public Product(Long id, Region region, Category category, Member member, String name, Long price,
-		String content, int status, Long viewCount) {
+		String content, int status, Long viewCount, String thumbnailImage) {
 		this.id = id;
 		this.region = region;
 		this.category = category;
@@ -67,14 +68,17 @@ public class Product {
 		this.content = content;
 		this.status = status;
 		this.viewCount = viewCount;
+		this.thumbnailImage = thumbnailImage;
 	}
 
-	public void updateFromDto(ProductSaveAndUpdateRequest requestDto, Category category, Region region) {
+	public void updateFromDto(ProductSaveAndUpdateRequest requestDto, Category category, Region region,
+		Image thumbnailImage) {
 		this.name = requestDto.getName();
 		this.price = requestDto.getPrice();
 		this.content = requestDto.getContent();
 		this.category = category;
 		this.region = region;
+		this.thumbnailImage = thumbnailImage.getImgUrl();
 	}
 
 	public void changeStatus(int status) {
