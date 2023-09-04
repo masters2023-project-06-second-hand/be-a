@@ -92,4 +92,18 @@ public class ProductService {
 			})
 			.collect(Collectors.toUnmodifiableList());
 	}
+
+	public List<ProductFindAllResponse> findSalesProducts(Long memberId, Integer statusId) {
+		//validate 을 위한 호출
+		if (statusId != null) {
+			ProductStatus.fromCode(statusId);
+		}
+		Member member = memberService.findById(memberId);
+		return productQueryRepository.findSalesProduct(member, statusId).stream()
+			.map(product -> {
+				long reactionCount = reactionJpaRepository.countByProduct(product);
+				return ProductFindAllResponse.of(product, reactionCount);
+			})
+			.collect(Collectors.toUnmodifiableList());
+	}
 }
