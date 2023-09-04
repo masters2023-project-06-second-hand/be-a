@@ -43,4 +43,8 @@ public class Member {
 		this.profileImg = profileImg;
 	}
 
+	public void addSelectedRegion (Long selectedRegion) {
+		this.selectedRegion = selectedRegion;
+	}
+
 }

@@ -74,4 +74,12 @@ public class MemberService {
 		MemberRegion memberRegion = memberRegionService.findByMemberAndRegion(member,region);
 		memberRegionService.delete(memberRegion);
 	}
+
+	@Transactional
+	public void setSelectedRegion(Long memberId, RegionRequest regionRequest) {
+		Member member = findById(memberId);
+		Region region = regionService.findById(regionRequest.getId());
+		memberRegionService.findByMemberAndRegion(member,region);
+		member.addSelectedRegion(region.getId());
+	}
 }
