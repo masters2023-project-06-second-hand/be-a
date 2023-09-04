@@ -14,16 +14,17 @@ DROP TABLE IF EXISTS member_region;
 
 CREATE TABLE product
 (
-    id          BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    region_id   BIGINT        NOT NULL,
-    category_id BIGINT        NOT NULL,
-    member_id   BIGINT        NOT NULL,
-    name        VARCHAR(20)   NOT NULL,
-    price       BIGINT NULL,
-    content     VARCHAR(1000) NOT NULL,
-    created_at  DATETIME      NOT NULL,
-    status      INT           NOT NULL DEFAULT 1,
-    view_count  BIGINT        NOT NULL DEFAULT 0
+    id              BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    region_id       BIGINT        NOT NULL,
+    category_id     BIGINT        NOT NULL,
+    member_id       BIGINT        NOT NULL,
+    name            VARCHAR(20)   NOT NULL,
+    price           BIGINT NULL,
+    content         VARCHAR(1000) NOT NULL,
+    created_at      DATETIME      NOT NULL,
+    status          INT           NOT NULL DEFAULT 1,
+    thumbnail_image VARCHAR(1000) NOT NULL,
+    view_count      BIGINT        NOT NULL DEFAULT 0
 );
 
 CREATE TABLE category
