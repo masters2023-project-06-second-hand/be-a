@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
-import com.codesquad.secondhand.domain.member.dto.request.AddRegionRequest;
+import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
@@ -56,14 +56,22 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void addRegion(Long memberId,AddRegionRequest addRegionRequest) {
+	public void addRegion(Long memberId, RegionRequest regionRequest) {
 		Member member = findById(memberId);
-		Region region = regionService.findById(addRegionRequest.getId());
+		Region region = regionService.findById(regionRequest.getId());
 		MemberRegion memberRegion = MemberRegion.builder()
 			.member(member)
 			.region(region)
 			.build();
 		memberRegionService.save(memberRegion);
 
+	}
+
+	@Transactional
+	public void deleteRegion(Long memberId, RegionRequest regionRequest) {
+		Member member = findById(memberId);
+		Region region = regionService.findById(regionRequest.getId());
+		MemberRegion memberRegion = memberRegionService.findByMemberAndRegion(member,region);
+		memberRegionService.delete(memberRegion);
 	}
 }
