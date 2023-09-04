@@ -1,5 +1,8 @@
 package com.codesquad.secondhand.domain.product.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,11 +14,13 @@ import com.codesquad.secondhand.domain.member.service.MemberService;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
 import com.codesquad.secondhand.domain.product.entity.Image;
 import com.codesquad.secondhand.domain.product.entity.Product;
 import com.codesquad.secondhand.domain.product.repository.ProductJpaRepository;
 import com.codesquad.secondhand.domain.product.repository.ProductQueryRepository;
 import com.codesquad.secondhand.domain.product.utils.ProductStatus;
+import com.codesquad.secondhand.domain.reaction.repository.ReactionJpaRepository;
 import com.codesquad.secondhand.domain.region.entity.Region;
 import com.codesquad.secondhand.domain.region.service.RegionService;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
@@ -34,6 +39,7 @@ public class ProductService {
 	private final RegionService regionService;
 	private final MemberService memberService;
 	private final ImageService imageService;
+	private final ReactionJpaRepository reactionJpaRepository;
 
 	@Transactional
 	public Long save(ProductSaveAndUpdateRequest productSaveAndUpdateRequest, Long memberId) {
@@ -76,5 +82,14 @@ public class ProductService {
 	public Product findById(Long productId) {
 		return productJpaRepository.findById(productId)
 			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
+	}
+
+	public List<ProductFindAllResponse> findAll(Long regionId, Long categoryId) {
+		return productQueryRepository.findAll(regionId, categoryId).stream()
+			.map(product -> {
+				long reactionCount = reactionJpaRepository.countByProduct(product);
+				return ProductFindAllResponse.of(product, reactionCount);
+			})
+			.collect(Collectors.toUnmodifiableList());
 	}
 }

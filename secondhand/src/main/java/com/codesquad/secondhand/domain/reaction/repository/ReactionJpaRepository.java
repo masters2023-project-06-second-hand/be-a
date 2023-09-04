@@ -14,4 +14,6 @@ public interface ReactionJpaRepository extends JpaRepository<Reaction, Long> {
 
 	List<Reaction> findAllByMember(Member member);
 
+	long countByProduct(Product product);
+
 }

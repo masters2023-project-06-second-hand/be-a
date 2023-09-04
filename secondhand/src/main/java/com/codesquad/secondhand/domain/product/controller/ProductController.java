@@ -3,6 +3,7 @@ package com.codesquad.secondhand.domain.product.controller;
 import static com.codesquad.secondhand.common.util.RequestParser.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +18,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
 import com.codesquad.secondhand.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -66,5 +69,11 @@ public class ProductController {
 		@RequestBody ProductUpdateRequest productUpdateRequest) {
 		productService.updateStatus(productId, productUpdateRequest);
 		return ResponseEntity.noContent().build();
+	}
+
+	@GetMapping("/products")
+	public ResponseEntity<List<ProductFindAllResponse>> findAll(@RequestParam Long regionId,
+		@RequestParam(required = false) Long categoryId) {
+		return ResponseEntity.ok().body(productService.findAll(regionId, categoryId));
 	}
 }
