@@ -49,4 +49,13 @@ public class MemberRegionService {
 			throw new CustomRuntimeException(RegionException.REGION_DUPLICATED);
 		}
 	}
+
+	@Transactional
+	public void delete(MemberRegion memberRegion) {
+		memberRegionJpaRepository.delete(memberRegion);
+	}
+
+	public MemberRegion findByMemberAndRegion(Member member, Region region) {
+		return memberRegionJpaRepository.findByMemberAndRegion(member,region).orElseThrow(() -> new CustomRuntimeException(RegionException.REGION_NOT_FOUND));
+	}
 }

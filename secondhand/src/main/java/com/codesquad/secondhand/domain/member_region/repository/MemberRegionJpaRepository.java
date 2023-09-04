@@ -13,4 +13,5 @@ public interface MemberRegionJpaRepository extends JpaRepository<MemberRegion, L
 
 	Boolean existsByMemberAndRegion(Member member, Region region);
 	int countByMember(Member member);
+	Optional<MemberRegion> findByMemberAndRegion(Member member, Region region);
 }
