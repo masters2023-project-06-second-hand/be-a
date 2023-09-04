@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codesquad.secondhand.domain.category.dto.response.CategoryResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
 import com.codesquad.secondhand.domain.reaction.dto.ReactionUpdateRequest;
 import com.codesquad.secondhand.domain.reaction.service.ReactionService;
 
@@ -36,8 +38,14 @@ public class ReactionController {
 	}
 
 	@GetMapping("/members/{memberId}/likes/categories")
-	public ResponseEntity<List<CategoryResponse>> findAllOfReactedProducts(@PathVariable Long memberId) {
-		List<CategoryResponse> categories = reactionService.findAllOfReactedProducts(memberId);
+	public ResponseEntity<List<CategoryResponse>> findAllOfReactedCategories(@PathVariable Long memberId) {
+		List<CategoryResponse> categories = reactionService.findAllOfReactedCategories(memberId);
 		return ResponseEntity.ok().body(categories);
+	}
+
+	@GetMapping("/members/{memberId}/likes")
+	public ResponseEntity<List<ProductFindAllResponse>> findAllOfReactedProducts(@PathVariable Long memberId,
+		@RequestParam(required = false) Long categoryId) {
+		return ResponseEntity.ok().body(reactionService.findAllOfReactedProducts(memberId, categoryId));
 	}
 }
