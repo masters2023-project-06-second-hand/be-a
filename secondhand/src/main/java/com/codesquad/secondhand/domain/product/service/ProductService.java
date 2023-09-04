@@ -68,7 +68,7 @@ public class ProductService {
 		product.changeStatus(productStatus.getCode());
 	}
 
-	private Product findById(Long productId) {
+	public Product findById(Long productId) {
 		return productJpaRepository.findById(productId)
 			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
 	}

@@ -6,7 +6,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.codesquad.secondhand.annotation.IntegrationTest;
 import com.codesquad.secondhand.domain.category.service.CategoryService;
 import com.codesquad.secondhand.domain.image.service.ImageService;
 import com.codesquad.secondhand.domain.jwt.Jwt;
@@ -14,10 +13,10 @@ import com.codesquad.secondhand.domain.jwt.JwtProvider;
 import com.codesquad.secondhand.domain.member.service.MemberService;
 import com.codesquad.secondhand.domain.product.repository.ImageJpaRepository;
 import com.codesquad.secondhand.domain.product.service.ProductService;
+import com.codesquad.secondhand.domain.reaction.service.ReactionService;
 import com.codesquad.secondhand.redis.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@IntegrationTest
 public abstract class BaseControllerTest {
 
 	public static final long MEMBER_ID = 1L;
@@ -48,6 +47,9 @@ public abstract class BaseControllerTest {
 
 	@Autowired
 	public ImageJpaRepository imageJpaRepository;
+
+	@Autowired
+	public ReactionService reactionService;
 
 	public Jwt jwt;
 
