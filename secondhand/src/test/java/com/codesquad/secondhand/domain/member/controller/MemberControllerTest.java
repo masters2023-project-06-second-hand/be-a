@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
 import com.codesquad.secondhand.annotation.IntegrationTest;
+import com.codesquad.secondhand.domain.member.dto.request.AddRegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 
 @IntegrationTest
@@ -42,6 +43,19 @@ class MemberControllerTest extends BaseControllerTest {
 			.andExpect(status().isOk());
 
 		Assertions.assertThat(redisUtil.hasKeyBlackList(jwt.getAccessToken())).isTrue();
+	}
+
+	@Test
+	@DisplayName("회원의 아이디와 지역 아이디를 입력받아 회원의 지역을 추가 할 수 있다.")
+	void addRegion() throws Exception{
+		// when & then
+		AddRegionRequest requestDto = new AddRegionRequest(3L);
+		String request = objectMapper.writeValueAsString(requestDto);
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/members/1/regions")
+			.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(request))
+			.andExpect(status().isCreated());
 	}
 
 	private static SignupRequest DummySignUpRequest() {
