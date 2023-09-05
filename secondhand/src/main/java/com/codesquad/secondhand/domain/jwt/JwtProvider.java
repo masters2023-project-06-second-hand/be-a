@@ -68,12 +68,12 @@ public class JwtProvider {
 		return new Jwt(accessToken, refreshToken);
 	}
 
-	public Date getExpireDateAccessToken() {
+	private Date getExpireDateAccessToken() {
 		long expireTimeMils = 1000L * 60 * 60;
 		return new Date(System.currentTimeMillis() + expireTimeMils);
 	}
 
-	public Date getExpireDateRefreshToken() {
+	private Date getExpireDateRefreshToken() {
 		long expireTimeMils = 1000L * 60 * 60 * 24 * 60;
 		return new Date(System.currentTimeMillis() + expireTimeMils);
 	}

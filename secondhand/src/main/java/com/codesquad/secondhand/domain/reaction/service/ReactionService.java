@@ -49,7 +49,7 @@ public class ReactionService {
 			.map(reaction -> reaction.getProduct().getCategory())
 			.distinct()
 			.map(category -> CategoryResponse.of(category, false))
-			.collect(Collectors.toList());
+			.collect(Collectors.toUnmodifiableList());
 	}
 
 	private List<Reaction> findAllByMemberId(Long memberId) {
@@ -57,16 +57,13 @@ public class ReactionService {
 		return reactionQueryService.findAllByMember(member);
 	}
 
-	// 이거 findAll 메서드랑 형태가 매우 비슷함 파라미터는 다르고 어떻게 못할까?
-	// 위치도 여기가 맞는지 확인해봐야할듯
 	public List<ProductFindAllResponse> findAllOfReactedProducts(Long memberId, Long categoryId) {
 		List<Reaction> reactions = findAllByMemberId(memberId);
 		Stream<Reaction> reactionStream = reactions.stream();
 
-		// 이거 getProduct 부분 너무 더러운데 디미터 법칙 준수해야할듯
 		if (categoryId != null) {
 			reactionStream = reactionStream.filter(
-				reaction -> reaction.getProduct().getCategory().getId().equals(categoryId));
+				reaction -> reaction.isProductInCategory(categoryId));
 		}
 
 		return reactionStream.map(this::mapToProductFindAllResponse)

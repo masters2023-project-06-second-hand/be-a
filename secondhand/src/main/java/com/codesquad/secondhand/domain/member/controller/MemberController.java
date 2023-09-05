@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
-import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
+import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
 import com.codesquad.secondhand.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -61,15 +61,15 @@ public class MemberController {
 	}
 
 	@PutMapping("/members/{memberId}/regions")
-	public ResponseEntity setSelectedRegion(@PathVariable Long memberId, @RequestBody RegionRequest regionRequest) {
-		memberService.setSelectedRegion(memberId,regionRequest);
+	public ResponseEntity updateSelectedRegion(@PathVariable Long memberId, @RequestBody RegionRequest regionRequest) {
+		memberService.updateSelectedRegion(memberId, regionRequest);
 		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/members/{memberId}/regions")
-	public ResponseEntity<RegionResponse> getRegions(@PathVariable Long memberId) {
-		RegionResponse response = memberService.getRegion(memberId);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<MemberRegionResponse> getRegions(@PathVariable Long memberId) {
+		MemberRegionResponse memberRegionResponse = memberService.getRegion(memberId);
+		return ResponseEntity.ok(memberRegionResponse);
 	}
 
 }

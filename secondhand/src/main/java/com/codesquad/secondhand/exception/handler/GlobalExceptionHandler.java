@@ -3,6 +3,7 @@ package com.codesquad.secondhand.exception.handler;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,11 +45,9 @@ public class GlobalExceptionHandler {
 		MethodArgumentNotValidException e) {
 		List<ObjectError> objectErrors = e.getBindingResult().getAllErrors();
 
-		StringBuilder errorMessage = new StringBuilder();
-		for (ObjectError error : objectErrors) {
-			errorMessage.append(error.getDefaultMessage()).append(",");
-		}
-		errorMessage.deleteCharAt(errorMessage.length() - 1);
+		String errorMessage = objectErrors.stream()
+			.map(ObjectError::getDefaultMessage)
+			.collect(Collectors.joining(","));
 
 		Map<String, Object> responseMap = new LinkedHashMap<>();
 		responseMap.put("status", HttpStatus.BAD_REQUEST.toString());

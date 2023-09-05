@@ -23,17 +23,17 @@ public class ProductQueryRepository {
 		return query.select(product)
 			.from(product)
 			.where(
-				regionId(regionId),
-				categoryId(categoryId)
+				isProductRegionIdEquals(regionId),
+				isProductCategoryIdEquals(categoryId)
 			)
 			.fetch();
 	}
 
-	private BooleanExpression regionId(Long regionId) {
+	private BooleanExpression isProductRegionIdEquals(Long regionId) {
 		return product.region.id.eq(regionId);
 	}
 
-	private BooleanExpression categoryId(Long categoryId) {
+	private BooleanExpression isProductCategoryIdEquals(Long categoryId) {
 		if (categoryId == null) {
 			return null;
 		}

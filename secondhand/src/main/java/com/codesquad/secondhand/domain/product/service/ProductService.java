@@ -75,11 +75,11 @@ public class ProductService {
 	}
 
 	public List<ProductFindAllResponse> findAll(Long regionId, Long categoryId) {
+		//검증을 위한 메서드
+		regionQueryService.findById(regionId);
+		categoryQueryService.findById(categoryId);
 		return productQueryService.findAll(regionId, categoryId).stream()
-			.map(product -> {
-				long reactionCount = reactionQueryService.countByProduct(product);
-				return ProductFindAllResponse.of(product, reactionCount);
-			})
+			.map(this::mapToProductFindAllResponse)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
@@ -90,11 +90,13 @@ public class ProductService {
 		}
 		Member member = memberQueryService.findById(memberId);
 		return productQueryService.findSalesProduct(member, statusId).stream()
-			.map(product -> {
-				long reactionCount = reactionQueryService.countByProduct(product);
-				return ProductFindAllResponse.of(product, reactionCount);
-			})
+			.map(this::mapToProductFindAllResponse)
 			.collect(Collectors.toUnmodifiableList());
+	}
+
+	private ProductFindAllResponse mapToProductFindAllResponse(Product product) {
+		long reactionCount = reactionQueryService.countByProduct(product);
+		return ProductFindAllResponse.of(product, reactionCount);
 	}
 
 	@Transactional

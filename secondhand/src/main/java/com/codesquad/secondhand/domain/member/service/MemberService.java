@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
+import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
 import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
-import com.codesquad.secondhand.domain.member.dto.response.Regions;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
 import com.codesquad.secondhand.domain.member_region.service.MemberRegionQueryService;
@@ -56,10 +56,7 @@ public class MemberService {
 	public void addRegion(Long memberId, RegionRequest regionRequest) {
 		Member member = memberQueryService.findById(memberId);
 		Region region = regionQueryService.findById(regionRequest.getId());
-		MemberRegion memberRegion = MemberRegion.builder()
-			.member(member)
-			.region(region)
-			.build();
+		MemberRegion memberRegion = MemberRegion.of(member, region);
 		memberRegionQueryService.save(memberRegion);
 
 	}
@@ -73,23 +70,20 @@ public class MemberService {
 	}
 
 	@Transactional
-	public void setSelectedRegion(Long memberId, RegionRequest regionRequest) {
+	public void updateSelectedRegion(Long memberId, RegionRequest regionRequest) {
 		Member member = memberQueryService.findById(memberId);
 		Region region = regionQueryService.findById(regionRequest.getId());
 		memberRegionQueryService.findByMemberAndRegion(member, region);
 		member.addSelectedRegion(region.getId());
 	}
 
-	public RegionResponse getRegion(Long memberId) {
+	public MemberRegionResponse getRegion(Long memberId) {
 		Member member = memberQueryService.findById(memberId);
 		Long selectedRegionId = member.getSelectedRegion();
 		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
-		List<Regions> regions = memberRegions.stream()
-			.map(Regions::from)
+		List<RegionResponse> regions = memberRegions.stream()
+			.map(RegionResponse::from)
 			.collect(Collectors.toList());
-		return RegionResponse.builder()
-			.selectedRegionId(selectedRegionId)
-			.regions(regions)
-			.build();
+		return MemberRegionResponse.of(selectedRegionId, regions);
 	}
 }

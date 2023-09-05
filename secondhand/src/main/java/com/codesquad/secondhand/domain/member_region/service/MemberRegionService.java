@@ -29,6 +29,10 @@ public class MemberRegionService {
 		validateDuplicate(member, region);
 	}
 
+	/**
+	 * 사용자 지역 설정 최대 갯수가 2개이기 때문에 이미 설정된 지역이 2개이상 이면 예외를 발생시킨다.
+	 * @param member
+	 */
 	private void validateSize(Member member) {
 		int count = memberRegionQueryService.countByMember(member);
 		if (count == 2) {
