@@ -29,6 +29,13 @@ public class ReactionController {
 
 	private final ReactionService reactionService;
 
+	/**
+	 * 상품의 좋아요 등록 또는 취소시 사용되는 API
+	 * @param productId
+	 * @param reactionUpdateRequest
+	 * @param request
+	 * @return
+	 */
 	@PutMapping("/products/{productId}/likes")
 	public ResponseEntity update(@PathVariable Long productId, @RequestBody ReactionUpdateRequest reactionUpdateRequest,
 		HttpServletRequest request) {

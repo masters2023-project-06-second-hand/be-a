@@ -7,24 +7,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.category.entity.Category;
-import com.codesquad.secondhand.domain.category.service.CategoryService;
-import com.codesquad.secondhand.domain.image.service.ImageService;
+import com.codesquad.secondhand.domain.category.service.CategoryQueryService;
+import com.codesquad.secondhand.domain.image.service.ImageQueryService;
 import com.codesquad.secondhand.domain.member.entity.Member;
-import com.codesquad.secondhand.domain.member.service.MemberService;
+import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
 import com.codesquad.secondhand.domain.product.entity.Image;
 import com.codesquad.secondhand.domain.product.entity.Product;
-import com.codesquad.secondhand.domain.product.repository.ProductJpaRepository;
-import com.codesquad.secondhand.domain.product.repository.ProductQueryRepository;
 import com.codesquad.secondhand.domain.product.utils.ProductStatus;
-import com.codesquad.secondhand.domain.reaction.repository.ReactionJpaRepository;
+import com.codesquad.secondhand.domain.reaction.service.ReactionQueryService;
 import com.codesquad.secondhand.domain.region.entity.Region;
-import com.codesquad.secondhand.domain.region.service.RegionService;
-import com.codesquad.secondhand.exception.CustomRuntimeException;
-import com.codesquad.secondhand.exception.errorcode.ProductException;
+import com.codesquad.secondhand.domain.region.service.RegionQueryService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,61 +29,55 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class ProductService {
 
-	private final ProductJpaRepository productJpaRepository;
-	private final ProductQueryRepository productQueryRepository;
-	private final CategoryService categoryService;
-	private final RegionService regionService;
-	private final MemberService memberService;
-	private final ImageService imageService;
-	private final ReactionJpaRepository reactionJpaRepository;
+	private final ProductQueryService productQueryService;
+	private final CategoryQueryService categoryQueryService;
+	private final RegionQueryService regionQueryService;
+	private final MemberQueryService memberQueryService;
+	private final ImageQueryService imageQueryService;
+	private final ReactionQueryService reactionQueryService;
 
 	@Transactional
 	public Long save(ProductSaveAndUpdateRequest productSaveAndUpdateRequest, Long memberId) {
-		Category category = categoryService.findById(productSaveAndUpdateRequest.getCategoryId());
-		Region region = regionService.findById(productSaveAndUpdateRequest.getRegionId());
-		Member member = memberService.findById(memberId);
-		Image thumbnailImage = imageService.findById(productSaveAndUpdateRequest.getImagesId().get(0));
+		Category category = categoryQueryService.findById(productSaveAndUpdateRequest.getCategoryId());
+		Region region = regionQueryService.findById(productSaveAndUpdateRequest.getRegionId());
+		Member member = memberQueryService.findById(memberId);
+		Image thumbnailImage = imageQueryService.findById(productSaveAndUpdateRequest.getImagesId().get(0));
 		Product product = productSaveAndUpdateRequest.toEntity(category, region, member, thumbnailImage);
-		imageService.updateProductId(productSaveAndUpdateRequest.getImagesId(), product);
+		updateProductId(productSaveAndUpdateRequest.getImagesId(), product);
 
-		return productJpaRepository.save(product).getId();
+		return productQueryService.save(product);
 	}
 
 	public ProductDetailResponse findDetail(Long productId) {
-		return ProductDetailResponse.from(findById(productId));
+		return ProductDetailResponse.from(productQueryService.findById(productId));
 	}
 
 	@Transactional
 	public void update(Long productId, ProductSaveAndUpdateRequest productSaveAndUpdateRequest) {
-		Product product = findById(productId);
-		Category category = categoryService.findById(productSaveAndUpdateRequest.getCategoryId());
-		Region region = regionService.findById(productSaveAndUpdateRequest.getRegionId());
-		Image thumbnailImage = imageService.findById(productSaveAndUpdateRequest.getImagesId().get(0));
-		imageService.updateProductId(productSaveAndUpdateRequest.getImagesId(), product);
+		Product product = productQueryService.findById(productId);
+		Category category = categoryQueryService.findById(productSaveAndUpdateRequest.getCategoryId());
+		Region region = regionQueryService.findById(productSaveAndUpdateRequest.getRegionId());
+		Image thumbnailImage = imageQueryService.findById(productSaveAndUpdateRequest.getImagesId().get(0));
+		updateProductId(productSaveAndUpdateRequest.getImagesId(), product);
 		product.updateFromDto(productSaveAndUpdateRequest, category, region, thumbnailImage);
 	}
 
 	@Transactional
 	public void delete(Long productId) {
-		productJpaRepository.deleteById(productId);
+		productQueryService.deleteById(productId);
 	}
 
 	@Transactional
 	public void updateStatus(Long productId, ProductUpdateRequest productUpdateRequest) {
-		Product product = findById(productId);
+		Product product = productQueryService.findById(productId);
 		ProductStatus productStatus = ProductStatus.fromDescription(productUpdateRequest.getStatus());
 		product.changeStatus(productStatus.getCode());
 	}
 
-	public Product findById(Long productId) {
-		return productJpaRepository.findById(productId)
-			.orElseThrow(() -> new CustomRuntimeException(ProductException.NOT_FOUND_PRODUCT));
-	}
-
 	public List<ProductFindAllResponse> findAll(Long regionId, Long categoryId) {
-		return productQueryRepository.findAll(regionId, categoryId).stream()
+		return productQueryService.findAll(regionId, categoryId).stream()
 			.map(product -> {
-				long reactionCount = reactionJpaRepository.countByProduct(product);
+				long reactionCount = reactionQueryService.countByProduct(product);
 				return ProductFindAllResponse.of(product, reactionCount);
 			})
 			.collect(Collectors.toUnmodifiableList());
@@ -98,12 +88,19 @@ public class ProductService {
 		if (statusId != null) {
 			ProductStatus.fromCode(statusId);
 		}
-		Member member = memberService.findById(memberId);
-		return productQueryRepository.findSalesProduct(member, statusId).stream()
+		Member member = memberQueryService.findById(memberId);
+		return productQueryService.findSalesProduct(member, statusId).stream()
 			.map(product -> {
-				long reactionCount = reactionJpaRepository.countByProduct(product);
+				long reactionCount = reactionQueryService.countByProduct(product);
 				return ProductFindAllResponse.of(product, reactionCount);
 			})
 			.collect(Collectors.toUnmodifiableList());
+	}
+
+	@Transactional
+	public void updateProductId(List<Long> imagesId, Product product) {
+		imagesId.stream()
+			.map(imageId -> imageQueryService.findById(imageId))
+			.forEach(imageFromDb -> imageFromDb.updateProduct(product));
 	}
 }

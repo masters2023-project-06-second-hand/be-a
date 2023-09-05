@@ -23,7 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.codesquad.secondhand.domain.jwt.Jwt;
 import com.codesquad.secondhand.domain.jwt.JwtProvider;
 import com.codesquad.secondhand.domain.member.entity.Member;
-import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
+import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.domain.oauth.domain.OAuthAttributes;
 import com.codesquad.secondhand.domain.oauth.domain.UserProfile;
 import com.codesquad.secondhand.domain.token.entity.Token;
@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-	private final MemberJpaRepository memberJpaRepository;
+	private final MemberQueryService memberQueryService;
 	private final TokenJpaRepository tokenJpaRepository;
 	private final JwtProvider jwtProvider;
 
@@ -49,7 +49,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken)authentication;
 		String email = extractEmailFromToken(oauthToken);
 
-		Optional<Member> memberFromDb = memberJpaRepository.findByEmail(email);
+		Optional<Member> memberFromDb = memberQueryService.findByEmail(email);
 
 		if (memberFromDb.isPresent()) {
 			handleExistingMember(request, response, memberFromDb.get());
