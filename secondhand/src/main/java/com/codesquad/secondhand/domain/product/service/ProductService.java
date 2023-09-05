@@ -77,7 +77,9 @@ public class ProductService {
 	public List<ProductFindAllResponse> findAll(Long regionId, Long categoryId) {
 		//검증을 위한 메서드
 		regionQueryService.findById(regionId);
-		categoryQueryService.findById(categoryId);
+		if (categoryId != null) {
+			categoryQueryService.findById(categoryId);
+		}
 		return productQueryService.findAll(regionId, categoryId).stream()
 			.map(this::mapToProductFindAllResponse)
 			.collect(Collectors.toUnmodifiableList());

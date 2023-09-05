@@ -38,7 +38,7 @@ public class ProductController {
 
 	@PostMapping("/products")
 	public ResponseEntity<Map<String, Long>> save(
-		@RequestBody ProductSaveAndUpdateRequest productSaveAndUpdateRequest,
+		@Valid @RequestBody ProductSaveAndUpdateRequest productSaveAndUpdateRequest,
 		HttpServletRequest request) {
 		Long memberId = extractMemberId(request);
 		Long productId = productService.save(productSaveAndUpdateRequest, memberId);
