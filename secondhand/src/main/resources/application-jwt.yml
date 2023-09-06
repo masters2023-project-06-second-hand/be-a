@@ -1,3 +1,5 @@
 jwt:
   token:
     secret-key: ENC(oPSAVeWHmCr1pcq/34qs4cV9zLJ5yrt93IfuCYk9hQH/LjZN/b9ssKwrMJEfn2EqjW9sgDIINi8=)
+    sign-up:
+      secret-key: ENC(L1HYGcqj83flBfBqh1cTnCnpzetZpMuFfq4CpUma47ARR7B5BMuFHoxTfA32i7USM7ATGI2PAQt6ThSZHlpjyOMvj05tgcfG)

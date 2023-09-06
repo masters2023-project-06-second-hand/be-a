@@ -54,6 +54,6 @@ public abstract class BaseControllerTest {
 
 	@BeforeEach
 	void init() {
-		jwt = jwtProvider.createTokens(Map.of("memberId", MEMBER_ID, "email", TEST_EMAIL));
+		jwt = jwtProvider.createTokens(Map.of("memberId", MEMBER_ID));
 	}
 }

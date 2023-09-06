@@ -3,7 +3,7 @@ package com.codesquad.secondhand.domain.member.dto.request;
 import java.util.List;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotEmpty;
 
 import com.codesquad.secondhand.domain.member.entity.Member;
 
@@ -17,7 +17,7 @@ public class SignupRequest {
 	@NotBlank(message = "이름을 입력해 주세요.")
 	private String nickname;
 	private String profileImg;
-	@NotNull(message = "필수로 하나의 지역은 선택 해야 합니다.")
+	@NotEmpty(message = "필수로 하나의 지역은 선택 해야 합니다.")
 	private List<Long> regionsId;
 
 	@Builder

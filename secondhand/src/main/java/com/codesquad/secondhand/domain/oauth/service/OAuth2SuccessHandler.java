@@ -60,7 +60,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private String extractEmailFromToken(OAuth2AuthenticationToken oauthToken) {
 		String registrationId = oauthToken.getAuthorizedClientRegistrationId();
-		OAuth2User oAuth2User = (OAuth2User)oauthToken.getPrincipal();
+		OAuth2User oAuth2User = oauthToken.getPrincipal();
 		UserProfile userProfile = OAuthAttributes.extract(registrationId, oAuth2User.getAttributes());
 
 		log.debug("email : {}", userProfile.getEmail());
@@ -77,6 +77,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			.build();
 		log.debug("{}", token);
 
+		//이거 memberId로 지워짐? 지워지네 이거 확인하고 얘기하자
 		tokenJpaRepository.deleteByMemberId(member.getId());
 		tokenJpaRepository.save(token);
 		setResponseWithTokens(response, jwt);

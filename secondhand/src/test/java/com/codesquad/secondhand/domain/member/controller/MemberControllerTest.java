@@ -3,6 +3,7 @@ package com.codesquad.secondhand.domain.member.controller;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +23,13 @@ class MemberControllerTest extends BaseControllerTest {
 	@DisplayName("회원가입 요청시 회원가입이 가능하다.")
 	void signUp() throws Exception {
 		SignupRequest signupRequest = DummySignUpRequest();
+		jwt = jwtProvider.createSignUpToken(Map.of("email", TEST_EMAIL));
 
 		String request = objectMapper.writeValueAsString(signupRequest);
 
 		//when & then
 		mockMvc.perform(MockMvcRequestBuilders.post("/api/members/signup")
-				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getSignUpToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
 			.andExpect(status().isCreated());
