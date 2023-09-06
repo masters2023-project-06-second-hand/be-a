@@ -8,9 +8,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
-import com.codesquad.secondhand.annotation.IntegrationTest;
+import com.codesquad.secondhand.annotation.ControllerIntegrationTest;
 
-@IntegrationTest
+@ControllerIntegrationTest
 class CategoryControllerTest extends BaseControllerTest {
 
 	@Test

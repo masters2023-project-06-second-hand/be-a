@@ -13,9 +13,9 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
-import com.codesquad.secondhand.annotation.IntegrationTest;
+import com.codesquad.secondhand.annotation.ControllerIntegrationTest;
 
-@IntegrationTest
+@ControllerIntegrationTest
 class ImageControllerTest extends BaseControllerTest {
 
 	@Test
