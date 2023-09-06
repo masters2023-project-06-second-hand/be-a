@@ -16,5 +16,5 @@ import org.springframework.test.context.jdbc.Sql;
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Sql(scripts = {"classpath:schema.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-public @interface IntegrationTest {
+public @interface ControllerIntegrationTest {
 }

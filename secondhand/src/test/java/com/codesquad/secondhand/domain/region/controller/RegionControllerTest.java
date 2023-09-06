@@ -1,7 +1,6 @@
 package com.codesquad.secondhand.domain.region.controller;
 
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -10,9 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
-import com.codesquad.secondhand.annotation.IntegrationTest;
-import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
-@IntegrationTest
+import com.codesquad.secondhand.annotation.ControllerIntegrationTest;
+
+@ControllerIntegrationTest
 class RegionControllerTest extends BaseControllerTest {
 
 	@Test
@@ -22,8 +21,8 @@ class RegionControllerTest extends BaseControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/regions")
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON))
-				.andExpect(jsonPath("$", hasSize(5)))
-				.andExpect(status().isOk());
+			.andExpect(jsonPath("$", hasSize(5)))
+			.andExpect(status().isOk());
 	}
 
 	@Test
@@ -39,6 +38,5 @@ class RegionControllerTest extends BaseControllerTest {
 			.andExpect(jsonPath("$[0].name", is("서울 관악동"))) // 검색 결과에서 기대하는 객체의 name 값을 확인
 			.andExpect(status().isOk());
 	}
-
 
 }

@@ -13,12 +13,12 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
-import com.codesquad.secondhand.annotation.IntegrationTest;
+import com.codesquad.secondhand.annotation.ControllerIntegrationTest;
 import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateRequest;
 import com.codesquad.secondhand.domain.product.entity.Image;
 import com.codesquad.secondhand.domain.reaction.dto.ReactionUpdateRequest;
 
-@IntegrationTest
+@ControllerIntegrationTest
 class ReactionControllerTest extends BaseControllerTest {
 
 	@Test
