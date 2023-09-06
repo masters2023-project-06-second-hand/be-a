@@ -49,4 +49,12 @@ public class MemberRegion {
 				.build())
 			.collect(Collectors.toUnmodifiableList());
 	}
+
+	public static MemberRegion of(Member member, Region region) {
+		return MemberRegion.builder()
+			.member(member)
+			.region(region)
+			.build();
+	}
+
 }

@@ -20,16 +20,23 @@ public class JwtProvider {
 
 	@Value("${jwt.token.secret-key}")
 	private String signature;
+	@Value("${jwt.token.sign-up.secret-key}")
+	private String signUpSignature;
 	private byte[] secret;
 	private Key key;
+	private byte[] signUpSecret;
+	private Key signUpKey;
 
 	@PostConstruct
 	public void setSecretKey() {
 		secret = signature.getBytes();
 		key = Keys.hmacShaKeyFor(secret);
+
+		signUpSecret = signUpSignature.getBytes();
+		signUpKey = Keys.hmacShaKeyFor(signUpSecret);
 	}
 
-	public String createToken(Map<String, Object> claims, Date expireDate) {
+	private String createToken(Map<String, Object> claims, Date expireDate) {
 		long currentTimeMillis = System.currentTimeMillis();
 
 		Map<String, Object> modifiableClaims = new HashMap<>(claims);
@@ -44,9 +51,25 @@ public class JwtProvider {
 			.compact();
 	}
 
+	private String createSignUpToken(Map<String, Object> claims, Date expireDate) {
+		return Jwts.builder()
+			.setClaims(claims)
+			.setExpiration(expireDate)
+			.signWith(signUpKey)
+			.compact();
+	}
+
 	public Claims getClaims(String token) {
 		return Jwts.parserBuilder()
 			.setSigningKey(key)
+			.build()
+			.parseClaimsJws(token)
+			.getBody();
+	}
+
+	public Claims getClaimsFromSignUpToken(String token) {
+		return Jwts.parserBuilder()
+			.setSigningKey(signUpKey)
 			.build()
 			.parseClaimsJws(token)
 			.getBody();
@@ -59,7 +82,7 @@ public class JwtProvider {
 	}
 
 	public Jwt createSignUpToken(Map<String, Object> claims) {
-		String signUpToken = createToken(claims, getExpireDateAccessToken());
+		String signUpToken = createSignUpToken(claims, getExpireDateAccessToken());
 		return new Jwt(signUpToken);
 	}
 
@@ -68,12 +91,12 @@ public class JwtProvider {
 		return new Jwt(accessToken, refreshToken);
 	}
 
-	public Date getExpireDateAccessToken() {
+	private Date getExpireDateAccessToken() {
 		long expireTimeMils = 1000L * 60 * 60;
 		return new Date(System.currentTimeMillis() + expireTimeMils);
 	}
 
-	public Date getExpireDateRefreshToken() {
+	private Date getExpireDateRefreshToken() {
 		long expireTimeMils = 1000L * 60 * 60 * 24 * 60;
 		return new Date(System.currentTimeMillis() + expireTimeMils);
 	}

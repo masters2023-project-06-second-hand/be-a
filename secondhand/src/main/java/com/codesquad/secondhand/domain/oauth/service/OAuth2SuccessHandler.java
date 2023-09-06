@@ -23,7 +23,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.codesquad.secondhand.domain.jwt.Jwt;
 import com.codesquad.secondhand.domain.jwt.JwtProvider;
 import com.codesquad.secondhand.domain.member.entity.Member;
-import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
+import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.domain.oauth.domain.OAuthAttributes;
 import com.codesquad.secondhand.domain.oauth.domain.UserProfile;
 import com.codesquad.secondhand.domain.token.entity.Token;
@@ -38,7 +38,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-	private final MemberJpaRepository memberJpaRepository;
+	private final MemberQueryService memberQueryService;
 	private final TokenJpaRepository tokenJpaRepository;
 	private final JwtProvider jwtProvider;
 
@@ -49,7 +49,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		OAuth2AuthenticationToken oauthToken = (OAuth2AuthenticationToken)authentication;
 		String email = extractEmailFromToken(oauthToken);
 
-		Optional<Member> memberFromDb = memberJpaRepository.findByEmail(email);
+		Optional<Member> memberFromDb = memberQueryService.findByEmail(email);
 
 		if (memberFromDb.isPresent()) {
 			handleExistingMember(request, response, memberFromDb.get());
@@ -60,7 +60,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private String extractEmailFromToken(OAuth2AuthenticationToken oauthToken) {
 		String registrationId = oauthToken.getAuthorizedClientRegistrationId();
-		OAuth2User oAuth2User = (OAuth2User)oauthToken.getPrincipal();
+		OAuth2User oAuth2User = oauthToken.getPrincipal();
 		UserProfile userProfile = OAuthAttributes.extract(registrationId, oAuth2User.getAttributes());
 
 		log.debug("email : {}", userProfile.getEmail());
@@ -77,6 +77,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			.build();
 		log.debug("{}", token);
 
+		//이거 memberId로 지워짐? 지워지네 이거 확인하고 얘기하자
 		tokenJpaRepository.deleteByMemberId(member.getId());
 		tokenJpaRepository.save(token);
 		setResponseWithTokens(response, jwt);

@@ -9,14 +9,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
+import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
 import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
-import com.codesquad.secondhand.domain.member.dto.response.Regions;
 import com.codesquad.secondhand.domain.member.entity.Member;
-import com.codesquad.secondhand.domain.member.repository.MemberJpaRepository;
 import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
-import com.codesquad.secondhand.domain.member_region.service.MemberRegionService;
+import com.codesquad.secondhand.domain.member_region.service.MemberRegionQueryService;
 import com.codesquad.secondhand.domain.region.entity.Region;
-import com.codesquad.secondhand.domain.region.service.RegionService;
+import com.codesquad.secondhand.domain.region.service.RegionQueryService;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
 import com.codesquad.secondhand.exception.errorcode.MemberException;
 
@@ -26,29 +25,24 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
-	private final MemberJpaRepository memberJpaRepository;
-	private final RegionService regionService;
-	private final MemberRegionService memberRegionService;
+	private final MemberQueryService memberQueryService;
+	private final RegionQueryService regionQueryService;
+	private final MemberRegionQueryService memberRegionQueryService;
 	private final JwtService jwtService;
-
-	public Member findById(Long memberId) {
-		return memberJpaRepository.findById(memberId).orElseThrow(() -> new CustomRuntimeException(
-			MemberException.MEMBER_NOT_FOUND));
-	}
 
 	@Transactional
 	public void signUp(SignupRequest signupRequest, String email) {
 		validDuplicatedName(signupRequest.getNickname());
 		Member member = signupRequest.toEntity(email);
 
-		memberJpaRepository.save(member);
-		List<Region> regions = regionService.findByIds(signupRequest.getRegionsId());
+		memberQueryService.save(member);
+		List<Region> regions = regionQueryService.findByIds(signupRequest.getRegionsId());
 		List<MemberRegion> memberRegions = MemberRegion.of(member, regions);
-		memberRegionService.saveAll(memberRegions);
+		memberRegionQueryService.saveAll(memberRegions);
 	}
 
 	private void validDuplicatedName(String nickname) {
-		if (memberJpaRepository.existsByNickname(nickname)) {
+		if (memberQueryService.existsByNickname(nickname)) {
 			throw new CustomRuntimeException(MemberException.MEMBER_NICKNAME_EXIST);
 		}
 	}
@@ -60,42 +54,36 @@ public class MemberService {
 
 	@Transactional
 	public void addRegion(Long memberId, RegionRequest regionRequest) {
-		Member member = findById(memberId);
-		Region region = regionService.findById(regionRequest.getId());
-		MemberRegion memberRegion = MemberRegion.builder()
-			.member(member)
-			.region(region)
-			.build();
-		memberRegionService.save(memberRegion);
+		Member member = memberQueryService.findById(memberId);
+		Region region = regionQueryService.findById(regionRequest.getId());
+		MemberRegion memberRegion = MemberRegion.of(member, region);
+		memberRegionQueryService.save(memberRegion);
 
 	}
 
 	@Transactional
 	public void deleteRegion(Long memberId, RegionRequest regionRequest) {
-		Member member = findById(memberId);
-		Region region = regionService.findById(regionRequest.getId());
-		MemberRegion memberRegion = memberRegionService.findByMemberAndRegion(member,region);
-		memberRegionService.delete(memberRegion);
+		Member member = memberQueryService.findById(memberId);
+		Region region = regionQueryService.findById(regionRequest.getId());
+		MemberRegion memberRegion = memberRegionQueryService.findByMemberAndRegion(member, region);
+		memberRegionQueryService.delete(memberRegion);
 	}
 
 	@Transactional
-	public void setSelectedRegion(Long memberId, RegionRequest regionRequest) {
-		Member member = findById(memberId);
-		Region region = regionService.findById(regionRequest.getId());
-		memberRegionService.findByMemberAndRegion(member,region);
+	public void updateSelectedRegion(Long memberId, RegionRequest regionRequest) {
+		Member member = memberQueryService.findById(memberId);
+		Region region = regionQueryService.findById(regionRequest.getId());
+		memberRegionQueryService.findByMemberAndRegion(member, region);
 		member.addSelectedRegion(region.getId());
 	}
 
-	public RegionResponse getRegion(Long memberId) {
-		Member member = findById(memberId);
+	public MemberRegionResponse getRegion(Long memberId) {
+		Member member = memberQueryService.findById(memberId);
 		Long selectedRegionId = member.getSelectedRegion();
-		List<MemberRegion> memberRegions = memberRegionService.findAllMemberRegion(memberId);
-		List<Regions> regions = memberRegions.stream()
-			.map(Regions::from)
+		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
+		List<RegionResponse> regions = memberRegions.stream()
+			.map(RegionResponse::from)
 			.collect(Collectors.toList());
-		return RegionResponse.builder()
-			.selectedRegionId(selectedRegionId)
-			.regions(regions)
-			.build();
+		return MemberRegionResponse.of(selectedRegionId, regions);
 	}
 }

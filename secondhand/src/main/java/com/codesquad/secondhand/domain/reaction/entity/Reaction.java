@@ -38,4 +38,9 @@ public class Reaction {
 		this.product = product;
 		this.member = member;
 	}
+
+	public boolean isProductInCategory(Long categoryId) {
+		return product.getCategory().getId().equals(categoryId);
+	}
+
 }

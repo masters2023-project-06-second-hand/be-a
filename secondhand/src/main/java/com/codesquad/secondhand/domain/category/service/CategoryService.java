@@ -8,9 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.category.dto.response.CategoryResponse;
 import com.codesquad.secondhand.domain.category.entity.Category;
-import com.codesquad.secondhand.domain.category.repository.CategoryJpaRepository;
-import com.codesquad.secondhand.exception.CustomRuntimeException;
-import com.codesquad.secondhand.exception.errorcode.CategoryException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,17 +16,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class CategoryService {
 
-	private final CategoryJpaRepository categoryJpaRepository;
+	private final CategoryQueryService CategoryQueryService;
 
 	public List<CategoryResponse> findAll(Boolean includeImages) {
-		List<Category> categories = categoryJpaRepository.findAll();
+		List<Category> categories = CategoryQueryService.findAll();
 		return categories.stream()
 			.map(category -> CategoryResponse.of(category, includeImages))
 			.collect(Collectors.toUnmodifiableList());
 	}
 
-	public Category findById(Long categoryId) {
-		return categoryJpaRepository.findById(categoryId).orElseThrow(() -> new CustomRuntimeException(
-			CategoryException.CATEGORY_NOT_FOUND));
-	}
 }

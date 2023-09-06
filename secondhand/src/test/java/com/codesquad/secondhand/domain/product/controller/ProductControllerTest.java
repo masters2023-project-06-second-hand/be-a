@@ -43,7 +43,7 @@ class ProductControllerTest extends BaseControllerTest {
 	}
 
 	private void saveDummyImage(String image) {
-		imageJpaRepository.save(Image.builder().imgUrl(image).build());
+		imageQueryService.save(Image.builder().imgUrl(image).build());
 	}
 
 	@Test
@@ -144,6 +144,10 @@ class ProductControllerTest extends BaseControllerTest {
 		//1. 이미지 저장
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
+		saveDummyImage("imageTest3");
+		saveDummyImage("imageTest4");
+		saveDummyImage("imageTest5");
+		saveDummyImage("imageTest6");
 
 		//2. 상품 저장
 		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
@@ -151,11 +155,11 @@ class ProductControllerTest extends BaseControllerTest {
 		productService.save(productRequestCat1Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat2Reg1 = new ProductSaveAndUpdateRequest("상품명", 2L, 100000L, "상품내용",
-			1L, Arrays.asList(1L, 2L));
+			1L, Arrays.asList(3L, 4L));
 		productService.save(productRequestCat2Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
-			2L, Arrays.asList(1L, 2L));
+			2L, Arrays.asList(5L, 6L));
 		productService.save(productRequestCat1Reg2, MEMBER_ID);
 
 		//when & then
@@ -190,6 +194,10 @@ class ProductControllerTest extends BaseControllerTest {
 		//1. 이미지 저장
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
+		saveDummyImage("imageTest3");
+		saveDummyImage("imageTest4");
+		saveDummyImage("imageTest5");
+		saveDummyImage("imageTest6");
 
 		//2. 상품 저장
 		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
@@ -197,11 +205,11 @@ class ProductControllerTest extends BaseControllerTest {
 		productService.save(productRequestCat1Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat2Reg1 = new ProductSaveAndUpdateRequest("상품명", 2L, 100000L, "상품내용",
-			1L, Arrays.asList(1L, 2L));
+			1L, Arrays.asList(3L, 4L));
 		productService.save(productRequestCat2Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
-			2L, Arrays.asList(1L, 2L));
+			2L, Arrays.asList(5L, 6L));
 		productService.save(productRequestCat1Reg2, MEMBER_ID);
 
 		//when & then
@@ -235,6 +243,10 @@ class ProductControllerTest extends BaseControllerTest {
 		//1. 이미지 저장
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
+		saveDummyImage("imageTest3");
+		saveDummyImage("imageTest4");
+		saveDummyImage("imageTest5");
+		saveDummyImage("imageTest6");
 
 		//2. 상품 저장
 		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
@@ -242,11 +254,11 @@ class ProductControllerTest extends BaseControllerTest {
 		Long productId = productService.save(productRequestCat1Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat2Reg1 = new ProductSaveAndUpdateRequest("상품명", 2L, 100000L, "상품내용",
-			1L, Arrays.asList(1L, 2L));
+			1L, Arrays.asList(3L, 4L));
 		productService.save(productRequestCat2Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
-			2L, Arrays.asList(1L, 2L));
+			2L, Arrays.asList(5L, 6L));
 		productService.save(productRequestCat1Reg2, MEMBER_ID);
 
 		//2.1 위와다른 멤버가 작성한 상품 등록
@@ -290,6 +302,10 @@ class ProductControllerTest extends BaseControllerTest {
 		//1. 이미지 저장
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
+		saveDummyImage("imageTest3");
+		saveDummyImage("imageTest4");
+		saveDummyImage("imageTest5");
+		saveDummyImage("imageTest6");
 
 		//2. 상품 저장
 		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
@@ -297,11 +313,11 @@ class ProductControllerTest extends BaseControllerTest {
 		Long productId = productService.save(productRequestCat1Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat2Reg1 = new ProductSaveAndUpdateRequest("상품명", 2L, 100000L, "상품내용",
-			1L, Arrays.asList(1L, 2L));
+			1L, Arrays.asList(3L, 4L));
 		productService.save(productRequestCat2Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
-			2L, Arrays.asList(1L, 2L));
+			2L, Arrays.asList(5L, 6L));
 		productService.save(productRequestCat1Reg2, MEMBER_ID);
 
 		//3. 상품 상태 수정 (productId = 1 인 상품의 status 를 판매 완료로 바꾼다.)
@@ -338,6 +354,10 @@ class ProductControllerTest extends BaseControllerTest {
 		//1. 이미지 저장
 		saveDummyImage("imageTest1");
 		saveDummyImage("imageTest2");
+		saveDummyImage("imageTest3");
+		saveDummyImage("imageTest4");
+		saveDummyImage("imageTest5");
+		saveDummyImage("imageTest6");
 
 		//2. 상품 저장
 		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
@@ -345,11 +365,11 @@ class ProductControllerTest extends BaseControllerTest {
 		Long productId = productService.save(productRequestCat1Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat2Reg1 = new ProductSaveAndUpdateRequest("상품명", 2L, 100000L, "상품내용",
-			1L, Arrays.asList(1L, 2L));
+			1L, Arrays.asList(3L, 4L));
 		productService.save(productRequestCat2Reg1, MEMBER_ID);
 
 		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
-			2L, Arrays.asList(1L, 2L));
+			2L, Arrays.asList(5L, 6L));
 		productService.save(productRequestCat1Reg2, MEMBER_ID);
 
 		//3. 상품 상태 수정 (productId = 1 인 상품의 status 를 판매 완료로 바꾼다.)

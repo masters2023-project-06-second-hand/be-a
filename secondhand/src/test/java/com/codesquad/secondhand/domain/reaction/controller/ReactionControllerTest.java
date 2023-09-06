@@ -80,7 +80,7 @@ class ReactionControllerTest extends BaseControllerTest {
 	}
 
 	private void saveDummyImage(String image) {
-		imageJpaRepository.save(Image.builder().imgUrl(image).build());
+		imageQueryService.save(Image.builder().imgUrl(image).build());
 	}
 
 	@Test

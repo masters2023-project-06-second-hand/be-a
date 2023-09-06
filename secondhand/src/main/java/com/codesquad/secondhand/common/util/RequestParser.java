@@ -18,6 +18,7 @@ public class RequestParser {
 	}
 
 	public static String extractEmail(HttpServletRequest request) {
-		return String.valueOf(request.getAttribute(EMAIL).toString());
+		Object email = request.getAttribute(EMAIL);
+		return email != null ? email.toString() : null;
 	}
 }

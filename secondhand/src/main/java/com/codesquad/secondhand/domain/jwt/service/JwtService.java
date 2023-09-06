@@ -15,10 +15,12 @@ public class JwtService {
 	private final RedisUtil redisUtil;
 	private final TokenJpaRepository tokenJpaRepository;
 
+	@Transactional
 	public void deleteRefreshToken(Long memberId) {
 		tokenJpaRepository.deleteByMemberId(memberId);
 	}
 
+	@Transactional
 	public void setBlackList(String accessToken) {
 		redisUtil.setBlackList(accessToken, "accessToken", 60);
 	}

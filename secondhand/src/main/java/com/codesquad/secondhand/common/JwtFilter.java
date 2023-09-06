@@ -19,12 +19,12 @@ import org.springframework.util.PatternMatchUtils;
 
 import com.codesquad.secondhand.domain.jwt.JwtProvider;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
+import com.codesquad.secondhand.exception.errorcode.CustomException;
 import com.codesquad.secondhand.exception.errorcode.JwtException;
 import com.codesquad.secondhand.redis.util.RedisUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -34,11 +34,9 @@ public class JwtFilter implements Filter {
 	private static final String HEADER_AUTHORIZATION = "Authorization";
 	private static final String MEMBER_ID = "memberId";
 	private static final String[] whiteListUris = {
-		"/api/members/signup",
 		"/"
 	};
 	public static final String OPTIONS = "OPTIONS";
-
 	private final JwtProvider jwtProvider;
 	private final ObjectMapper objectMapper;
 	private final RedisUtil redisUtil;
@@ -54,15 +52,11 @@ public class JwtFilter implements Filter {
 		}
 
 		if (whiteListCheck(httpServletRequest.getRequestURI())) {
-			if (isSignupRequest(httpServletRequest)) {
-				handleSignupRequest(httpServletRequest, response);
-			}
-			chain.doFilter(request, response);
 			return;
 		}
 
 		if (!isContainToken(httpServletRequest)) {
-			sendJwtExceptionResponse(response, new MalformedJwtException(""));
+			sendJwtExceptionResponse(response, new CustomRuntimeException(JwtException.MISSING_HEADER_TOKEN));
 			return;
 		}
 
@@ -71,12 +65,45 @@ public class JwtFilter implements Filter {
 			return;
 		}
 
+		// 회원가입 토큰 핸들링
+		if (isSignupRequest(httpServletRequest)) {
+			try {
+				handleSignupRequest(httpServletRequest);
+				chain.doFilter(request, response);
+				//return 을 하는 이유는 return 하지 않으면 chain.doFilter를 호출하더라도 filter의 이후 로직이 실행된다.
+				return;
+			} catch (RuntimeException e) {
+				sendJwtExceptionResponse(response, e);
+				return;
+			}
+		}
+
 		try {
-			handleRequest(request, response, httpServletRequest);
+			handleRequest(request, httpServletRequest);
 			chain.doFilter(request, response);
 		} catch (RuntimeException e) {
 			sendJwtExceptionResponse(response, e);
 		}
+	}
+
+	private void handleSignupRequest(HttpServletRequest request) {
+		String token = extractAccessToken(request);
+		Claims claims = jwtProvider.getClaimsFromSignUpToken(token);
+		Object emailObj = claims.get("email");
+		if (emailObj == null) {
+			throw new CustomRuntimeException(JwtException.MALFORMED_SIGN_UP_TOKEN);
+		}
+		request.setAttribute("email", emailObj);
+	}
+
+	private void handleRequest(ServletRequest request, HttpServletRequest httpServletRequest) {
+		String token = extractAccessToken(httpServletRequest);
+		Claims claims = jwtProvider.getClaims(token);
+		Object memberIdObj = claims.get(MEMBER_ID);
+		if (memberIdObj == null) {
+			throw new CustomRuntimeException(JwtException.MALFORMED_JWT_EXCEPTION);
+		}
+		request.setAttribute(MEMBER_ID, memberIdObj);
 	}
 
 	private boolean whiteListCheck(String uri) {
@@ -92,47 +119,12 @@ public class JwtFilter implements Filter {
 		return "/api/members/signup".equals(request.getRequestURI());
 	}
 
-	private void handleSignupRequest(HttpServletRequest request, ServletResponse response) throws IOException {
-		if (!isContainToken(request)) {
-			sendJwtExceptionResponse(response, new MalformedJwtException(""));
-			return;
-		}
-
-		String token = extractAccessToken(request);
-		Claims claims = jwtProvider.getClaims(token);
-		Object email = claims.get("email");
-
-		if (email == null) {
-			sendJwtExceptionResponse(response, new MalformedJwtException(""));
-			return;
-		}
-
-		request.setAttribute("email", email);
-	}
-
-	private void handleRequest(ServletRequest request, ServletResponse response,
-		HttpServletRequest httpServletRequest) throws IOException {
-		String token = extractAccessToken(httpServletRequest);
-		Claims claims = jwtProvider.getClaims(token);
-		Long memberId = convertMemberIdToLong(claims);
-		if (memberId == null) {
-			sendJwtExceptionResponse(response, new MalformedJwtException(""));
-		}
-		request.setAttribute(MEMBER_ID, memberId);
-	}
-
-	private Long convertMemberIdToLong(Claims claims) {
-		Object memberIdObj = claims.get(MEMBER_ID);
-		Long memberId = Long.valueOf(String.valueOf(memberIdObj));
-		return memberId;
-	}
-
 	private void sendJwtExceptionResponse(ServletResponse response, RuntimeException e) throws IOException {
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		((HttpServletResponse)response).setStatus(HttpStatus.UNAUTHORIZED.value());
 
-		JwtException jwtException = JwtException.from(e);
+		CustomException jwtException = JwtException.from(e);
 
 		response.getWriter().write(
 			objectMapper.writeValueAsString(
