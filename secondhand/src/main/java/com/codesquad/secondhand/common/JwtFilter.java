@@ -52,6 +52,7 @@ public class JwtFilter implements Filter {
 		}
 
 		if (whiteListCheck(httpServletRequest.getRequestURI())) {
+			chain.doFilter(request, response);
 			return;
 		}
 
@@ -125,7 +126,6 @@ public class JwtFilter implements Filter {
 		((HttpServletResponse)response).setStatus(HttpStatus.UNAUTHORIZED.value());
 
 		CustomException jwtException = JwtException.from(e);
-
 		response.getWriter().write(
 			objectMapper.writeValueAsString(
 				new CustomRuntimeException(jwtException).sendError().getBody()
