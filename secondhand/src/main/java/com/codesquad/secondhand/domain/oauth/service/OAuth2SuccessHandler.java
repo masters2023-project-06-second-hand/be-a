@@ -77,7 +77,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 			.build();
 		log.debug("{}", token);
 
-		//이거 memberId로 지워짐? 지워지네 이거 확인하고 얘기하자
 		tokenJpaRepository.deleteByMemberId(member.getId());
 		tokenJpaRepository.save(token);
 		setResponseWithTokens(response, jwt);
