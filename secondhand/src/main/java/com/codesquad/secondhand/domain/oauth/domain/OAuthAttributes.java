@@ -6,11 +6,9 @@ import java.util.function.Function;
 
 public enum OAuthAttributes {
 
-	GOOGLE("google", (attributes) -> {
-		return new UserProfile(
-			(String)attributes.get("email")
-		);
-	}),
+	GOOGLE("google", (attributes) -> new UserProfile(
+		(String)attributes.get("email")
+	)),
 	NAVER("naver", (attributes) -> {
 		Map<String, Object> response = (Map<String, Object>)attributes.get("response");
 		return new UserProfile(
