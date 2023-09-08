@@ -18,7 +18,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.codesquad.secondhand.domain.jwt.Jwt;
 import com.codesquad.secondhand.domain.jwt.JwtProvider;
@@ -52,7 +51,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		Optional<Member> memberFromDb = memberQueryService.findByEmail(email);
 
 		if (memberFromDb.isPresent()) {
-			handleExistingMember(request, response, memberFromDb.get());
+			handleExistingMember(response, memberFromDb.get());
 		} else {
 			handleNewMember(response, email);
 		}
@@ -67,7 +66,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		return userProfile.getEmail();
 	}
 
-	private void handleExistingMember(HttpServletRequest request, HttpServletResponse response, Member member) throws
+	private void handleExistingMember(HttpServletResponse response, Member member) throws
 		IOException {
 		Jwt jwt = jwtProvider.createTokens(Collections.singletonMap("memberId", member.getId()));
 
@@ -81,10 +80,7 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		tokenJpaRepository.save(token);
 		setResponseWithTokens(response, jwt);
 
-		//todo 인디케이터로 할지 아니면 메인페이지로 할지
-		String targetUrl = UriComponentsBuilder.fromUriString("http://localhost:8080/test")
-			.build().toUriString();
-		getRedirectStrategy().sendRedirect(request, response, targetUrl);
+		sendMemberSuccessResponse(response, jwt, member);
 	}
 
 	private void setResponseWithTokens(HttpServletResponse response, Jwt jwt) {
@@ -96,10 +92,10 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private void handleNewMember(HttpServletResponse response, String email) throws IOException {
 		Jwt jwt = jwtProvider.createSignUpToken(Collections.singletonMap("email", email));
-		sendErrorResponse(response, jwt);
+		senMemberNotFoundResponse(response, jwt);
 	}
 
-	private void sendErrorResponse(HttpServletResponse response, Jwt jwt) throws IOException {
+	private void senMemberNotFoundResponse(HttpServletResponse response, Jwt jwt) throws IOException {
 		Map<String, String> messageMap = new HashMap<>();
 		messageMap.put("signupToken", jwt.getSignUpToken());
 		messageMap.put("error", "존재하지 않는 유저");
@@ -109,6 +105,19 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 		response.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
 		PrintWriter out = response.getWriter();
 		out.print(new ObjectMapper().writeValueAsString(errorResponse));
+		out.flush();
+	}
+
+	private void sendMemberSuccessResponse(HttpServletResponse response, Jwt jwt, Member member) throws IOException {
+		Map<String, String> messageMap = new HashMap<>();
+		messageMap.put("accessToken", jwt.getAccessToken());
+		messageMap.put("refreshToken", jwt.getRefreshToken());
+		messageMap.put("memberId", String.valueOf(member.getId()));
+
+		response.setContentType("application/json;charset=UTF-8");
+		response.setStatus(HttpStatus.OK.value());
+		PrintWriter out = response.getWriter();
+		out.print(new ObjectMapper().writeValueAsString(messageMap));
 		out.flush();
 	}
 }

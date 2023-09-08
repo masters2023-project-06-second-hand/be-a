@@ -6,13 +6,13 @@ spring:
           google:
             client-id: ENC(fMnOdqbWOBfDyU58jlhDT1LafIZwKmgcEYnQtjfOMnKKzdO9qM0c4aEn7Cz2rTqRIT8LzkHjNj9iwCQuz2N/YcCwJmE2RP2TAW/8pO9i23fJs4AIRoc7gw==)
             client-secret: ENC(7uCqxtFrPgvnDx/PPAprkWOWHW93m/eQrrpkRmn3ce0VjZKiUwxilNu9MrLf0Y7i)
-            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://localhost:5173/callback"
             scope: email
           naver:
             client-id: ENC(eYJSqGPubs3BbIUpkHgw5uvOVfQnUaj6vD26bb2znfY=)
             client-secret: ENC(HtJsXaepHIPZRu1XDV6cylqh0ZCH+DoU)
             authorization_grant_type: authorization_code
-            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+            redirect-uri: "http://localhost:5173/callback/naver"
             scope: email
             client-name: Naver
         provider:
