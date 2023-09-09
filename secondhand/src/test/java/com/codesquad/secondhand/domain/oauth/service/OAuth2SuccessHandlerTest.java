@@ -32,12 +32,6 @@ class OAuth2SuccessHandlerTest {
 	@Autowired
 	OAuth2SuccessHandler oAuth2SuccessHandler;
 
-	@Autowired
-	HttpServletResponse AutoWiredResponse;
-
-	@Autowired
-	HttpServletRequest AutoWiredRequest;
-
 	@Mock
 	HttpServletRequest request;
 
@@ -100,10 +94,10 @@ class OAuth2SuccessHandlerTest {
 	}
 
 	@Test
-	@DisplayName("google로 oauth 로그인시 DB에 저장된 email이라면, 메인 페이지로 redirect 시킨다.")
+	@DisplayName("google로 oauth 로그인시 DB에 저장된 email이라면, accessToken, refreshToken memberId를 포함한 응답을 보낸다.")
 	void onAuthenticationSuccessWithProviderGoogleWithExistEmail() throws IOException {
 		//given
-		Member mockMember = Member.builder().email("admin@gmail.com").build();
+		Member mockMember = Member.builder().id(1L).email("admin@gmail.com").build();
 		given(memberQueryService.findByEmail("admin@gmail.com")).willReturn(Optional.of(mockMember));
 
 		given(authentication.getAuthorizedClientRegistrationId()).willReturn("google");
@@ -113,12 +107,16 @@ class OAuth2SuccessHandlerTest {
 		doNothing().when(tokenJpaRepository).deleteByMemberId(anyLong());
 		given(tokenJpaRepository.save(any(Token.class))).willReturn(null);
 
+		StringWriter stringWriter = getStringWriter();
+
 		//when
-		oAuth2SuccessHandler.onAuthenticationSuccess(AutoWiredRequest, AutoWiredResponse, authentication);
+		oAuth2SuccessHandler.onAuthenticationSuccess(request, response, authentication);
 
 		//then
-		Assertions.assertThat(AutoWiredResponse.getHeader("Authorization")).contains("Bearer");
-		Assertions.assertThat(AutoWiredResponse.getHeader("location")).isNotBlank();
+		String responseBody = stringWriter.toString();
+		Assertions.assertThat(responseBody).contains("accessToken");
+		Assertions.assertThat(responseBody).contains("refreshToken");
+		Assertions.assertThat(responseBody).contains("\"memberId\":\"" + mockMember.getId() + "\"");
 
 	}
 }
