@@ -4,8 +4,10 @@ import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.codesquad.secondhand.amazon.S3Uploader;
 import com.codesquad.secondhand.domain.image.service.ImageQueryService;
 import com.codesquad.secondhand.domain.image.service.ImageService;
 import com.codesquad.secondhand.domain.jwt.Jwt;
@@ -40,6 +42,9 @@ public abstract class BaseControllerTest {
 
 	@Autowired
 	public ImageService imageService;
+
+	@MockBean
+	public S3Uploader s3Uploader;
 
 	@Autowired
 	public ImageQueryService imageQueryService;

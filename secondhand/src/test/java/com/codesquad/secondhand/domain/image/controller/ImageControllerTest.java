@@ -1,11 +1,13 @@
 package com.codesquad.secondhand.domain.image.controller;
 
+import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -17,6 +19,11 @@ import com.codesquad.secondhand.annotation.ControllerIntegrationTest;
 
 @ControllerIntegrationTest
 class ImageControllerTest extends BaseControllerTest {
+
+	@BeforeEach
+	void setUp() {
+		given(s3Uploader.upload(any(MockMultipartFile.class))).willReturn("imageUrl");
+	}
 
 	@Test
 	@DisplayName("상품 이미지를 S3에 업로드후 이미지 URL을 DB에 저장한다음 DB에 저장된 이미지의 ID를 응답으로 전송한다.")
