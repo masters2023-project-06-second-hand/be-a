@@ -47,6 +47,7 @@ public class MemberService {
 		}
 	}
 
+	@Transactional
 	public void signOut(String accessToken, Long memberId) {
 		jwtService.deleteRefreshToken(memberId);
 		jwtService.setBlackList(accessToken);
