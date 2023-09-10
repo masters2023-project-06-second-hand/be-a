@@ -10,6 +10,7 @@ DROP TABLE IF EXISTS chat_status;
 DROP TABLE IF EXISTS report;
 DROP TABLE IF EXISTS member;
 DROP TABLE IF EXISTS member_region;
+DROP TABLE IF EXISTS token;
 
 
 CREATE TABLE product
@@ -106,6 +107,12 @@ CREATE TABLE member_region
     member_id BIGINT NOT NULL
 );
 
+CREATE TABLE token
+(
+   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+   member_id BIGINT NOT NULL,
+   refresh_token VARCHAR(1000) NOT NULL
+);
 
 -- category
 INSERT INTO category (name, img_url)
