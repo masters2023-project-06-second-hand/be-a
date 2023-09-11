@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.product.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -26,10 +27,9 @@ public class Image {
 	private Long id;
 
 	@JsonIgnore
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_id")
 	private Product product;
-	
 	private String imgUrl;
 
 	@Builder
