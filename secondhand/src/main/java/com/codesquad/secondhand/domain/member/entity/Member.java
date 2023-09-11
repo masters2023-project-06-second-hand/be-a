@@ -8,10 +8,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
-import com.codesquad.secondhand.domain.token.entity.Token;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -31,8 +29,6 @@ public class Member {
 	private String profileImg;
 	@OneToMany(mappedBy = "member")
 	private List<MemberRegion> memberRegions = new ArrayList<>();
-	@OneToOne(mappedBy = "member")
-	private Token token;
 
 	@Builder
 	public Member(Long id, String nickname, String email, Long selectedRegion, String profileImg) {
@@ -43,7 +39,7 @@ public class Member {
 		this.profileImg = profileImg;
 	}
 
-	public void addSelectedRegion (Long selectedRegion) {
+	public void addSelectedRegion(Long selectedRegion) {
 		this.selectedRegion = selectedRegion;
 	}
 

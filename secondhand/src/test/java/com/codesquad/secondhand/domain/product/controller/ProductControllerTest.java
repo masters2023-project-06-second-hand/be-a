@@ -247,6 +247,8 @@ class ProductControllerTest extends BaseControllerTest {
 		saveDummyImage("imageTest4");
 		saveDummyImage("imageTest5");
 		saveDummyImage("imageTest6");
+		saveDummyImage("imageTest7");
+		saveDummyImage("imageTest8");
 
 		//2. 상품 저장
 		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
@@ -264,7 +266,7 @@ class ProductControllerTest extends BaseControllerTest {
 		//2.1 위와다른 멤버가 작성한 상품 등록
 		ProductSaveAndUpdateRequest productRequestWithDifferentMember = new ProductSaveAndUpdateRequest("상품명", 1L,
 			100000L, "상품내용",
-			2L, Arrays.asList(1L, 2L));
+			2L, Arrays.asList(7L, 8L));
 		productService.save(productRequestWithDifferentMember, 2L);
 
 		//3. 상품 상태 수정 (productId = 1 인 상품의 status 를 판매 완료로 바꾼다.)
