@@ -1,9 +1,6 @@
 package com.codesquad.secondhand.domain.region.service;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
-import static org.junit.jupiter.api.Assertions.*;
-
-import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,11 +23,11 @@ class RegionServiceTest {
 		// given
 		int requestPage = 5;
 		int requestOffset = 0;
-		Pageable pageable = PageRequest.of(requestOffset,requestPage);
+		Pageable pageable = PageRequest.of(requestOffset, requestPage);
 		// when
-		List<RegionSearchAndPageResponse> actual= regionService.getAllAndSearch(pageable,null);
+		RegionSearchAndPageResponse actual = regionService.getAllAndSearch(pageable, null);
 		// then
-		assertThat(actual.size()).isEqualTo(requestPage);
+		assertThat(actual.getRegionsResponses().size()).isEqualTo(requestPage);
 
 	}
 }

@@ -1,7 +1,5 @@
 package com.codesquad.secondhand.domain.region.service;
 
-
-
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.util.List;
@@ -11,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 
 import com.codesquad.secondhand.annotation.ServiceIntegrationTest;
 import com.codesquad.secondhand.domain.region.entity.Region;
@@ -49,11 +48,11 @@ class RegionQueryServiceTest {
 		// given
 		int requestPage = 5;
 		int requestOffset = 0;
-		Pageable pageable = PageRequest.of(requestOffset,requestPage);
+		Pageable pageable = PageRequest.of(requestOffset, requestPage);
 		// when
-		List<Region> actual = regionQueryService.findAll(pageable,null);
+		Slice<Region> actual = regionQueryService.findAll(pageable, null);
 		// then
-		assertThat(actual.size()).isEqualTo(requestPage);
+		assertThat(actual.getSize()).isEqualTo(requestPage);
 	}
 
 	@DisplayName("지역 이름으로 검색")
@@ -64,21 +63,21 @@ class RegionQueryServiceTest {
 		int requestPage = 5;
 		int requestOffset = 0;
 		String requestString = region.getName();
-		Pageable pageable = PageRequest.of(requestOffset,requestPage);
+		Pageable pageable = PageRequest.of(requestOffset, requestPage);
 		// when
-		List<Region> actual = regionQueryService.findAll(pageable,requestString);
+		Slice<Region> actual = regionQueryService.findAll(pageable, requestString);
 		// then
-		assertThat(actual.size()).isEqualTo(1);
-		assertThat(actual.get(0).getName()).isEqualTo(requestString);
+		assertThat(actual.getContent().size()).isEqualTo(1);
+		assertThat(actual.getContent().get(0).getName()).isEqualTo(requestString);
 	}
 
 	@DisplayName("아이디 리스트를 받아 Region에 매핑시킨다.")
 	@Test
 	void findByIds() {
 		// given
-		List<Long> request = List.of(1L,2L);
+		List<Long> request = List.of(1L, 2L);
 		// when
-		List<Region>actual = regionQueryService.findByIds(request);
+		List<Region> actual = regionQueryService.findByIds(request);
 		// then
 		assertThat(actual.size()).isEqualTo(2);
 		assertThat(actual.get(0).getId()).isEqualTo(request.get(0));
