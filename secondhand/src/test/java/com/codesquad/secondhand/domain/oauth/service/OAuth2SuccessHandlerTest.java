@@ -21,10 +21,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
+import com.codesquad.secondhand.domain.jwt.entity.Token;
+import com.codesquad.secondhand.domain.jwt.repository.TokenJpaRepository;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.service.MemberQueryService;
-import com.codesquad.secondhand.domain.token.entity.Token;
-import com.codesquad.secondhand.domain.token.repository.TokenJpaRepository;
 
 @SpringBootTest
 class OAuth2SuccessHandlerTest {

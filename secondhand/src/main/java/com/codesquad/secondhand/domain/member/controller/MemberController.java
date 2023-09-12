@@ -23,6 +23,7 @@ import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.dto.response.MemberInfoResponse;
 import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
+import com.codesquad.secondhand.domain.member.dto.response.SignUpResponse;
 import com.codesquad.secondhand.domain.member.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,11 @@ public class MemberController {
 	private final MemberService memberService;
 
 	@PostMapping("/members/signup")
-	public ResponseEntity signUp(@RequestBody @Valid SignupRequest signupRequest, HttpServletRequest request) {
+	public ResponseEntity<SignUpResponse> signUp(@RequestBody @Valid SignupRequest signupRequest,
+		HttpServletRequest request) {
 		String email = extractEmail(request);
-		memberService.signUp(signupRequest, email);
-		return ResponseEntity.status(HttpStatus.CREATED).build();
+		SignUpResponse signUpResponse = memberService.signUp(signupRequest, email);
+		return ResponseEntity.status(HttpStatus.CREATED).body(signUpResponse);
 	}
 
 	@PostMapping("/members/signout")

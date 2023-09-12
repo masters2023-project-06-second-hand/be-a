@@ -6,12 +6,14 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.codesquad.secondhand.domain.jwt.domain.Jwt;
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.dto.response.MemberInfoResponse;
 import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
 import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
+import com.codesquad.secondhand.domain.member.dto.response.SignUpResponse;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
 import com.codesquad.secondhand.domain.member_region.service.MemberRegionQueryService;
@@ -32,7 +34,7 @@ public class MemberService {
 	private final JwtService jwtService;
 
 	@Transactional
-	public void signUp(SignupRequest signupRequest, String email) {
+	public SignUpResponse signUp(SignupRequest signupRequest, String email) {
 		validDuplicatedName(signupRequest.getNickname());
 		Member member = signupRequest.toEntity(email);
 
@@ -40,6 +42,9 @@ public class MemberService {
 		List<Region> regions = regionQueryService.findByIds(signupRequest.getRegionsId());
 		List<MemberRegion> memberRegions = MemberRegion.of(member, regions);
 		memberRegionQueryService.saveAll(memberRegions);
+
+		Jwt jwt = jwtService.createTokens(member.getId());
+		return SignUpResponse.of(member, jwt);
 	}
 
 	private void validDuplicatedName(String nickname) {

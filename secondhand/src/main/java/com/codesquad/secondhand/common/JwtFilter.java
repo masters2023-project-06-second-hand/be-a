@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 
-import com.codesquad.secondhand.domain.jwt.JwtProvider;
+import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
 import com.codesquad.secondhand.exception.errorcode.CustomException;
 import com.codesquad.secondhand.exception.errorcode.JwtException;

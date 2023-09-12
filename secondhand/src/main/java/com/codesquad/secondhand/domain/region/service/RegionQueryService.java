@@ -34,7 +34,7 @@ public class RegionQueryService {
 
 	public List<Region> findByIds(List<Long> regionIds) {
 		return regionIds.stream()
-			.map(regionId -> findById(regionId))
+			.map(this::findById)
 			.collect(Collectors.toUnmodifiableList());
 	}
 }
