@@ -32,6 +32,9 @@ class MemberControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getSignUpToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
+			.andExpect(jsonPath("$.memberId").exists())
+			.andExpect(jsonPath("$.accessToken").exists())
+			.andExpect(jsonPath("$.refreshToken").exists())
 			.andExpect(status().isCreated());
 	}
 
