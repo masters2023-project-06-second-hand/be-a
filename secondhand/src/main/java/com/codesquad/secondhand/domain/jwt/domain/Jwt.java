@@ -1,4 +1,4 @@
-package com.codesquad.secondhand.domain.jwt;
+package com.codesquad.secondhand.domain.jwt.domain;
 
 import lombok.Getter;
 

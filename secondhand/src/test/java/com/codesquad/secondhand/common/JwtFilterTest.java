@@ -18,8 +18,8 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.codesquad.secondhand.domain.jwt.Jwt;
-import com.codesquad.secondhand.domain.jwt.JwtProvider;
+import com.codesquad.secondhand.domain.jwt.domain.Jwt;
+import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
 import com.codesquad.secondhand.exception.errorcode.JwtException;
 import com.codesquad.secondhand.redis.util.RedisUtil;
 
