@@ -2,12 +2,10 @@ package com.codesquad.secondhand.domain.oauth.service;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,9 +18,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.jwt.domain.Jwt;
-import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
-import com.codesquad.secondhand.domain.jwt.entity.Token;
-import com.codesquad.secondhand.domain.jwt.repository.TokenJpaRepository;
+import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.domain.oauth.domain.OAuthAttributes;
@@ -37,9 +33,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Component
 public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+	public static final boolean IS_SIGN_IN = true;
 	private final MemberQueryService memberQueryService;
-	private final TokenJpaRepository tokenJpaRepository;
-	private final JwtProvider jwtProvider;
+	private final JwtService jwtService;
 
 	@Override
 	@Transactional
@@ -68,34 +64,16 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
 
 	private void handleExistingMember(HttpServletResponse response, Member member) throws
 		IOException {
-		Jwt jwt = jwtProvider.createTokens(Collections.singletonMap("memberId", member.getId()));
-
-		Token token = Token.builder()
-			.member(member)
-			.refreshToken(jwt.getRefreshToken())
-			.build();
-		log.debug("{}", token);
-
-		tokenJpaRepository.deleteByMemberId(member.getId());
-		tokenJpaRepository.save(token);
-		setResponseWithTokens(response, jwt);
-
+		Jwt jwt = jwtService.createTokens(member.getId(), IS_SIGN_IN);
 		sendMemberSuccessResponse(response, jwt, member);
 	}
 
-	private void setResponseWithTokens(HttpServletResponse response, Jwt jwt) {
-		Cookie refreshTokenCookie = new Cookie("refreshToken", jwt.getRefreshToken());
-		refreshTokenCookie.setPath("/");
-		response.addCookie(refreshTokenCookie);
-		response.setHeader("Authorization", "Bearer " + jwt.getAccessToken());
-	}
-
 	private void handleNewMember(HttpServletResponse response, String email) throws IOException {
-		Jwt jwt = jwtProvider.createSignUpToken(Collections.singletonMap("email", email));
-		senMemberNotFoundResponse(response, jwt);
+		Jwt jwt = jwtService.createSignUpToken(email);
+		sendMemberNotFoundResponse(response, jwt);
 	}
 
-	private void senMemberNotFoundResponse(HttpServletResponse response, Jwt jwt) throws IOException {
+	private void sendMemberNotFoundResponse(HttpServletResponse response, Jwt jwt) throws IOException {
 		Map<String, String> messageMap = new HashMap<>();
 		messageMap.put("signupToken", jwt.getSignUpToken());
 		messageMap.put("error", "존재하지 않는 유저");
