@@ -1,6 +1,6 @@
 package com.codesquad.secondhand.domain.jwt.service;
 
-import java.util.Map;
+import java.util.Collections;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,15 +37,23 @@ public class JwtService {
 	/**
 	 * memberId 를 받아 accessToken 및 refreshToken 을 생성후
 	 * memberId 와 refreshToken 을 db에 저장한다.
+	 * createTokens 메서드는 로그인, 회원가입때 모두 사용된다. 따라서 isSignIn을 통해 분기처리를 해줬다.
 	 * @param memberId
 	 * @return Jwt
 	 */
 	@Transactional
-	public Jwt createTokens(Long memberId) {
-		Jwt jwt = jwtProvider.createTokens(Map.of("memberId", memberId));
+	public Jwt createTokens(Long memberId, Boolean isSignIn) {
+		Jwt jwt = jwtProvider.createTokens(Collections.singletonMap("memberId", memberId));
 		Member member = memberQueryService.findById(memberId);
 		Token token = Token.of(member, jwt);
+		if (isSignIn) {
+			tokenJpaRepository.deleteByMemberId(memberId);
+		}
 		tokenJpaRepository.save(token);
 		return jwt;
+	}
+
+	public Jwt createSignUpToken(String email) {
+		return jwtProvider.createSignUpToken(Collections.singletonMap("email", email));
 	}
 }

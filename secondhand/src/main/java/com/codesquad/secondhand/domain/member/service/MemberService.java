@@ -28,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional(readOnly = true)
 public class MemberService {
+	public static final boolean IS_SIGN_IN = false;
 	private final MemberQueryService memberQueryService;
 	private final RegionQueryService regionQueryService;
 	private final MemberRegionQueryService memberRegionQueryService;
@@ -43,7 +44,7 @@ public class MemberService {
 		List<MemberRegion> memberRegions = MemberRegion.of(member, regions);
 		memberRegionQueryService.saveAll(memberRegions);
 
-		Jwt jwt = jwtService.createTokens(member.getId());
+		Jwt jwt = jwtService.createTokens(member.getId(), IS_SIGN_IN);
 		return SignUpResponse.of(member, jwt);
 	}
 
