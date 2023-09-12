@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
+import com.codesquad.secondhand.domain.member.dto.response.MemberInfoResponse;
 import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
 import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
 import com.codesquad.secondhand.domain.member.entity.Member;
@@ -86,5 +87,10 @@ public class MemberService {
 			.map(RegionResponse::from)
 			.collect(Collectors.toList());
 		return MemberRegionResponse.of(selectedRegionId, regions);
+	}
+
+	public MemberInfoResponse getMemberInfo(Long memberId) {
+		Member member = memberQueryService.findById(memberId);
+		return MemberInfoResponse.from(member);
 	}
 }
