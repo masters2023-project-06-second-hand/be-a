@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.codesquad.secondhand.domain.jwt.domain.Jwt;
 import com.codesquad.secondhand.domain.member.entity.Member;
 
 import lombok.AccessLevel;
@@ -33,5 +34,12 @@ public class Token {
 		this.id = id;
 		this.member = member;
 		this.refreshToken = refreshToken;
+	}
+
+	public static Token of(Member member, Jwt jwt) {
+		return Token.builder()
+			.member(member)
+			.refreshToken(jwt.getRefreshToken())
+			.build();
 	}
 }
