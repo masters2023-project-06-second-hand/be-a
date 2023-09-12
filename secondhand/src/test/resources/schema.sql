@@ -154,7 +154,7 @@ VALUES ('서울 강남동'),
        ('서울 도봉동');
 
 -- member
-INSERT INTO member (nickname, email, selected_region)
-VALUES ('김영희', 'younghee.kim@email.com', 1),
-       ('이철수', 'cheolsoo.lee@email.com', 2),
-       ('박지선', 'jiseon.park@email.com', 3);
+INSERT INTO member (nickname, email, selected_region,profile_img)
+VALUES ('김영희', 'younghee.kim@email.com', 1,'img1.png'),
+       ('이철수', 'cheolsoo.lee@email.com', 2,'img2.png'),
+       ('박지선', 'jiseon.park@email.com', 3,'img3.png');
