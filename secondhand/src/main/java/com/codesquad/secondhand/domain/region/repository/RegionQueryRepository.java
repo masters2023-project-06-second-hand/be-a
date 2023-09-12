@@ -5,6 +5,8 @@ import static com.codesquad.secondhand.domain.region.entity.QRegion.*;
 import java.util.List;
 
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import com.codesquad.secondhand.domain.region.entity.Region;
@@ -20,13 +22,21 @@ public class RegionQueryRepository {
 
 	private final JPAQueryFactory query;
 
-	public List<Region> findAll(Pageable pageable, String word) {
+	public Slice<Region> findAll(Pageable pageable, String word) {
 		JPAQuery<Region> sql = query.select(region)
 			.from(region)
 			.where(isRegionNameContains(word))
 			.offset(pageable.getOffset())
-			.limit(pageable.getPageSize());
-		return sql.fetch();
+			.limit(pageable.getPageSize() + 1);
+
+		List<Region> results = sql.fetch();
+		boolean hasNext = results.size() > pageable.getPageSize();
+
+		if (hasNext) {
+			results.remove(results.size() - 1);
+		}
+
+		return new SliceImpl<>(results, pageable, hasNext);
 	}
 
 	private BooleanExpression isRegionNameContains(String word) {
