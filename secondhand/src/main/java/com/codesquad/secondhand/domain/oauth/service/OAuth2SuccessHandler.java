@@ -19,14 +19,14 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.codesquad.secondhand.domain.jwt.Jwt;
-import com.codesquad.secondhand.domain.jwt.JwtProvider;
+import com.codesquad.secondhand.domain.jwt.domain.Jwt;
+import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
+import com.codesquad.secondhand.domain.jwt.entity.Token;
+import com.codesquad.secondhand.domain.jwt.repository.TokenJpaRepository;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.domain.oauth.domain.OAuthAttributes;
 import com.codesquad.secondhand.domain.oauth.domain.UserProfile;
-import com.codesquad.secondhand.domain.token.entity.Token;
-import com.codesquad.secondhand.domain.token.repository.TokenJpaRepository;
 import com.codesquad.secondhand.exception.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

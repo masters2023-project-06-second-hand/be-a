@@ -1,8 +1,8 @@
-package com.codesquad.secondhand.domain.token.repository;
+package com.codesquad.secondhand.domain.jwt.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.codesquad.secondhand.domain.token.entity.Token;
+import com.codesquad.secondhand.domain.jwt.entity.Token;
 
 public interface TokenJpaRepository extends JpaRepository<Token, Long> {
 

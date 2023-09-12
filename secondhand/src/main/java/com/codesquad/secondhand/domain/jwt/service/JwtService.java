@@ -3,7 +3,7 @@ package com.codesquad.secondhand.domain.jwt.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.codesquad.secondhand.domain.token.repository.TokenJpaRepository;
+import com.codesquad.secondhand.domain.jwt.repository.TokenJpaRepository;
 import com.codesquad.secondhand.redis.util.RedisUtil;
 
 import lombok.RequiredArgsConstructor;

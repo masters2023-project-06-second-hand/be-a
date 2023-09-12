@@ -1,4 +1,4 @@
-package com.codesquad.secondhand.domain.token.entity;
+package com.codesquad.secondhand.domain.jwt.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
