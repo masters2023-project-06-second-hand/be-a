@@ -44,4 +44,11 @@ public class Reaction {
 		return product.getCategory().getId().equals(categoryId);
 	}
 
+	public static Reaction of(Product product, Member member) {
+		return Reaction.builder()
+			.product(product)
+			.member(member)
+			.build();
+	}
+
 }

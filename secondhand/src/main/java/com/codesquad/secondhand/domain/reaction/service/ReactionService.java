@@ -32,11 +32,8 @@ public class ReactionService {
 		Member member = memberQueryService.findById(memberId);
 		Product product = productQueryService.findById(productId);
 
-		if (reactionUpdateRequest.getIsLiked()) {
-			Reaction reaction = Reaction.builder()
-				.member(member)
-				.product(product)
-				.build();
+		if (reactionUpdateRequest.isLiked()) {
+			Reaction reaction = Reaction.of(product, member);
 			reactionQueryService.save(reaction);
 			return;
 		}
