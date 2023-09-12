@@ -21,7 +21,7 @@ class RegionControllerTest extends BaseControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/regions")
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$", hasSize(5)))
+			.andExpect(jsonPath("$.regionsResponses", hasSize(5)))
 			.andExpect(status().isOk());
 	}
 
@@ -34,8 +34,8 @@ class RegionControllerTest extends BaseControllerTest {
 				.param("word", word)
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON))
-			.andExpect(jsonPath("$", hasSize(1)))
-			.andExpect(jsonPath("$[0].name", is("서울 관악동"))) // 검색 결과에서 기대하는 객체의 name 값을 확인
+			.andExpect(jsonPath("$.regionsResponses", hasSize(1)))
+			.andExpect(jsonPath("$.regionsResponses[0].name", is("서울 관악동"))) // 검색 결과에서 기대하는 객체의 name 값을 확인
 			.andExpect(status().isOk());
 	}
 

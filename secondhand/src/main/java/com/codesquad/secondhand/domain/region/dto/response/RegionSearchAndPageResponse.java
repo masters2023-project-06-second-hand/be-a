@@ -1,20 +1,15 @@
 package com.codesquad.secondhand.domain.region.dto.response;
 
-import com.codesquad.secondhand.domain.region.entity.Region;
+import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class RegionSearchAndPageResponse {
-	private Long id;
-	private String name;
+	private Boolean hasNext;
+	private int page;
+	private List<RegionsResponse> regionsResponses;
 
-	public RegionSearchAndPageResponse(Long id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	public static RegionSearchAndPageResponse from(Region region) {
-		return new RegionSearchAndPageResponse(region.getId(), region.getName());
-	}
 }
