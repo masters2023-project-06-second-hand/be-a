@@ -236,6 +236,56 @@ class ProductControllerTest extends BaseControllerTest {
 	}
 
 	@Test
+	@DisplayName("비회원이 카데고리별 상품 목록 조회시 queryString인 regionId 가 2더라도 regionId가 1인 특정 카테고리에 해당하는 모든 상품을 조회한다.")
+	void findAllWithNoAccessToken() throws Exception {
+		// Given
+
+		//1. 이미지 저장
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+		saveDummyImage("imageTest3");
+		saveDummyImage("imageTest4");
+		saveDummyImage("imageTest5");
+		saveDummyImage("imageTest6");
+
+		//2. 상품 저장
+		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
+			1L, Arrays.asList(1L, 2L));
+		productService.save(productRequestCat1Reg1, MEMBER_ID);
+
+		ProductSaveAndUpdateRequest secondProductRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L,
+			"상품내용",
+			1L, Arrays.asList(3L, 4L));
+		productService.save(secondProductRequestCat1Reg1, MEMBER_ID);
+
+		ProductSaveAndUpdateRequest productRequestCat1Reg2 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
+			2L, Arrays.asList(5L, 6L));
+		productService.save(productRequestCat1Reg2, MEMBER_ID);
+
+		//when & then
+		MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/api/products")
+				.param("regionId", "2")
+				.param("categoryId", "1")
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$[0].id").exists())
+			.andExpect(jsonPath("$[0].writerId").exists())
+			.andExpect(jsonPath("$[0].thumbnailUrl").exists())
+			.andExpect(jsonPath("$[0].name").exists())
+			.andExpect(jsonPath("$[0].region").exists())
+			.andExpect(jsonPath("$[0].createdAt").exists())
+			.andExpect(jsonPath("$[0].status").exists())
+			.andExpect(jsonPath("$[0].price").exists())
+			.andExpect(jsonPath("$[0].likeCount").exists())
+			.andExpect(jsonPath("$[0].chattingCount").exists())
+			.andReturn();
+
+		String responseBody = result.getResponse().getContentAsString();
+		JSONArray jsonArray = new JSONArray(responseBody);
+		Assertions.assertThat(jsonArray.length()).isEqualTo(2);
+	}
+
+	@Test
 	@DisplayName("상품 판매 내역 조회 요청시 statusId = 0 또는 1 이면 특정 회원이 판매중 또는 예약중인 상품만을 응답에 포함한다.")
 	void findSalesProductsWithSaleOrReservedStatus() throws Exception {
 		// Given
