@@ -1,6 +1,8 @@
 package com.codesquad.secondhand.common.filter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.util.PatternMatchUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
@@ -26,10 +27,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Component
 public abstract class CommonFilter extends OncePerRequestFilter {
 
-	protected static final String[] whiteListUris = {
-		"/",
-		"/api/products"
-	};
+	private static final List<WhiteListUri> whiteListUris = List.of(
+		new WhiteListUri("^/api/products/[0-9]*$", Set.of("GET")),
+		new WhiteListUri("^/api/products/stat$", Set.of("GET")),
+		new WhiteListUri("^/api/products$", Set.of("GET")),
+		new WhiteListUri("^/api/categories$", Set.of("GET")),
+		new WhiteListUri("^/api/oauth2/token$", Set.of("POST"))
+	);
+
 	protected JwtProvider jwtProvider;
 	protected ObjectMapper objectMapper;
 
@@ -39,22 +44,12 @@ public abstract class CommonFilter extends OncePerRequestFilter {
 		this.objectMapper = objectMapper;
 	}
 
-	/**
-	 * 비회원은 전체 카테고리별 전체 상품 조회 요청이 가능하기 떄문에 해당 url 을 whiteList로 등록한다.
-	 * 요청 url이 /api/products 인경우 HTTPMETHOD 가 GET 인 경우인지 한번더 확인했다.
-	 * 위처럼 한 이유는 상품 수정의 url 또한 /api/products (PUT) 이기 떄문이다.
-	 *
-	 * @param request
-	 * @return
-	 */
 	protected boolean whiteListCheck(HttpServletRequest request) {
 		String uri = request.getRequestURI();
-		boolean matches = PatternMatchUtils.simpleMatch(whiteListUris, uri);
+		String method = request.getMethod();
 
-		if (matches && uri.startsWith("/api/products")) {
-			return request.getMethod().equals("GET");
-		}
-		return matches;
+		return whiteListUris.stream()
+			.anyMatch(entry -> entry.matches(uri, method));
 	}
 
 	protected boolean isSignupRequest(HttpServletRequest request) {

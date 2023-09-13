@@ -65,13 +65,13 @@ class JwtFilterTest {
 	public void doFilterWithWhiteLabelUri() throws Exception {
 		// given
 		given(request.getMethod()).willReturn("GET");
-		given(request.getRequestURI()).willReturn("/");
+		given(request.getRequestURI()).willReturn("/api/products/1");
 
 		// when
 		jwtFilter.doFilterInternal(request, response, filterChain);
 
 		// then
-		verify(request, times(1)).getMethod();
+		verify(request, times(2)).getMethod();
 		verify(request, times(1)).getRequestURI();
 		verifyNoMoreInteractions(request);
 	}
