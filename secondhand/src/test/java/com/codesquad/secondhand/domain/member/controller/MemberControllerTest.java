@@ -13,8 +13,11 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.codesquad.secondhand.BaseControllerTest;
 import com.codesquad.secondhand.annotation.ControllerIntegrationTest;
+import com.codesquad.secondhand.domain.jwt.dto.request.ReissueTokenRequest;
+import com.codesquad.secondhand.domain.jwt.entity.Token;
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
+import com.codesquad.secondhand.domain.member.entity.Member;
 
 @ControllerIntegrationTest
 class MemberControllerTest extends BaseControllerTest {
@@ -136,5 +139,25 @@ class MemberControllerTest extends BaseControllerTest {
 			.andExpect(jsonPath("$.nickname").exists())
 			.andExpect(jsonPath("$.profileImg").exists())
 			.andExpect(status().isOk());
+	}
+
+	@Test
+	@DisplayName("토큰을 재 요청 한다.")
+	void reissueToken() throws Exception {
+		// given
+		Token token = Token.builder()
+			.member(Member.builder().id(1L).build())
+			.refreshToken("123")
+			.build();
+		jwtQueryService.save(token);
+		ReissueTokenRequest requestDto = new ReissueTokenRequest("123");
+		String request = objectMapper.writeValueAsString(requestDto);
+		// when & then
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/oauth2/token")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(request))
+			.andExpect(jsonPath("$.accessToken").exists())
+			.andExpect(status().isOk());
+
 	}
 }
