@@ -73,7 +73,10 @@ public class ProductController {
 
 	@GetMapping("/products")
 	public ResponseEntity<List<ProductFindAllResponse>> findAll(@RequestParam Long regionId,
-		@RequestParam(required = false) Long categoryId) {
+		@RequestParam(required = false) Long categoryId, HttpServletRequest request) {
+		if (request.getAttribute("role") != null && request.getAttribute("role").equals("guest")) {
+			regionId = 1L;
+		}
 		return ResponseEntity.ok().body(productService.findAll(regionId, categoryId));
 	}
 
