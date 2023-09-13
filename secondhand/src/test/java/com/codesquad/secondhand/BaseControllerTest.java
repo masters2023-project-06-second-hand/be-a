@@ -12,6 +12,8 @@ import com.codesquad.secondhand.domain.image.service.ImageQueryService;
 import com.codesquad.secondhand.domain.image.service.ImageService;
 import com.codesquad.secondhand.domain.jwt.domain.Jwt;
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
+import com.codesquad.secondhand.domain.jwt.service.JwtQueryService;
+import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.service.MemberService;
 import com.codesquad.secondhand.domain.product.service.ProductService;
 import com.codesquad.secondhand.domain.reaction.service.ReactionService;
@@ -51,6 +53,12 @@ public abstract class BaseControllerTest {
 
 	@Autowired
 	public ReactionService reactionService;
+
+	@Autowired
+	public JwtService jwtService;
+
+	@Autowired
+	public JwtQueryService jwtQueryService;
 
 	public Jwt jwt;
 

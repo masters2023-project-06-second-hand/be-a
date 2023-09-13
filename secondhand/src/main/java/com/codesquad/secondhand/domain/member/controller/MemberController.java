@@ -19,6 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.codesquad.secondhand.domain.jwt.dto.request.ReissueTokenRequest;
+import com.codesquad.secondhand.domain.jwt.dto.response.ReissueTokenResponse;
+import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.dto.response.MemberInfoResponse;
@@ -34,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 public class MemberController {
 
 	private final MemberService memberService;
+	private final JwtService jwtService;
 
 	@PostMapping("/members/signup")
 	public ResponseEntity<SignUpResponse> signUp(@RequestBody @Valid SignupRequest signupRequest,
@@ -79,6 +83,11 @@ public class MemberController {
 	@GetMapping("/members/{memberId}")
 	public ResponseEntity<MemberInfoResponse> getMemberInfo(@PathVariable Long memberId) {
 		return ResponseEntity.ok().body(memberService.getMemberInfo(memberId));
+	}
+
+	@PostMapping("/oauth2/token")
+	public ResponseEntity<ReissueTokenResponse> reissueToken(@RequestBody ReissueTokenRequest reissueTokenRequest) {
+		return ResponseEntity.ok().body(jwtService.ReissueToken(reissueTokenRequest));
 	}
 
 }

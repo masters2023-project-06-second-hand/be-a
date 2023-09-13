@@ -14,11 +14,10 @@ public enum JwtException implements CustomException {
 	MALFORMED_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, "잘못된 형식의 토큰입니다."),
 	SIGNATURE_EXCEPTION(HttpStatus.UNAUTHORIZED, "올바른 키가 아닙니다."),
 	ILLEGAL_ARGUMENT_EXCEPTION(HttpStatus.UNAUTHORIZED, "잘못된 값이 들어왔습니다."),
-	REFRESH_TOKEN_NOT_FOUND_EXCEPTION(HttpStatus.UNAUTHORIZED, "DB에 Refresh token이 존재하지 않습니다."),
+	REFRESH_TOKEN_NOT_FOUND_EXCEPTION(HttpStatus.BAD_REQUEST, "DB에 Refresh token이 존재하지 않습니다."),
 	BLACKLISTED_JWT_EXCEPTION(HttpStatus.UNAUTHORIZED, "블랙리스트에 등록된 토큰입니다."),
 	MALFORMED_SIGN_UP_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 형태의 SignUpToken 입니다."),
 	MISSING_HEADER_TOKEN(HttpStatus.UNAUTHORIZED, "Header에 토큰이 존재하지 않습니다.");
-
 	private final HttpStatus httpStatus;
 	private final String message;
 
