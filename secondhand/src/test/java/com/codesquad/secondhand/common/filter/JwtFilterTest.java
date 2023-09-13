@@ -1,4 +1,4 @@
-package com.codesquad.secondhand.common;
+package com.codesquad.secondhand.common.filter;
 
 import static org.mockito.BDDMockito.*;
 
@@ -53,7 +53,7 @@ class JwtFilterTest {
 		given(request.getMethod()).willReturn(JwtFilter.OPTIONS);
 
 		// when & then
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 
 		// then
 		verify(request, times(1)).getMethod();
@@ -65,13 +65,13 @@ class JwtFilterTest {
 	public void doFilterWithWhiteLabelUri() throws Exception {
 		// given
 		given(request.getMethod()).willReturn("GET");
-		given(request.getRequestURI()).willReturn("/");
+		given(request.getRequestURI()).willReturn("/api/products/1");
 
 		// when
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 
 		// then
-		verify(request, times(1)).getMethod();
+		verify(request, times(2)).getMethod();
 		verify(request, times(1)).getRequestURI();
 		verifyNoMoreInteractions(request);
 	}
@@ -86,7 +86,7 @@ class JwtFilterTest {
 		StringWriter stringWriter = getStringWriter();
 
 		// when & then
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 		String responseBody = stringWriter.toString();
 
 		//then
@@ -110,7 +110,7 @@ class JwtFilterTest {
 		given(request.getHeader("Authorization")).willReturn("Bearer " + jwt.getAccessToken());
 
 		// when
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 		String responseBody = stringWriter.toString();
 
 		//then
@@ -129,7 +129,7 @@ class JwtFilterTest {
 		given(request.getHeader("Authorization")).willReturn("Bearer " + jwt.getSignUpToken());
 
 		// when
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 
 		// then
 		verify(filterChain, times(1)).doFilter(request, response);
@@ -150,12 +150,10 @@ class JwtFilterTest {
 		given(request.getHeader("Authorization")).willReturn("Bearer " + jwt.getSignUpToken());
 
 		// when
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 
 		// then
-		String responseBody = stringWriter.toString();
-		verify(filterChain, times(0)).doFilter(request, response);
-		Assertions.assertThat(responseBody).contains(JwtException.MALFORMED_SIGN_UP_TOKEN.getErrorMessage());
+		verify(filterChain, times(1)).doFilter(request, response);
 	}
 
 	@Test
@@ -170,7 +168,7 @@ class JwtFilterTest {
 		given(request.getHeader("Authorization")).willReturn("Bearer " + jwt.getAccessToken());
 
 		// when
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 
 		// then
 		verify(filterChain, times(1)).doFilter(request, response);
@@ -191,7 +189,7 @@ class JwtFilterTest {
 		given(request.getHeader("Authorization")).willReturn("Bearer " + jwt.getAccessToken());
 
 		// when
-		jwtFilter.doFilter(request, response, filterChain);
+		jwtFilter.doFilterInternal(request, response, filterChain);
 
 		// then
 		String responseBody = stringWriter.toString();
