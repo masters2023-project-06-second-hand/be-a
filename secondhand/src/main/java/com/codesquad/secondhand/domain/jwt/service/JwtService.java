@@ -7,8 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.jwt.domain.Jwt;
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
+import com.codesquad.secondhand.domain.jwt.dto.request.ReissueTokenRequest;
+import com.codesquad.secondhand.domain.jwt.dto.response.ReissueTokenResponse;
 import com.codesquad.secondhand.domain.jwt.entity.Token;
-import com.codesquad.secondhand.domain.jwt.repository.TokenJpaRepository;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.redis.util.RedisUtil;
@@ -20,13 +21,13 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class JwtService {
 	private final RedisUtil redisUtil;
-	private final TokenJpaRepository tokenJpaRepository;
 	private final JwtProvider jwtProvider;
+	private final JwtQueryService jwtQueryService;
 	private final MemberQueryService memberQueryService;
 
 	@Transactional
 	public void deleteRefreshToken(Long memberId) {
-		tokenJpaRepository.deleteByMemberId(memberId);
+		jwtQueryService.delete(memberId);
 	}
 
 	@Transactional
@@ -47,13 +48,21 @@ public class JwtService {
 		Member member = memberQueryService.findById(memberId);
 		Token token = Token.of(member, jwt);
 		if (isSignIn) {
-			tokenJpaRepository.deleteByMemberId(memberId);
+			jwtQueryService.delete(memberId);
 		}
-		tokenJpaRepository.save(token);
+		jwtQueryService.save(token);
 		return jwt;
 	}
 
 	public Jwt createSignUpToken(String email) {
 		return jwtProvider.createSignUpToken(Collections.singletonMap("email", email));
 	}
+
+	public ReissueTokenResponse ReissueToken(ReissueTokenRequest reissueTokenRequest) {
+		Token token = jwtQueryService.findByRefreshToken(reissueTokenRequest.getRefreshToken());
+		String accessToken = jwtProvider.reissueAccessToken(
+			Collections.singletonMap("memberId", token.getMember().getId()));
+		return new ReissueTokenResponse(accessToken);
+	}
+
 }
