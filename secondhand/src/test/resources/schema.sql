@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS category;
 DROP TABLE IF EXISTS region;
 DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS reaction;
-DROP TABLE IF EXISTS chat;
+DROP TABLE IF EXISTS chat_room;
 DROP TABLE IF EXISTS chat_message;
 DROP TABLE IF EXISTS chat_member;
 DROP TABLE IF EXISTS chat_status;
@@ -55,28 +55,28 @@ CREATE TABLE reaction
     member_id  BIGINT NOT NULL
 );
 
-CREATE TABLE chat
+CREATE TABLE chat_room
 (
-    id         BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    product_id BIGINT       NOT NULL,
-    created_at VARCHAR(255) NOT NULL
+    id         BIGINT   NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    product_id BIGINT   NOT NULL,
+    created_at DATETIME NOT NULL
 );
 
 CREATE TABLE chat_member
 (
     id              BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    chat_id         BIGINT NOT NULL,
+    chat_room_id    BIGINT NOT NULL,
     member_id       BIGINT NOT NULL,
-    chat_message_id BIGINT NULL
+    is_read_message BIGINT NULL
 );
 
 CREATE TABLE chat_message
 (
-    id        BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    chat_id   BIGINT       NOT NULL,
-    member_id BIGINT       NOT NULL,
-    message   VARCHAR(100) NOT NULL,
-    send_at   DATETIME     NOT NULL
+    id           BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    chat_room_id BIGINT       NOT NULL,
+    memebere_id  BIGINT       NOT NULL,
+    message      VARCHAR(100) NOT NULL,
+    send_at      DATETIME     NOT NULL
 );
 
 CREATE TABLE chat_status
@@ -109,9 +109,9 @@ CREATE TABLE member_region
 
 CREATE TABLE token
 (
-   id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-   member_id BIGINT NOT NULL,
-   refresh_token VARCHAR(1000) NOT NULL
+    id            BIGINT        NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    member_id     BIGINT        NOT NULL,
+    refresh_token VARCHAR(1000) NOT NULL
 );
 
 -- category
@@ -154,7 +154,8 @@ VALUES ('서울 강남동'),
        ('서울 도봉동');
 
 -- member
-INSERT INTO member (nickname, email, selected_region,profile_img)
-VALUES ('김영희', 'younghee.kim@email.com', 1,'img1.png'),
-       ('이철수', 'cheolsoo.lee@email.com', 2,'img2.png'),
-       ('박지선', 'jiseon.park@email.com', 3,'img3.png');
+INSERT INTO member (nickname, email, selected_region, profile_img)
+VALUES ('김영희', 'younghee.kim@email.com', 1, 'img1.png'),
+       ('이철수', 'cheolsoo.lee@email.com', 2, 'img2.png'),
+       ('박지선', 'jiseon.park@email.com', 3, 'img3.png');
+
