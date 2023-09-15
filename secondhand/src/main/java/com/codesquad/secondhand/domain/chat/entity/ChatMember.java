@@ -12,6 +12,7 @@ import javax.persistence.OneToOne;
 import com.codesquad.secondhand.domain.member.entity.Member;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,4 +33,17 @@ public class ChatMember {
 	@OneToOne(fetch = FetchType.LAZY)
 	private ChatMessage isReadMessage;
 
+	@Builder
+	public ChatMember(ChatRoom chatRoom, Member member, ChatMessage isReadMessage) {
+		this.chatRoom = chatRoom;
+		this.member = member;
+		this.isReadMessage = isReadMessage;
+	}
+
+	public static ChatMember of(Member member, ChatRoom chatRoom) {
+		return ChatMember.builder()
+			.member(member)
+			.chatRoom(chatRoom)
+			.build();
+	}
 }

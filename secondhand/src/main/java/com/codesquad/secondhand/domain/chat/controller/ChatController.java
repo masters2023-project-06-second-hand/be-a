@@ -4,7 +4,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 
-import com.codesquad.secondhand.domain.chat.dto.Message;
+import com.codesquad.secondhand.domain.chat.dto.MessageRequest;
+import com.codesquad.secondhand.domain.chat.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +16,13 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 
 	private final SimpMessageSendingOperations simpMessageSendingOperations;
+	private final ChatService chatService;
 
-	@MessageMapping("/hello")
-	public void message(Message message) {
-		simpMessageSendingOperations.convertAndSend("/sub/channel/" + message.getChatRoomId(), message.getMessage());
+	@MessageMapping("/message")
+	public void message(MessageRequest messageRequest) {
+		// chatService.sendMessage(messageRequest);
+
+		simpMessageSendingOperations.convertAndSend("/sub/channel/" + messageRequest.getChatRoomId(),
+			messageRequest.getMessage());
 	}
 }

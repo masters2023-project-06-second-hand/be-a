@@ -75,7 +75,7 @@ CREATE TABLE chat_message
     id           BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     chat_room_id BIGINT       NOT NULL,
     memebere_id  BIGINT       NOT NULL,
-    message      VARCHAR(100) NOT NULL,
+    messageRequest      VARCHAR(100) NOT NULL,
     send_at      DATETIME     NOT NULL
 );
 

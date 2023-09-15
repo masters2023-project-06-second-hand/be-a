@@ -9,9 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Message {
+public class MessageRequest {
 	private Long chatRoomId;
 	private String message;
 	private Long senderId;
+	private Long productId;
 
 }
