@@ -1,9 +1,6 @@
 package com.codesquad.secondhand.domain.product.dto.response;
 
-import java.time.LocalDateTime;
-
-import com.codesquad.secondhand.domain.product.entity.Product;
-import com.codesquad.secondhand.domain.product.utils.ProductStatus;
+import java.util.List;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -12,29 +9,15 @@ import lombok.Getter;
 @Getter
 public class ProductFindAllResponse {
 
-	private Long id;
-	private Long writerId;
-	private String thumbnailUrl;
-	private String name;
-	private String region;
-	private LocalDateTime createdAt;
-	private String status;
-	private Long price;
-	private Long likeCount;
-	private Long chattingCount;
+	private List<ProductResponse> products;
+	private Boolean hasNext;
+	private int page;
 
-	public static ProductFindAllResponse of(Product product, long reactionCount) {
+	public static ProductFindAllResponse of(List<ProductResponse> products, Boolean hasNext, int page) {
 		return ProductFindAllResponse.builder()
-			.id(product.getId())
-			.writerId(product.getMember().getId())
-			.thumbnailUrl(product.getThumbnailImage())
-			.name(product.getName())
-			.region(product.getRegion().getName())
-			.createdAt(product.getCreatedAt())
-			.status(ProductStatus.fromCode(product.getStatus()).getDescription())
-			.price(product.getPrice())
-			.likeCount(reactionCount)
-			.chattingCount(1L)
+			.products(products)
+			.hasNext(hasNext)
+			.page(page)
 			.build();
 	}
 }

@@ -9,6 +9,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +27,7 @@ import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateR
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductResponse;
 import com.codesquad.secondhand.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -72,16 +75,18 @@ public class ProductController {
 	}
 
 	@GetMapping("/products")
-	public ResponseEntity<List<ProductFindAllResponse>> findAll(@RequestParam Long regionId,
-		@RequestParam(required = false) Long categoryId, HttpServletRequest request) {
+	public ResponseEntity<ProductFindAllResponse> findAll(@RequestParam Long regionId,
+		@RequestParam(required = false) Long categoryId, HttpServletRequest request,
+		@RequestParam(defaultValue = "0") int page) {
 		if (request.getAttribute("role") != null && request.getAttribute("role").equals("guest")) {
 			regionId = 1L;
 		}
-		return ResponseEntity.ok().body(productService.findAll(regionId, categoryId));
+		Pageable pageable = PageRequest.of(page, 10);
+		return ResponseEntity.ok().body(productService.findAll(regionId, categoryId, pageable));
 	}
 
 	@GetMapping("/members/{memberId}/sales")
-	public ResponseEntity<List<ProductFindAllResponse>> findSalesProducts(@PathVariable Long memberId,
+	public ResponseEntity<List<ProductResponse>> findSalesProducts(@PathVariable Long memberId,
 		@RequestParam(required = false) Integer statusId) {
 		return ResponseEntity.ok().body(productService.findSalesProducts(memberId, statusId));
 	}

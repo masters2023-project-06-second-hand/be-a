@@ -4,11 +4,15 @@ import static com.codesquad.secondhand.domain.product.entity.QProduct.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.product.entity.Product;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 
 import lombok.RequiredArgsConstructor;
@@ -19,14 +23,24 @@ public class ProductQueryRepository {
 
 	private final JPAQueryFactory query;
 
-	public List<Product> findAll(Long regionId, Long categoryId) {
-		return query.select(product)
+	public Slice<Product> findAll(Long regionId, Long categoryId, Pageable pageable) {
+		JPAQuery<Product> sql = query.select(product)
 			.from(product)
 			.where(
 				isProductRegionIdEquals(regionId),
 				isProductCategoryIdEquals(categoryId)
 			)
-			.fetch();
+			.offset(pageable.getOffset())
+			.limit(pageable.getPageSize() + 1);
+
+		List<Product> results = sql.fetch();
+		boolean hasNext = results.size() > pageable.getPageSize();
+
+		if (hasNext) {
+			results.remove(results.size() - 1);
+		}
+
+		return new SliceImpl<>(results, pageable, hasNext);
 	}
 
 	private BooleanExpression isProductRegionIdEquals(Long regionId) {
@@ -58,6 +72,7 @@ public class ProductQueryRepository {
 	 * statusId = 0 : 판매중
 	 * statusId = 1 : 예약중
 	 * statusId = 2 : 판매완료
+	 *
 	 * @param statusId
 	 * @return
 	 */

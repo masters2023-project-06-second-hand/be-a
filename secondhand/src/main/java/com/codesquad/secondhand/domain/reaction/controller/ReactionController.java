@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codesquad.secondhand.domain.category.dto.response.CategoryResponse;
-import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductResponse;
 import com.codesquad.secondhand.domain.reaction.dto.ReactionUpdateRequest;
 import com.codesquad.secondhand.domain.reaction.service.ReactionService;
 
@@ -31,6 +31,7 @@ public class ReactionController {
 
 	/**
 	 * 상품의 좋아요 등록 또는 취소시 사용되는 API
+	 *
 	 * @param productId
 	 * @param reactionUpdateRequest
 	 * @param request
@@ -51,7 +52,7 @@ public class ReactionController {
 	}
 
 	@GetMapping("/members/{memberId}/likes")
-	public ResponseEntity<List<ProductFindAllResponse>> findAllOfReactedProducts(@PathVariable Long memberId,
+	public ResponseEntity<List<ProductResponse>> findAllOfReactedProducts(@PathVariable Long memberId,
 		@RequestParam(required = false) Long categoryId) {
 		return ResponseEntity.ok().body(reactionService.findAllOfReactedProducts(memberId, categoryId));
 	}
