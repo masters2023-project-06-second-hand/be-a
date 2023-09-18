@@ -63,6 +63,7 @@ class MemberControllerTest extends BaseControllerTest {
 	@Test
 	@DisplayName("사용자 정보 api 를 통해 특정 사용자의 정보를 응답으로 전송한다.")
 	void getUserInfo() throws Exception {
+		// when & then
 		mockMvc.perform(MockMvcRequestBuilders.get("/api/members/{memberId}", MEMBER_ID)
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON))

@@ -33,6 +33,7 @@ class MemberRegionServiceTest {
 		RegionRequest region3 = new RegionRequest(3L);
 		memberRegionService.addRegion(member.getId(), region1);
 		memberRegionService.addRegion(member.getId(), region2);
+
 		// when & then
 		assertThatThrownBy(() -> memberRegionService.addRegion(member.getId(), region3)).isInstanceOf(
 			CustomRuntimeException.class);
@@ -48,6 +49,7 @@ class MemberRegionServiceTest {
 		RegionRequest region3 = new RegionRequest(3L);
 		memberRegionService.addRegion(member.getId(), region1);
 		memberRegionService.addRegion(member.getId(), region2);
+
 		// when & then
 		assertThatThrownBy(() -> memberRegionService.addRegion(member.getId(), region3)).isInstanceOf(
 			CustomRuntimeException.class);
@@ -63,10 +65,12 @@ class MemberRegionServiceTest {
 		memberRegionService.addRegion(member.getId(), region1);
 		memberRegionService.addRegion(member.getId(), region2);
 		memberRegionService.updateSelectedRegion(member.getId(), region1);
+
 		// when
 		memberRegionService.deleteRegion(member.getId(), region1);
-		Member afterDeleteMember = memberQueryService.findById(1L);
+
 		// then
+		Member afterDeleteMember = memberQueryService.findById(1L);
 		assertThat(memberRegionService.getRegion(1L).getRegions().size()).isEqualTo(1);
 		assertThat(afterDeleteMember.getSelectedRegion()).isEqualTo(region2.getId());
 	}
@@ -78,6 +82,7 @@ class MemberRegionServiceTest {
 		Member member = memberQueryService.findById(1L);
 		RegionRequest region1 = new RegionRequest(1L);
 		memberRegionService.addRegion(member.getId(), region1);
+
 		// when & then
 		assertThatThrownBy(() -> memberRegionService.deleteRegion(member.getId(), region1)).isInstanceOf(
 			CustomRuntimeException.class);

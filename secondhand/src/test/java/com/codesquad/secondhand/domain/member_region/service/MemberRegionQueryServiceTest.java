@@ -34,12 +34,15 @@ class MemberRegionQueryServiceTest {
 		// given
 		Member member = memberQueryService.findById(1L);
 		List<Region> regions = regionQueryService.findByIds(List.of(2L, 3L));
-		// when
 		List<MemberRegion> memberRegions = MemberRegion.of(member, regions);
+
+		// when
 		memberRegionQueryService.saveAll(memberRegions);
+
+		// then
 		MemberRegion memberRegion1 = memberRegionQueryService.findByMemberAndRegion(member, regions.get(0));
 		MemberRegion memberRegion2 = memberRegionQueryService.findByMemberAndRegion(member, regions.get(1));
-		// then
+
 		assertThat(memberRegion1.getMember().getId()).isEqualTo(member.getId());
 		assertThat(memberRegion1.getRegion().getName()).isEqualTo(regions.get(0).getName());
 		assertThat(memberRegion2.getMember().getId()).isEqualTo(member.getId());
@@ -54,10 +57,12 @@ class MemberRegionQueryServiceTest {
 		Member member = memberQueryService.findById(1L);
 		Region region = regionQueryService.findById(2L);
 		MemberRegion memberRegion = MemberRegion.of(member, region);
+
 		// when
 		memberRegionQueryService.save(memberRegion);
-		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberRegion.getId());
+
 		// then
+		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberRegion.getId());
 		assertThat(memberRegions.get(0).getMember().getId()).isEqualTo(member.getId());
 		assertThat(memberRegions.get(0).getRegion().getName()).isEqualTo(region.getName());
 	}
@@ -71,8 +76,10 @@ class MemberRegionQueryServiceTest {
 		Region region = regionQueryService.findById(1L);
 		MemberRegion memberRegion = MemberRegion.of(member, region);
 		memberRegionQueryService.save(memberRegion);
+
 		// when
 		int resultCount = memberRegionQueryService.countByMember(member);
+
 		// then
 		assertThat(firstCount).isEqualTo(0);
 		assertThat(resultCount).isEqualTo(1);
@@ -84,8 +91,7 @@ class MemberRegionQueryServiceTest {
 		// given
 		Member member = memberQueryService.findById(1L);
 		Region region = regionQueryService.findById(1L);
-		// MemberRegion memberRegion = MemberRegion.of(member, region);
-		// memberRegionQueryService.save(memberRegion);
+
 		// when
 		Boolean actual = memberRegionQueryService.existsByMemberAndRegion(member, region);
 		// then
@@ -100,8 +106,10 @@ class MemberRegionQueryServiceTest {
 		Region region = regionQueryService.findById(1L);
 		MemberRegion memberRegion = MemberRegion.of(member, region);
 		memberRegionQueryService.save(memberRegion);
+
 		// when
 		Boolean actual = memberRegionQueryService.existsByMemberAndRegion(member, region);
+
 		// then
 		assertThat(actual).isTrue();
 	}
@@ -114,8 +122,10 @@ class MemberRegionQueryServiceTest {
 		List<Region> regions = regionQueryService.findByIds(List.of(1L, 2L));
 		List<MemberRegion> memberRegions = MemberRegion.of(member, regions);
 		memberRegionQueryService.saveAll(memberRegions);
+
 		// when
 		List<MemberRegion> actualMemberRegions = memberRegionQueryService.findAllMemberRegion(member.getId());
+
 		// then
 		assertThat(actualMemberRegions.get(0).getRegion().getId()).isEqualTo(memberRegions.get(0).getRegion().getId());
 		assertThat(actualMemberRegions.get(1).getMember().getId()).isEqualTo(memberRegions.get(1).getMember().getId());
@@ -129,8 +139,10 @@ class MemberRegionQueryServiceTest {
 		Region region = regionQueryService.findById(1L);
 		MemberRegion memberRegion = MemberRegion.of(member, region);
 		memberRegionQueryService.save(memberRegion);
+
 		// when
 		MemberRegion actualMemberRegion = memberRegionQueryService.findByMemberAndRegion(member, region);
+
 		// then
 		assertThat(actualMemberRegion.getMember().getId()).isEqualTo(member.getId());
 		assertThat(actualMemberRegion.getRegion().getId()).isEqualTo(region.getId());
@@ -146,6 +158,7 @@ class MemberRegionQueryServiceTest {
 		memberRegionQueryService.save(memberRegion);
 		Member notSavedMember = memberQueryService.findById(2L);
 		Region notSavedRegion = regionQueryService.findById(2L);
+
 		// when & then
 		assertThatThrownBy(
 			() -> memberRegionQueryService.findByMemberAndRegion(notSavedMember, savedRegion)).isInstanceOf(
@@ -164,10 +177,12 @@ class MemberRegionQueryServiceTest {
 		MemberRegion memberRegion = MemberRegion.of(member, region);
 		memberRegionQueryService.save(memberRegion);
 		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(member.getId());
+
 		// when
 		memberRegionQueryService.delete(memberRegion);
-		List<MemberRegion> afterDeleteMemberRegions = memberRegionQueryService.findAllMemberRegion(member.getId());
+
 		// then
+		List<MemberRegion> afterDeleteMemberRegions = memberRegionQueryService.findAllMemberRegion(member.getId());
 		assertThat(afterDeleteMemberRegions.size()).isEqualTo(memberRegions.size() - 1);
 
 	}

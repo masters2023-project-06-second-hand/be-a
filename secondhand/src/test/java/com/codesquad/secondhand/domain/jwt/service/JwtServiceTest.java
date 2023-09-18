@@ -47,9 +47,11 @@ class JwtServiceTest {
 	void setBlackList() {
 		// given
 		String accessToken = "test";
-		// when
 		jwtService.setBlackList(accessToken);
+
+		// when
 		Boolean result = redisUtil.hasKeyBlackList("test");
+
 		// then
 		assertThat(result).isTrue();
 	}
@@ -60,9 +62,11 @@ class JwtServiceTest {
 		// given
 		Long memberId = 1L;
 		Boolean isSign = false;
-		// when
 		Jwt jwt = jwtService.createTokens(memberId, isSign);
+
+		// when
 		Token findToken = jwtQueryService.findByRefreshToken(jwt.getRefreshToken());
+
 		// then
 		assertThat(findToken.getMember().getId()).isEqualTo(memberId);
 	}
@@ -74,10 +78,12 @@ class JwtServiceTest {
 		Long memberId = 1L;
 		Boolean isSign = false;
 		Jwt firstJwt = jwtService.createTokens(memberId, isSign);
-
-		// when & then
 		Jwt secondJwt = jwtService.createTokens(memberId, true);
+
+		// when
 		Token findToken = jwtQueryService.findByRefreshToken(secondJwt.getRefreshToken());
+
+		// then
 		assertThatThrownBy(() -> jwtQueryService.findByRefreshToken(firstJwt.getRefreshToken())).isInstanceOf(
 			CustomRuntimeException.class);
 		assertThat(secondJwt.getRefreshToken()).isEqualTo(findToken.getRefreshToken());
@@ -88,12 +94,14 @@ class JwtServiceTest {
 	void createSignUpToken() {
 		// given
 		String email = "test@test.com";
+
 		// when
 		Jwt jwt = jwtService.createSignUpToken(email);
+
+		// then
 		String actual = jwt.getSignUpToken();
 		Claims claims = jwtProvider.getClaimsFromSignUpToken(actual);
 		String actualEmail = (String)claims.get("email");
-		// then
 		assertThat(actualEmail).isEqualTo(email);
 	}
 }

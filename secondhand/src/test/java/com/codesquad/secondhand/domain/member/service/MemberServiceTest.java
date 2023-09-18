@@ -49,11 +49,14 @@ class MemberServiceTest {
 		List<Long> ids = List.of(1L, 2L);
 		SignupRequest signupRequest = new SignupRequest("test", "test", ids);
 		String requestEmail = "test@email.com";
+
 		// when
 		memberService.signUp(signupRequest, requestEmail);
+
+		// then
 		Member savedMember = memberQueryService.findByEmail(requestEmail).get();
 		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(savedMember.getId());
-		// then
+
 		assertThat(savedMember.getEmail()).isEqualTo(requestEmail);
 		assertThat(savedMember.getNickname()).isEqualTo(signupRequest.getNickname());
 		assertThat(savedMember.getProfileImg()).isEqualTo(signupRequest.getProfileImg());
@@ -70,6 +73,7 @@ class MemberServiceTest {
 		memberService.signUp(signupRequest, requestEmail);
 		String savedMemberNickname = memberQueryService.findByEmail(requestEmail).get().getNickname();
 		SignupRequest existNicknameRequest = new SignupRequest(savedMemberNickname, "test", ids);
+
 		// when & then
 		assertThatThrownBy(() -> memberService.signUp(existNicknameRequest, requestEmail)).isInstanceOf(
 			CustomRuntimeException.class);
