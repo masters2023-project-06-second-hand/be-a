@@ -27,7 +27,7 @@ class RegionServiceTest {
 		// when
 		RegionSearchAndPageResponse actual = regionService.getAllAndSearch(pageable, null);
 		// then
-		assertThat(actual.getRegionsResponses().size()).isEqualTo(requestPage);
+		assertThat(actual.getRegions().size()).isEqualTo(requestPage);
 
 	}
 }
