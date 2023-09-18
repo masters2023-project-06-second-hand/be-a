@@ -70,4 +70,16 @@ class MemberRegionServiceTest {
 		assertThat(memberRegionService.getRegion(1L).getRegions().size()).isEqualTo(1);
 		assertThat(afterDeleteMember.getSelectedRegion()).isEqualTo(region2.getId());
 	}
+
+	@DisplayName("지역 목록이 하나이면 삭제시 예외 발생 ")
+	@Test
+	void deleteAndUpdateSelectedRegionFailed() {
+		// given
+		Member member = memberQueryService.findById(1L);
+		RegionRequest region1 = new RegionRequest(1L);
+		memberRegionService.addRegion(member.getId(), region1);
+		// when & then
+		assertThatThrownBy(() -> memberRegionService.deleteRegion(member.getId(), region1)).isInstanceOf(
+			CustomRuntimeException.class);
+	}
 }

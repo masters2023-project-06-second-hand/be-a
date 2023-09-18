@@ -15,6 +15,7 @@ import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
 import com.codesquad.secondhand.domain.region.entity.Region;
 import com.codesquad.secondhand.domain.region.service.RegionQueryService;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
+import com.codesquad.secondhand.exception.errorcode.MemberException;
 import com.codesquad.secondhand.exception.errorcode.RegionException;
 
 import lombok.RequiredArgsConstructor;
@@ -39,18 +40,19 @@ public class MemberRegionService {
 
 	@Transactional
 	public void deleteRegion(Long memberId, RegionRequest regionRequest) {
+		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
+		if (memberRegions.size() == 1) {
+			throw new CustomRuntimeException(MemberException.MEMBER_REGION_DELETE_FAIlED);
+		}
 		Member member = memberQueryService.findById(memberId);
 		Region region = regionQueryService.findById(regionRequest.getId());
 		MemberRegion memberRegion = memberRegionQueryService.findByMemberAndRegion(member, region);
 		memberRegionQueryService.delete(memberRegion);
-		updateSelectedRegionOnDelete(memberId);
-	}
-
-	private void updateSelectedRegionOnDelete(Long memberId) {
-		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
-		Long selectedRegionId = memberRegions.isEmpty() ? null : memberRegions.get(0).getRegion().getId();
-		Member member = memberQueryService.findById(memberId);
-		member.addSelectedRegion(selectedRegionId);
+		for (MemberRegion remainingRegion : memberRegions) {
+			if (!remainingRegion.getRegion().getId().equals(regionRequest.getId())) {
+				member.addSelectedRegion(remainingRegion.getRegion().getId());
+			}
+		}
 	}
 
 	@Transactional
