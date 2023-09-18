@@ -15,6 +15,7 @@ import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
 import com.codesquad.secondhand.domain.jwt.service.JwtQueryService;
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
 import com.codesquad.secondhand.domain.member.service.MemberService;
+import com.codesquad.secondhand.domain.member_region.service.MemberRegionService;
 import com.codesquad.secondhand.domain.product.service.ProductService;
 import com.codesquad.secondhand.domain.reaction.service.ReactionService;
 import com.codesquad.secondhand.redis.util.RedisUtil;
@@ -38,6 +39,9 @@ public abstract class BaseControllerTest {
 
 	@Autowired
 	public MemberService memberService;
+
+	@Autowired
+	public MemberRegionService memberRegionService;
 
 	@Autowired
 	public ProductService productService;

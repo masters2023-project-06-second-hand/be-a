@@ -1,12 +1,21 @@
 package com.codesquad.secondhand.domain.member_region.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
+import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
+import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
 import com.codesquad.secondhand.domain.member.entity.Member;
+import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
 import com.codesquad.secondhand.domain.region.entity.Region;
+import com.codesquad.secondhand.domain.region.service.RegionQueryService;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
+import com.codesquad.secondhand.exception.errorcode.MemberException;
 import com.codesquad.secondhand.exception.errorcode.RegionException;
 
 import lombok.RequiredArgsConstructor;
@@ -17,11 +26,51 @@ import lombok.RequiredArgsConstructor;
 public class MemberRegionService {
 
 	private final MemberRegionQueryService memberRegionQueryService;
+	private final MemberQueryService memberQueryService;
+	private final RegionQueryService regionQueryService;
 
 	@Transactional
-	public void save(MemberRegion memberRegion) {
+	public void addRegion(Long memberId, RegionRequest regionRequest) {
+		Member member = memberQueryService.findById(memberId);
+		Region region = regionQueryService.findById(regionRequest.getId());
+		MemberRegion memberRegion = MemberRegion.of(member, region);
 		validate(memberRegion.getMember(), memberRegion.getRegion());
 		memberRegionQueryService.save(memberRegion);
+	}
+
+	@Transactional
+	public void deleteRegion(Long memberId, RegionRequest regionRequest) {
+		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
+		if (memberRegions.size() == 1) {
+			throw new CustomRuntimeException(MemberException.MEMBER_REGION_DELETE_FAIlED);
+		}
+		Member member = memberQueryService.findById(memberId);
+		Region region = regionQueryService.findById(regionRequest.getId());
+		MemberRegion memberRegion = memberRegionQueryService.findByMemberAndRegion(member, region);
+		memberRegionQueryService.delete(memberRegion);
+		for (MemberRegion remainingRegion : memberRegions) {
+			if (!remainingRegion.getRegion().getId().equals(regionRequest.getId())) {
+				member.addSelectedRegion(remainingRegion.getRegion().getId());
+			}
+		}
+	}
+
+	@Transactional
+	public void updateSelectedRegion(Long memberId, RegionRequest regionRequest) {
+		Member member = memberQueryService.findById(memberId);
+		Region region = regionQueryService.findById(regionRequest.getId());
+		memberRegionQueryService.findByMemberAndRegion(member, region);
+		member.addSelectedRegion(region.getId());
+	}
+
+	public MemberRegionResponse getRegion(Long memberId) {
+		Member member = memberQueryService.findById(memberId);
+		Long selectedRegionId = member.getSelectedRegion();
+		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
+		List<RegionResponse> regions = memberRegions.stream()
+			.map(RegionResponse::from)
+			.collect(Collectors.toList());
+		return MemberRegionResponse.of(selectedRegionId, regions);
 	}
 
 	private void validate(Member member, Region region) {

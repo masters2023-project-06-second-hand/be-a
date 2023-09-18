@@ -7,10 +7,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.codesquad.secondhand.annotation.ServiceIntegrationTest;
+import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.service.MemberQueryService;
-import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
-import com.codesquad.secondhand.domain.region.entity.Region;
 import com.codesquad.secondhand.domain.region.service.RegionQueryService;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
 
@@ -26,32 +25,61 @@ class MemberRegionServiceTest {
 
 	@DisplayName("등록 지역을 2개 초과해서 선택하면 예외발생")
 	@Test
-	void saveFailedWithSize() {
+	void addRegionFailedWithSize() {
 		// given
 		Member member = memberQueryService.findById(1L);
-		Region region1 = regionQueryService.findById(1L);
-		Region region2 = regionQueryService.findById(2L);
-		Region region3 = regionQueryService.findById(3L);
-		MemberRegion memberRegion1 = MemberRegion.of(member, region1);
-		MemberRegion memberRegion2 = MemberRegion.of(member, region2);
-		MemberRegion memberRegion3 = MemberRegion.of(member, region3);
-		memberRegionService.save(memberRegion1);
-		memberRegionService.save(memberRegion2);
+		RegionRequest region1 = new RegionRequest(1L);
+		RegionRequest region2 = new RegionRequest(2L);
+		RegionRequest region3 = new RegionRequest(3L);
+		memberRegionService.addRegion(member.getId(), region1);
+		memberRegionService.addRegion(member.getId(), region2);
 		// when & then
-		assertThatThrownBy(() -> memberRegionService.save(memberRegion3)).isInstanceOf(CustomRuntimeException.class);
+		assertThatThrownBy(() -> memberRegionService.addRegion(member.getId(), region3)).isInstanceOf(
+			CustomRuntimeException.class);
 	}
 
 	@DisplayName("등록 지역을 2개 초과해서 선택하면 예외발생")
 	@Test
-	void saveFailedWithDuplicated() {
+	void addRegionFailedWithDuplicated() {
 		// given
 		Member member = memberQueryService.findById(1L);
-		Region region1 = regionQueryService.findById(1L);
-		Region region2 = regionQueryService.findById(1L);
-		MemberRegion memberRegion1 = MemberRegion.of(member, region1);
-		MemberRegion memberRegion2 = MemberRegion.of(member, region2);
-		memberRegionService.save(memberRegion1);
+		RegionRequest region1 = new RegionRequest(1L);
+		RegionRequest region2 = new RegionRequest(2L);
+		RegionRequest region3 = new RegionRequest(3L);
+		memberRegionService.addRegion(member.getId(), region1);
+		memberRegionService.addRegion(member.getId(), region2);
 		// when & then
-		assertThatThrownBy(() -> memberRegionService.save(memberRegion2)).isInstanceOf(CustomRuntimeException.class);
+		assertThatThrownBy(() -> memberRegionService.addRegion(member.getId(), region3)).isInstanceOf(
+			CustomRuntimeException.class);
+	}
+
+	@DisplayName("지역을 삭제하고, 지역목록이 남아있다면 남아있는 지역을 지역 목록으로 설정 ")
+	@Test
+	void deleteAndUpdateSelectedRegion() {
+		// given
+		Member member = memberQueryService.findById(1L);
+		RegionRequest region1 = new RegionRequest(1L);
+		RegionRequest region2 = new RegionRequest(2L);
+		memberRegionService.addRegion(member.getId(), region1);
+		memberRegionService.addRegion(member.getId(), region2);
+		memberRegionService.updateSelectedRegion(member.getId(), region1);
+		// when
+		memberRegionService.deleteRegion(member.getId(), region1);
+		Member afterDeleteMember = memberQueryService.findById(1L);
+		// then
+		assertThat(memberRegionService.getRegion(1L).getRegions().size()).isEqualTo(1);
+		assertThat(afterDeleteMember.getSelectedRegion()).isEqualTo(region2.getId());
+	}
+
+	@DisplayName("지역 목록이 하나이면 삭제시 예외 발생 ")
+	@Test
+	void deleteAndUpdateSelectedRegionFailed() {
+		// given
+		Member member = memberQueryService.findById(1L);
+		RegionRequest region1 = new RegionRequest(1L);
+		memberRegionService.addRegion(member.getId(), region1);
+		// when & then
+		assertThatThrownBy(() -> memberRegionService.deleteRegion(member.getId(), region1)).isInstanceOf(
+			CustomRuntimeException.class);
 	}
 }

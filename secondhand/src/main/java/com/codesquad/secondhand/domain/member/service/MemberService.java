@@ -1,18 +1,14 @@
 package com.codesquad.secondhand.domain.member.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.jwt.domain.Jwt;
 import com.codesquad.secondhand.domain.jwt.service.JwtService;
-import com.codesquad.secondhand.domain.member.dto.request.RegionRequest;
 import com.codesquad.secondhand.domain.member.dto.request.SignupRequest;
 import com.codesquad.secondhand.domain.member.dto.response.MemberInfoResponse;
-import com.codesquad.secondhand.domain.member.dto.response.MemberRegionResponse;
-import com.codesquad.secondhand.domain.member.dto.response.RegionResponse;
 import com.codesquad.secondhand.domain.member.dto.response.SignUpResponse;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member_region.entity.MemberRegion;
@@ -58,41 +54,6 @@ public class MemberService {
 	public void signOut(String accessToken, Long memberId) {
 		jwtService.deleteRefreshToken(memberId);
 		jwtService.setBlackList(accessToken);
-	}
-
-	@Transactional
-	public void addRegion(Long memberId, RegionRequest regionRequest) {
-		Member member = memberQueryService.findById(memberId);
-		Region region = regionQueryService.findById(regionRequest.getId());
-		MemberRegion memberRegion = MemberRegion.of(member, region);
-		memberRegionQueryService.save(memberRegion);
-
-	}
-
-	@Transactional
-	public void deleteRegion(Long memberId, RegionRequest regionRequest) {
-		Member member = memberQueryService.findById(memberId);
-		Region region = regionQueryService.findById(regionRequest.getId());
-		MemberRegion memberRegion = memberRegionQueryService.findByMemberAndRegion(member, region);
-		memberRegionQueryService.delete(memberRegion);
-	}
-
-	@Transactional
-	public void updateSelectedRegion(Long memberId, RegionRequest regionRequest) {
-		Member member = memberQueryService.findById(memberId);
-		Region region = regionQueryService.findById(regionRequest.getId());
-		memberRegionQueryService.findByMemberAndRegion(member, region);
-		member.addSelectedRegion(region.getId());
-	}
-
-	public MemberRegionResponse getRegion(Long memberId) {
-		Member member = memberQueryService.findById(memberId);
-		Long selectedRegionId = member.getSelectedRegion();
-		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
-		List<RegionResponse> regions = memberRegions.stream()
-			.map(RegionResponse::from)
-			.collect(Collectors.toList());
-		return MemberRegionResponse.of(selectedRegionId, regions);
 	}
 
 	public MemberInfoResponse getMemberInfo(Long memberId) {
