@@ -6,6 +6,7 @@ import java.util.Arrays;
 
 import org.assertj.core.api.Assertions;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
@@ -169,20 +170,21 @@ class ProductControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$[0].id").exists())
-			.andExpect(jsonPath("$[0].writerId").exists())
-			.andExpect(jsonPath("$[0].thumbnailUrl").exists())
-			.andExpect(jsonPath("$[0].name").exists())
-			.andExpect(jsonPath("$[0].region").exists())
-			.andExpect(jsonPath("$[0].createdAt").exists())
-			.andExpect(jsonPath("$[0].status").exists())
-			.andExpect(jsonPath("$[0].price").exists())
-			.andExpect(jsonPath("$[0].likeCount").exists())
-			.andExpect(jsonPath("$[0].chattingCount").exists())
+			.andExpect(jsonPath("$.products[0].id").exists())
+			.andExpect(jsonPath("$.products[0].writerId").exists())
+			.andExpect(jsonPath("$.products[0].thumbnailUrl").exists())
+			.andExpect(jsonPath("$.products[0].name").exists())
+			.andExpect(jsonPath("$.products[0].region").exists())
+			.andExpect(jsonPath("$.products[0].createdAt").exists())
+			.andExpect(jsonPath("$.products[0].status").exists())
+			.andExpect(jsonPath("$.products[0].price").exists())
+			.andExpect(jsonPath("$.products[0].likeCount").exists())
+			.andExpect(jsonPath("$.products[0].chattingCount").exists())
 			.andReturn();
 
 		String responseBody = result.getResponse().getContentAsString();
-		JSONArray jsonArray = new JSONArray(responseBody);
+		JSONObject jsonObject = new JSONObject(responseBody);
+		JSONArray jsonArray = jsonObject.getJSONArray("products");
 		Assertions.assertThat(jsonArray.length()).isEqualTo(1);
 	}
 
@@ -218,20 +220,21 @@ class ProductControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$[0].id").exists())
-			.andExpect(jsonPath("$[0].writerId").exists())
-			.andExpect(jsonPath("$[0].thumbnailUrl").exists())
-			.andExpect(jsonPath("$[0].name").exists())
-			.andExpect(jsonPath("$[0].region").exists())
-			.andExpect(jsonPath("$[0].createdAt").exists())
-			.andExpect(jsonPath("$[0].status").exists())
-			.andExpect(jsonPath("$[0].price").exists())
-			.andExpect(jsonPath("$[0].likeCount").exists())
-			.andExpect(jsonPath("$[0].chattingCount").exists())
+			.andExpect(jsonPath("$.products[0].id").exists())
+			.andExpect(jsonPath("$.products[0].writerId").exists())
+			.andExpect(jsonPath("$.products[0].thumbnailUrl").exists())
+			.andExpect(jsonPath("$.products[0].name").exists())
+			.andExpect(jsonPath("$.products[0].region").exists())
+			.andExpect(jsonPath("$.products[0].createdAt").exists())
+			.andExpect(jsonPath("$.products[0].status").exists())
+			.andExpect(jsonPath("$.products[0].price").exists())
+			.andExpect(jsonPath("$.products[0].likeCount").exists())
+			.andExpect(jsonPath("$.products[0].chattingCount").exists())
 			.andReturn();
 
 		String responseBody = result.getResponse().getContentAsString();
-		JSONArray jsonArray = new JSONArray(responseBody);
+		JSONObject jsonObject = new JSONObject(responseBody);
+		JSONArray jsonArray = jsonObject.getJSONArray("products");
 		Assertions.assertThat(jsonArray.length()).isEqualTo(2);
 	}
 
@@ -268,20 +271,21 @@ class ProductControllerTest extends BaseControllerTest {
 				.param("categoryId", "1")
 				.contentType(MediaType.APPLICATION_JSON))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$[0].id").exists())
-			.andExpect(jsonPath("$[0].writerId").exists())
-			.andExpect(jsonPath("$[0].thumbnailUrl").exists())
-			.andExpect(jsonPath("$[0].name").exists())
-			.andExpect(jsonPath("$[0].region").exists())
-			.andExpect(jsonPath("$[0].createdAt").exists())
-			.andExpect(jsonPath("$[0].status").exists())
-			.andExpect(jsonPath("$[0].price").exists())
-			.andExpect(jsonPath("$[0].likeCount").exists())
-			.andExpect(jsonPath("$[0].chattingCount").exists())
+			.andExpect(jsonPath("$.products[0].id").exists())
+			.andExpect(jsonPath("$.products[0].writerId").exists())
+			.andExpect(jsonPath("$.products[0].thumbnailUrl").exists())
+			.andExpect(jsonPath("$.products[0].name").exists())
+			.andExpect(jsonPath("$.products[0].region").exists())
+			.andExpect(jsonPath("$.products[0].createdAt").exists())
+			.andExpect(jsonPath("$.products[0].status").exists())
+			.andExpect(jsonPath("$.products[0].price").exists())
+			.andExpect(jsonPath("$.products[0].likeCount").exists())
+			.andExpect(jsonPath("$.products[0].chattingCount").exists())
 			.andReturn();
 
 		String responseBody = result.getResponse().getContentAsString();
-		JSONArray jsonArray = new JSONArray(responseBody);
+		JSONObject jsonObject = new JSONObject(responseBody);
+		JSONArray jsonArray = jsonObject.getJSONArray("products");
 		Assertions.assertThat(jsonArray.length()).isEqualTo(2);
 	}
 

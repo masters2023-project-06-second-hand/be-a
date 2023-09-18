@@ -3,6 +3,8 @@ package com.codesquad.secondhand.domain.product.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +17,7 @@ import com.codesquad.secondhand.domain.product.dto.request.ProductSaveAndUpdateR
 import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductResponse;
 import com.codesquad.secondhand.domain.product.entity.Image;
 import com.codesquad.secondhand.domain.product.entity.Product;
 import com.codesquad.secondhand.domain.product.utils.ProductStatus;
@@ -74,31 +77,37 @@ public class ProductService {
 		product.changeStatus(productStatus.getCode());
 	}
 
-	public List<ProductFindAllResponse> findAll(Long regionId, Long categoryId) {
+	public ProductFindAllResponse findAll(Long regionId, Long categoryId, Pageable pageable) {
 		//검증을 위한 메서드
 		regionQueryService.findById(regionId);
 		if (categoryId != null) {
 			categoryQueryService.findById(categoryId);
 		}
-		return productQueryService.findAll(regionId, categoryId).stream()
-			.map(this::mapToProductFindAllResponse)
-			.collect(Collectors.toUnmodifiableList());
+
+		Slice<Product> productSlice = productQueryService.findAll(regionId, categoryId, pageable);
+
+		List<ProductResponse> products =
+			productSlice.stream()
+				.map(this::mapToProductResponse)
+				.collect(Collectors.toUnmodifiableList());
+
+		return ProductFindAllResponse.of(products, productSlice.hasNext(), productSlice.getNumber());
 	}
 
-	public List<ProductFindAllResponse> findSalesProducts(Long memberId, Integer statusId) {
+	public List<ProductResponse> findSalesProducts(Long memberId, Integer statusId) {
 		//validate 을 위한 호출
 		if (statusId != null) {
 			ProductStatus.fromCode(statusId);
 		}
 		Member member = memberQueryService.findById(memberId);
 		return productQueryService.findSalesProduct(member, statusId).stream()
-			.map(this::mapToProductFindAllResponse)
+			.map(this::mapToProductResponse)
 			.collect(Collectors.toUnmodifiableList());
 	}
 
-	private ProductFindAllResponse mapToProductFindAllResponse(Product product) {
+	private ProductResponse mapToProductResponse(Product product) {
 		long reactionCount = reactionQueryService.countByProduct(product);
-		return ProductFindAllResponse.of(product, reactionCount);
+		return ProductResponse.of(product, reactionCount);
 	}
 
 	@Transactional
