@@ -14,7 +14,7 @@ import com.codesquad.secondhand.exception.CustomRuntimeException;
 
 @ServiceIntegrationTest
 class JwtQueryServiceTest {
-	
+
 	@Autowired
 	JwtQueryService jwtQueryService;
 
@@ -28,8 +28,10 @@ class JwtQueryServiceTest {
 			.refreshToken("123")
 			.build();
 		jwtQueryService.save(token);
+
 		// when
 		jwtQueryService.delete(token.getMember().getId());
+
 		// then
 		assertThatThrownBy(() -> jwtQueryService.findByRefreshToken("123")).isInstanceOf(
 			CustomRuntimeException.class);
@@ -43,10 +45,12 @@ class JwtQueryServiceTest {
 			.member(Member.builder().id(1L).build())
 			.refreshToken("123")
 			.build();
+
 		// when
 		jwtQueryService.save(token);
-		Token findToken = jwtQueryService.findByRefreshToken("123");
+
 		// then
+		Token findToken = jwtQueryService.findByRefreshToken("123");
 		assertThat(findToken.getMember().getId()).isEqualTo(token.getMember().getId());
 	}
 }

@@ -24,8 +24,10 @@ class RegionServiceTest {
 		int requestPage = 5;
 		int requestOffset = 0;
 		Pageable pageable = PageRequest.of(requestOffset, requestPage);
+
 		// when
 		RegionSearchAndPageResponse actual = regionService.getAllAndSearch(pageable, null);
+
 		// then
 		assertThat(actual.getRegions().size()).isEqualTo(requestPage);
 

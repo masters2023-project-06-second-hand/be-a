@@ -26,8 +26,10 @@ class RegionQueryServiceTest {
 	void findByIdSuccess() {
 		// given
 		Long regionId = 1L;
+
 		// when
 		Region actual = regionQueryService.findById(regionId);
+
 		// then
 		assertThat(actual.getId()).isEqualTo(regionId);
 
@@ -49,8 +51,10 @@ class RegionQueryServiceTest {
 		int requestPage = 5;
 		int requestOffset = 0;
 		Pageable pageable = PageRequest.of(requestOffset, requestPage);
+
 		// when
 		Slice<Region> actual = regionQueryService.findAll(pageable, null);
+
 		// then
 		assertThat(actual.getSize()).isEqualTo(requestPage);
 	}
@@ -64,8 +68,10 @@ class RegionQueryServiceTest {
 		int requestOffset = 0;
 		String requestString = region.getName();
 		Pageable pageable = PageRequest.of(requestOffset, requestPage);
+
 		// when
 		Slice<Region> actual = regionQueryService.findAll(pageable, requestString);
+
 		// then
 		assertThat(actual.getContent().size()).isEqualTo(1);
 		assertThat(actual.getContent().get(0).getName()).isEqualTo(requestString);
@@ -76,8 +82,10 @@ class RegionQueryServiceTest {
 	void findByIds() {
 		// given
 		List<Long> request = List.of(1L, 2L);
+
 		// when
 		List<Region> actual = regionQueryService.findByIds(request);
+
 		// then
 		assertThat(actual.size()).isEqualTo(2);
 		assertThat(actual.get(0).getId()).isEqualTo(request.get(0));

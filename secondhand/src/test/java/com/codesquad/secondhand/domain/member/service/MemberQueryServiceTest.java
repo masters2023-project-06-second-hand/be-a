@@ -21,8 +21,10 @@ class MemberQueryServiceTest {
 	void findByIdSuccess() {
 		// given
 		Long memberId = 1L;
+
 		// when
 		Member actual = memberQueryService.findById(memberId);
+
 		// then
 		assertThat(actual.getId()).isEqualTo(memberId);
 
@@ -33,6 +35,7 @@ class MemberQueryServiceTest {
 	void findByIdFailed() {
 		// given
 		Long memberId = 155L;
+
 		// when&then
 		assertThatThrownBy(() -> memberQueryService.findById(memberId)).isInstanceOf(CustomRuntimeException.class);
 	}
@@ -47,9 +50,11 @@ class MemberQueryServiceTest {
 			.selectedRegion(1L)
 			.profileImg("test")
 			.build();
+
 		// when
 		memberQueryService.save(member);
 		Member savedMember = memberQueryService.findById(member.getId());
+
 		// then
 		assertThat(savedMember.getEmail()).isEqualTo(member.getEmail());
 		assertThat(savedMember.getNickname()).isEqualTo(member.getNickname());
