@@ -39,6 +39,7 @@ public class JwtService {
 	 * memberId 를 받아 accessToken 및 refreshToken 을 생성후
 	 * memberId 와 refreshToken 을 db에 저장한다.
 	 * createTokens 메서드는 로그인, 회원가입때 모두 사용된다. 따라서 isSignIn을 통해 분기처리를 해줬다.
+	 *
 	 * @param memberId
 	 * @return Jwt
 	 */
@@ -58,7 +59,7 @@ public class JwtService {
 		return jwtProvider.createSignUpToken(Collections.singletonMap("email", email));
 	}
 
-	public ReissueTokenResponse ReissueToken(ReissueTokenRequest reissueTokenRequest) {
+	public ReissueTokenResponse reissueToken(ReissueTokenRequest reissueTokenRequest) {
 		Token token = jwtQueryService.findByRefreshToken(reissueTokenRequest.getRefreshToken());
 		String accessToken = jwtProvider.reissueAccessToken(
 			Collections.singletonMap("memberId", token.getMember().getId()));

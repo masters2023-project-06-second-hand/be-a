@@ -59,7 +59,7 @@ public class MemberController {
 
 	@PostMapping("/oauth2/token")
 	public ResponseEntity<ReissueTokenResponse> reissueToken(@RequestBody ReissueTokenRequest reissueTokenRequest) {
-		return ResponseEntity.ok().body(jwtService.ReissueToken(reissueTokenRequest));
+		return ResponseEntity.ok().body(jwtService.reissueToken(reissueTokenRequest));
 	}
 
 }
