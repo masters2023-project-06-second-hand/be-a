@@ -30,7 +30,7 @@ public class RegionService {
 		RegionSearchAndPageResponse response = RegionSearchAndPageResponse.builder()
 			.hasNext(regions.hasNext())
 			.page(regions.getNumber())
-			.regionsResponses(regionsResponse)
+			.regions(regionsResponse)
 			.build();
 		return response;
 	}

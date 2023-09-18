@@ -10,6 +10,6 @@ import lombok.Getter;
 public class RegionSearchAndPageResponse {
 	private Boolean hasNext;
 	private int page;
-	private List<RegionsResponse> regionsResponses;
+	private List<RegionsResponse> regions;
 
 }
