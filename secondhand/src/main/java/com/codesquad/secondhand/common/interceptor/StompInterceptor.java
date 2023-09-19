@@ -50,6 +50,11 @@ public class StompInterceptor implements ChannelInterceptor {
 			case SEND:
 				// validateAccessToken(accessor);
 				break;
+			case DISCONNECT:
+				log.info("DISCONNECT !!");
+				memberId = validateAccessToken(accessor);
+				chatService.deleteChatMember(getChatRoomId(accessor), memberId);
+				break;
 		}
 	}
 

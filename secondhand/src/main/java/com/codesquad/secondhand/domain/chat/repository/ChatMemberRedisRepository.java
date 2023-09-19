@@ -8,4 +8,6 @@ import com.codesquad.secondhand.domain.chat.redis.ChatMember;
 
 public interface ChatMemberRedisRepository extends CrudRepository<ChatMember, String> {
 	List<ChatMember> findByChatRoomId(Long chatRoomId);
+
+	void deleteByChatRoomIdAndMemberId(Long chatRoomId, Long memberId);
 }
