@@ -17,6 +17,7 @@ import org.hibernate.annotations.DynamicInsert;
 import com.codesquad.secondhand.domain.member.entity.Member;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,5 +40,25 @@ public class ChatMessage {
 	@Column(updatable = false)
 	@CreationTimestamp
 	private LocalDateTime sendAt;
+	private Boolean isRead;
 
+	@Builder
+	public ChatMessage(ChatRoom chatRoom, Member member, String message, Boolean isRead) {
+		this.chatRoom = chatRoom;
+		this.member = member;
+		this.message = message;
+		this.isRead = isRead;
+	}
+
+	public static ChatMessage of(String message, ChatRoom chatRoom, Member sendMember) {
+		return ChatMessage.builder()
+			.message(message)
+			.chatRoom(chatRoom)
+			.member(sendMember)
+			.build();
+	}
+
+	public void updateReadStatusToTrue() {
+		this.isRead = true;
+	}
 }

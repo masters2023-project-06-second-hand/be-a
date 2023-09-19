@@ -5,7 +5,6 @@ DROP TABLE IF EXISTS image;
 DROP TABLE IF EXISTS reaction;
 DROP TABLE IF EXISTS chat_room;
 DROP TABLE IF EXISTS chat_message;
-DROP TABLE IF EXISTS chat_member;
 DROP TABLE IF EXISTS chat_status;
 DROP TABLE IF EXISTS report;
 DROP TABLE IF EXISTS member;
@@ -62,20 +61,12 @@ CREATE TABLE chat_room
     created_at DATETIME NOT NULL
 );
 
-CREATE TABLE chat_member
-(
-    id              BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    chat_room_id    BIGINT NOT NULL,
-    member_id       BIGINT NOT NULL,
-    is_read_message BIGINT NULL
-);
-
 CREATE TABLE chat_message
 (
     id           BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
     chat_room_id BIGINT       NOT NULL,
     memebere_id  BIGINT       NOT NULL,
-    message      VARCHAR(100) NOT NULL,
+    messageRequest      VARCHAR(100) NOT NULL,
     send_at      DATETIME     NOT NULL
 );
 
