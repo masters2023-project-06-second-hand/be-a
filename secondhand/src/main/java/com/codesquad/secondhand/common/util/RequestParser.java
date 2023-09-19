@@ -2,6 +2,8 @@ package com.codesquad.secondhand.common.util;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+
 public class RequestParser {
 
 	public static final String MEMBER_ID = "memberId";
@@ -20,5 +22,9 @@ public class RequestParser {
 	public static String extractEmail(HttpServletRequest request) {
 		Object email = request.getAttribute(EMAIL);
 		return email != null ? email.toString() : null;
+	}
+
+	public static String extractAccessTokenFromAccessor(StompHeaderAccessor accessor) {
+		return accessor.getFirstNativeHeader(AUTHORIZATION);
 	}
 }

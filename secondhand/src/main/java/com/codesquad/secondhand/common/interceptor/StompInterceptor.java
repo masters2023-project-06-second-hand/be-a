@@ -1,6 +1,6 @@
 package com.codesquad.secondhand.common.interceptor;
 
-import java.util.Objects;
+import static com.codesquad.secondhand.common.util.RequestParser.*;
 
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
@@ -11,11 +11,9 @@ import org.springframework.stereotype.Component;
 
 import com.codesquad.secondhand.domain.chat.service.ChatService;
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
+import com.codesquad.secondhand.exception.CustomRuntimeException;
+import com.codesquad.secondhand.exception.errorcode.JwtException;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -71,28 +69,17 @@ public class StompInterceptor implements ChannelInterceptor {
 		//todo 메세지를 보낸 상대방의 1을 없애는 로직이 필요함
 	}
 
-	//todo chatRoomId 어떻게 발급할지 얘기해봐
+	//todo chatRoomId 어떻게 발급할지 얘기해봐 (얘기 해보고 예외 처리하자)
 	private Long getChatRoomId(StompHeaderAccessor accessor) {
-		return
-			Long.valueOf(
-				Objects.requireNonNull(
-					accessor.getFirstNativeHeader("chatRoomId")
-				));
-	}
-
-	//todo bearer 뺴고 가져오도록 아니면 로직을 수정해야할듯
-	private String getAccessToken(StompHeaderAccessor accessor) {
-		return accessor.getFirstNativeHeader("Authorization");
+		return Long.valueOf(accessor.getFirstNativeHeader("chatRoomId"));
 	}
 
 	private Long validateAccessToken(StompHeaderAccessor accessor) {
 		try {
-			String token = getAccessToken(accessor);
+			String token = extractAccessTokenFromAccessor(accessor);
 			return jwtProvider.getClaims(token).get("memberId", Long.class);
-		} catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | SignatureException |
-				 IllegalArgumentException ex) {
-			//todo exception 던지기
-			throw new IllegalStateException();
+		} catch (RuntimeException e) {
+			throw new CustomRuntimeException(JwtException.from(e));
 		}
 	}
 
