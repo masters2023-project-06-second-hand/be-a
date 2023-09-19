@@ -20,8 +20,8 @@ public class ChatController {
 
 	@MessageMapping("/message")
 	public void message(MessageRequest messageRequest) {
-		// chatService.sendMessage(messageRequest);
-
+		chatService.sendMessage(messageRequest);
+		// 채널아이디 만들기
 		simpMessageSendingOperations.convertAndSend("/sub/channel/" + messageRequest.getChatRoomId(),
 			messageRequest.getMessage());
 	}

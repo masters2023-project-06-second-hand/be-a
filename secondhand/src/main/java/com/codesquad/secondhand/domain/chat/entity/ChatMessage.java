@@ -40,12 +40,14 @@ public class ChatMessage {
 	@Column(updatable = false)
 	@CreationTimestamp
 	private LocalDateTime sendAt;
+	private Boolean isRead;
 
 	@Builder
-	public ChatMessage(ChatRoom chatRoom, Member member, String message) {
+	public ChatMessage(ChatRoom chatRoom, Member member, String message, Boolean isRead) {
 		this.chatRoom = chatRoom;
 		this.member = member;
 		this.message = message;
+		this.isRead = isRead;
 	}
 
 	public static ChatMessage of(String message, ChatRoom chatRoom, Member sendMember) {
@@ -54,5 +56,9 @@ public class ChatMessage {
 			.chatRoom(chatRoom)
 			.member(sendMember)
 			.build();
+	}
+
+	public void updateReadStatusToTrue() {
+		this.isRead = true;
 	}
 }
