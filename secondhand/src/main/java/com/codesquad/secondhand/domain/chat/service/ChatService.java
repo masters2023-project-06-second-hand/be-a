@@ -72,4 +72,9 @@ public class ChatService {
 			.filter(chatMessage -> chatMessage.getMember().getId().equals(memberId))
 			.forEach(chatMessage -> chatMessage.updateReadStatusToTrue());
 	}
+
+	@Transactional
+	public void deleteChatMember(Long chatRoomId, Long memberId) {
+		chatMemberRedisRepository.deleteByChatRoomIdAndMemberId(chatRoomId, memberId);
+	}
 }
