@@ -12,4 +12,6 @@ import com.codesquad.secondhand.domain.chat.entity.ChatRoom;
 public interface ChatMessageJpaRepository extends JpaRepository<ChatMessage, Long> {
 	@Query("SELECT cm FROM ChatMessage cm WHERE cm.chatRoom = :chatRoom AND cm.isRead = false")
 	List<ChatMessage> findUnreadMessagesByChatRoom(@Param("chatRoom") ChatRoom chatRoom);
+
+	List<ChatMessage> findAllByChatRoom(ChatRoom chatRoom);
 }

@@ -1,10 +1,19 @@
 package com.codesquad.secondhand.domain.chat.controller;
 
+import static com.codesquad.secondhand.common.util.RequestParser.*;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
-import com.codesquad.secondhand.domain.chat.dto.MessageRequest;
+import com.codesquad.secondhand.domain.chat.dto.request.ChatRequest;
+import com.codesquad.secondhand.domain.chat.dto.request.MessageRequest;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomDetailsDto;
 import com.codesquad.secondhand.domain.chat.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
@@ -19,10 +28,19 @@ public class ChatController {
 	private final ChatService chatService;
 
 	@MessageMapping("/message")
-	public void message(MessageRequest messageRequest) {
+	public void sendMessage(MessageRequest messageRequest) {
 		chatService.sendMessage(messageRequest);
 		// 채널아이디 만들기
 		simpMessageSendingOperations.convertAndSend("/sub/channel/" + messageRequest.getChatRoomId(),
 			messageRequest.getMessage());
 	}
+
+	@GetMapping("/api/chats")
+	public ResponseEntity<ChatRoomDetailsDto> getChatRoom(@RequestBody ChatRequest chatRequest,
+		HttpServletRequest request) {
+		Long memberId = extractMemberId(request);
+		ChatRoomDetailsDto chatRoomDetailsDto = chatService.getChatRoom(chatRequest, memberId);
+		return ResponseEntity.ok(chatRoomDetailsDto);
+	}
+
 }

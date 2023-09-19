@@ -1,4 +1,4 @@
-package com.codesquad.secondhand.domain.chat.dto;
+package com.codesquad.secondhand.domain.chat.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

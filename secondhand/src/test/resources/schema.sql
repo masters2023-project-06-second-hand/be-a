@@ -58,16 +58,16 @@ CREATE TABLE chat_room
 (
     id         BIGINT   NOT NULL AUTO_INCREMENT PRIMARY KEY,
     product_id BIGINT   NOT NULL,
-    created_at DATETIME NOT NULL
+    member_id  BIGINT   NOT NULL
 );
 
 CREATE TABLE chat_message
 (
-    id           BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    chat_room_id BIGINT       NOT NULL,
-    memebere_id  BIGINT       NOT NULL,
-    messageRequest      VARCHAR(100) NOT NULL,
-    send_at      DATETIME     NOT NULL
+    id             BIGINT       NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    chat_room_id   BIGINT       NOT NULL,
+    member_id    BIGINT       NOT NULL,
+    messageRequest VARCHAR(100) NOT NULL,
+    send_at        DATETIME     NOT NULL
 );
 
 CREATE TABLE chat_status

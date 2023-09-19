@@ -10,6 +10,7 @@ import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
 import com.codesquad.secondhand.domain.chat.service.ChatService;
+import com.codesquad.secondhand.domain.chat.service.RedisChatMemberService;
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
 import com.codesquad.secondhand.exception.errorcode.JwtException;
@@ -24,6 +25,7 @@ public class StompInterceptor implements ChannelInterceptor {
 
 	private final JwtProvider jwtProvider;
 	private final ChatService chatService;
+	private final RedisChatMemberService redisChatMemberService;
 
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
@@ -51,7 +53,7 @@ public class StompInterceptor implements ChannelInterceptor {
 			case DISCONNECT:
 				log.info("DISCONNECT !!");
 				memberId = validateAccessToken(accessor);
-				chatService.deleteChatMember(getChatRoomId(accessor), memberId);
+				redisChatMemberService.deleteChatMember(getChatRoomId(accessor), memberId);
 				break;
 		}
 	}
@@ -61,10 +63,10 @@ public class StompInterceptor implements ChannelInterceptor {
 		Long chatRoomId = getChatRoomId(accessor);
 
 		//채팅방 입장 처리 -> Redis에 입장 내역 저장
-		chatService.connectChatRoom(chatRoomId, memberId);
+		redisChatMemberService.connectChatRoom(chatRoomId, memberId);
 
 		//읽지 않은 채팅을 전부 읽음 처리
-		chatService.updateReadMessage(chatRoomId, memberId);
+		redisChatMemberService.updateReadMessage(chatRoomId, memberId);
 
 		//todo 메세지를 보낸 상대방의 1을 없애는 로직이 필요함
 	}
