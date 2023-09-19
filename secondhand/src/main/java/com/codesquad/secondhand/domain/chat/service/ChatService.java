@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codesquad.secondhand.domain.chat.dto.MessageRequest;
 import com.codesquad.secondhand.domain.chat.entity.ChatMessage;
 import com.codesquad.secondhand.domain.chat.entity.ChatRoom;
-import com.codesquad.secondhand.domain.chat.redis.ChatMember;
+import com.codesquad.secondhand.domain.chat.redis.RedisChatMember;
 import com.codesquad.secondhand.domain.chat.repository.ChatMemberRedisRepository;
 import com.codesquad.secondhand.domain.chat.repository.ChatMessageJpaRepository;
 import com.codesquad.secondhand.domain.chat.repository.ChatRoomJpaRepository;
@@ -38,8 +38,9 @@ public class ChatService {
 			ChatMessage.of(messageRequest.getMessage(), chatRoom, member));
 
 		//3. 채팅방에 다른 멤버가 없다면 상대방에게 알림 보내기
-		List<ChatMember> chatMembers = chatMemberRedisRepository.findByChatRoomId(messageRequest.getChatRoomId());
-		if (chatMembers.size() == 2) {
+		List<RedisChatMember> redisChatMembers = chatMemberRedisRepository.findByChatRoomId(
+			messageRequest.getChatRoomId());
+		if (redisChatMembers.size() == 2) {
 			// 메세지의 읽음 상태를 true 로 변경 (채팅방에 user 가 2명이기 때문에)
 			chatMessage.updateReadStatusToTrue();
 			//알림 x
@@ -51,11 +52,11 @@ public class ChatService {
 	// 채팅방 생성
 	@Transactional
 	public void connectChatRoom(Long chatRoomId, Long memberId) {
-		ChatMember chatMember = ChatMember.builder()
+		RedisChatMember redisChatMember = RedisChatMember.builder()
 			.memberId(memberId)
 			.chatRoomId(chatRoomId)
 			.build();
-		chatMemberRedisRepository.save(chatMember);
+		chatMemberRedisRepository.save(redisChatMember);
 	}
 
 	// 읽지 않은 메시지 채팅장 입장시 읽음 처리
