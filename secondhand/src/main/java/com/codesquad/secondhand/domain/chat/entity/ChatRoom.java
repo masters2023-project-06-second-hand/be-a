@@ -54,4 +54,11 @@ public class ChatRoom {
 			.member(member)
 			.build();
 	}
+
+	public Long findOpponentId(Member sender) {
+		Long productOwnerId = this.getProduct().getMember().getId();
+		Long purchaserId = this.getMember().getId();
+
+		return sender.getId().equals(productOwnerId) ? purchaserId : productOwnerId;
+	}
 }
