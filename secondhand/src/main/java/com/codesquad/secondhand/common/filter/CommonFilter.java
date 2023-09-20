@@ -34,7 +34,9 @@ public abstract class CommonFilter extends OncePerRequestFilter {
 		new WhiteListUri("^/api/categories$", Set.of("GET")),
 		new WhiteListUri("^/api/oauth2/token$", Set.of("POST")),
 		new WhiteListUri("^/api/regions$", Set.of("GET")),
-		new WhiteListUri("^/ws$", Set.of("GET"))
+		new WhiteListUri("^/ws$", Set.of("GET")),
+		// whiteList 임시로 추가, header에 accessToken 포함 가능하면 그때 해제하면 된다.
+		new WhiteListUri("^/connect/[0-9]*$", Set.of("GET"))
 	);
 
 	protected JwtProvider jwtProvider;
