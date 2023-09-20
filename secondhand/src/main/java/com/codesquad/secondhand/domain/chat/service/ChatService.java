@@ -54,32 +54,38 @@ public class ChatService {
 	}
 
 	@Transactional
-	public ChatRoomDetailsResponse getChatRoom(ChatRequest chatRequest, Long participantId) {
+	public Long getChatRoom(ChatRequest chatRequest, Long participantId) {
 		//1. chatRoom 있는지 없는지 확인 / 없다면 chatRoom 생성후 response 보내기
 		Product product = productQueryService.findById(chatRequest.getProductId());
 		Member participant = memberQueryService.findById(participantId);
 
-		ChatRoom chatRoom = chatQueryService.findOrSaveChatRoom(participantId, product, participant);
+		return chatQueryService.findOrSaveChatRoom(participantId, product, participant).getId();
+	}
+
+	@Transactional
+	public ChatRoomDetailsResponse getChatRoomDetail(Long chatRoomId, Long participantId) {
+		//1. chatRoom 가져오기
+		ChatRoom chatRoom = chatQueryService.findChatRoomByChatRoomId(chatRoomId);
 
 		//2. 메세지 데이터 가져오기
 		List<ChatMessage> chatMessages = chatQueryService.findAllChatMessageByChatRoom(chatRoom);
 
 		//3. 모든 메세지중 상대방이 보낸 읽지 않은 메세지들의 isRead 를 true 로 변경한다.
-		updateReadMessage(chatMessages);
+		updateReadMessage(chatMessages, participantId);
 
 		List<ChatMessageResponse> messagesList = chatMessages.stream()
 			.map(ChatMessageResponse::of)
 			.collect(Collectors.toList());
 
-		ChatProductResponse chatProductResponse = ChatProductResponse.from(product);
+		ChatProductResponse chatProductResponse = ChatProductResponse.from(chatRoom.getProduct());
 
-		return ChatRoomDetailsResponse.of(chatProductResponse, product, chatRoom, messagesList);
+		return ChatRoomDetailsResponse.of(chatProductResponse, chatRoom.getProduct(), chatRoom, messagesList);
 	}
 
-	private void updateReadMessage(List<ChatMessage> chatMessages) {
+	private void updateReadMessage(List<ChatMessage> chatMessages, Long participantId) {
 		// chatMessages 중 상대방이 보낸 message 에 isRead 값을 모두 true 로 바꾼다.
 		chatMessages.stream()
-			.filter(chatMessage -> chatMessage.getIsRead().equals(false))
+			.filter(chatMessage -> chatMessage.isSentByOpponent(participantId)) // 이게 chatMessage의 member 가 아니면 true 여야해
 			.forEach(ChatMessage::updateReadStatusToTrue);
 	}
 }

@@ -2,6 +2,9 @@ package com.codesquad.secondhand.domain.chat.controller;
 
 import static com.codesquad.secondhand.common.util.RequestParser.*;
 
+import java.util.Collections;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
@@ -9,6 +12,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.codesquad.secondhand.domain.chat.dto.request.ChatRequest;
@@ -31,15 +35,23 @@ public class ChatController {
 	public void sendMessage(MessageRequest messageRequest) {
 		chatService.sendMessage(messageRequest);
 		// 채널아이디 만들기
-		simpMessageSendingOperations.convertAndSend("/sub/channel/" + messageRequest.getChatRoomId(),
+		simpMessageSendingOperations.convertAndSend("/sub/room/" + messageRequest.getChatRoomId(),
 			messageRequest.getMessage());
 	}
 
-	@GetMapping("/api/chats")
-	public ResponseEntity<ChatRoomDetailsResponse> getChatRoom(@RequestBody ChatRequest chatRequest,
+	@GetMapping("/api/chats/room-id")
+	public ResponseEntity<Map<String, Long>> getChatRoom(@RequestBody ChatRequest chatRequest,
 		HttpServletRequest request) {
 		Long participantId = extractMemberId(request);
-		ChatRoomDetailsResponse chatRoomDetailsResponse = chatService.getChatRoom(chatRequest, participantId);
+		Long chatRoomId = chatService.getChatRoom(chatRequest, participantId);
+		return ResponseEntity.ok(Collections.singletonMap("chatRoomId", chatRoomId));
+	}
+
+	@GetMapping("/api/chats/{chatRoomId}")
+	public ResponseEntity<ChatRoomDetailsResponse> getChatDetails(@PathVariable Long chatRoomId,
+		HttpServletRequest request) {
+		Long participantId = extractMemberId(request);
+		ChatRoomDetailsResponse chatRoomDetailsResponse = chatService.getChatRoomDetail(chatRoomId, participantId);
 		return ResponseEntity.ok(chatRoomDetailsResponse);
 	}
 
