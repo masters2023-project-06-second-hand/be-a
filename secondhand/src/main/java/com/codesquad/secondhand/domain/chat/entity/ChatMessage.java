@@ -62,7 +62,7 @@ public class ChatMessage {
 		this.isRead = true;
 	}
 
-	public boolean isSentByOpponent(Long memberId) {
-		return !this.getMember().getId().equals(memberId);
+	public boolean isSentByOpponent(Long participantId) {
+		return !(this.getMember().getId().equals(participantId));
 	}
 }

@@ -22,17 +22,13 @@ public class ChatQueryService {
 	private final ChatRoomJpaRepository chatRoomJpaRepository;
 	private final ChatMessageJpaRepository chatMessageJpaRepository;
 
-	public ChatRoom findOrSaveChatRoom(Long memberId, Product product, Member sender) {
-		return chatRoomJpaRepository.findByMemberIdAndProductId(memberId, product.getId())
-			.orElseGet(() -> chatRoomJpaRepository.save(ChatRoom.of(product, sender)));
+	public ChatRoom findOrSaveChatRoom(Long participantId, Product product, Member participant) {
+		return chatRoomJpaRepository.findByMemberIdAndProductId(participantId, product.getId())
+			.orElseGet(() -> chatRoomJpaRepository.save(ChatRoom.of(product, participant)));
 	}
 
 	public ChatRoom findChatRoomByChatRoomId(Long chatRoomId) {
 		return chatRoomJpaRepository.findById(chatRoomId).orElseThrow();
-	}
-
-	public List<ChatMessage> findUnreadMessagesByChatRoom(ChatRoom chatRoom) {
-		return chatMessageJpaRepository.findUnreadMessagesByChatRoom(chatRoom);
 	}
 
 	public List<ChatMessage> findAllChatMessageByChatRoom(ChatRoom chatRoom) {

@@ -24,7 +24,7 @@ public class WebSocketConfigurer implements WebSocketMessageBrokerConfigurer {
 		registry.enableSimpleBroker("/sub");
 
 		// 해당 url 로 시작하는 메세지만 Broker 에서 받아 처리해준다.
-		registry.setApplicationDestinationPrefixes("/api/pub");
+		registry.setApplicationDestinationPrefixes("/pub");
 	}
 
 	@Override

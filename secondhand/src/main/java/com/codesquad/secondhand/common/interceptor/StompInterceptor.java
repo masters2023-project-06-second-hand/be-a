@@ -9,7 +9,6 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.stereotype.Component;
 
-import com.codesquad.secondhand.domain.chat.service.ChatService;
 import com.codesquad.secondhand.domain.chat.service.RedisChatMemberService;
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
 import com.codesquad.secondhand.exception.CustomRuntimeException;
@@ -24,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class StompInterceptor implements ChannelInterceptor {
 
 	private final JwtProvider jwtProvider;
-	private final ChatService chatService;
 	private final RedisChatMemberService redisChatMemberService;
 
 	@Override
@@ -48,6 +46,7 @@ public class StompInterceptor implements ChannelInterceptor {
 				log.info("SUBSCRIBE !!");
 				break;
 			case SEND:
+				//todo apic 에서는 send 할떄 header 에 특정값을 못넣음 따라서 fe 가 개발할때 넣고 테스트해보자.
 				// validateAccessToken(accessor);
 				break;
 			case DISCONNECT:
@@ -65,13 +64,9 @@ public class StompInterceptor implements ChannelInterceptor {
 		//채팅방 입장 처리 -> Redis에 입장 내역 저장
 		redisChatMemberService.connectChatRoom(chatRoomId, memberId);
 
-		//읽지 않은 채팅을 전부 읽음 처리
-		redisChatMemberService.updateReadMessage(chatRoomId, memberId);
-
 		//todo 메세지를 보낸 상대방의 1을 없애는 로직이 필요함
 	}
 
-	//todo chatRoomId 어떻게 발급할지 얘기해봐 (얘기 해보고 예외 처리하자)
 	private Long getChatRoomId(StompHeaderAccessor accessor) {
 		return Long.valueOf(accessor.getFirstNativeHeader("chatRoomId"));
 	}
