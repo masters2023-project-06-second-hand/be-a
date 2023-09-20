@@ -25,6 +25,7 @@ public class RequestParser {
 	}
 
 	public static String extractAccessTokenFromAccessor(StompHeaderAccessor accessor) {
-		return accessor.getFirstNativeHeader(AUTHORIZATION);
+		String token = accessor.getFirstNativeHeader(AUTHORIZATION);
+		return token.substring(7);
 	}
 }

@@ -9,8 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@RedisHash(value = "chatMember")
-public class ChatMember {
+@RedisHash(value = "RedisChatMember")
+public class RedisChatMember {
 
 	@Id
 	private String id;
@@ -22,8 +22,15 @@ public class ChatMember {
 	private Long memberId;
 
 	@Builder
-	public ChatMember(Long chatRoomId, Long memberId) {
+	public RedisChatMember(Long chatRoomId, Long memberId) {
 		this.chatRoomId = chatRoomId;
 		this.memberId = memberId;
+	}
+
+	public static RedisChatMember of(Long chatRoomId, Long memberId) {
+		return RedisChatMember.builder()
+			.chatRoomId(chatRoomId)
+			.memberId(memberId)
+			.build();
 	}
 }

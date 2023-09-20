@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.product.entity.Product;
 
 import lombok.AccessLevel;
@@ -32,19 +33,25 @@ public class ChatRoom {
 	@JoinColumn(name = "product_id")
 	private Product product;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
+
 	@OneToMany(mappedBy = "chatRoom")
 	private List<ChatMessage> chatMessages = new ArrayList<>();
 
 	@Builder
-	public ChatRoom(Long id, Product product, List<ChatMessage> chatMessages) {
+	public ChatRoom(Long id, Product product, Member member, List<ChatMessage> chatMessages) {
 		this.id = id;
 		this.product = product;
 		this.chatMessages = chatMessages;
+		this.member = member;
 	}
 
-	public static ChatRoom from(Product product) {
+	public static ChatRoom of(Product product, Member member) {
 		return ChatRoom.builder()
 			.product(product)
+			.member(member)
 			.build();
 	}
 }
