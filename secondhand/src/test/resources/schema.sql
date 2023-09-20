@@ -22,7 +22,7 @@ CREATE TABLE product
     price           BIGINT NULL,
     content         VARCHAR(1000) NOT NULL,
     created_at      DATETIME      NOT NULL,
-    status          INT           NOT NULL DEFAULT 1,
+    status          INT           NOT NULL DEFAULT 0,
     thumbnail_image VARCHAR(1000) NOT NULL,
     view_count      BIGINT        NOT NULL DEFAULT 0
 );
