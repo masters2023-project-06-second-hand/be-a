@@ -10,7 +10,7 @@ import com.codesquad.secondhand.domain.chat.dto.request.ChatRequest;
 import com.codesquad.secondhand.domain.chat.dto.request.MessageRequest;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatMessageResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatProductResponse;
-import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomDetailsDto;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomDetailsResponse;
 import com.codesquad.secondhand.domain.chat.entity.ChatMessage;
 import com.codesquad.secondhand.domain.chat.entity.ChatRoom;
 import com.codesquad.secondhand.domain.chat.redis.RedisChatMember;
@@ -54,7 +54,7 @@ public class ChatService {
 	}
 
 	@Transactional
-	public ChatRoomDetailsDto getChatRoom(ChatRequest chatRequest, Long memberId) {
+	public ChatRoomDetailsResponse getChatRoom(ChatRequest chatRequest, Long memberId) {
 		//1. chatRoom 있는지 없는지 확인 / 없다면 chatRoom 생성후 response 보내기
 		Product product = productQueryService.findById(chatRequest.getProductId());
 		Member sender = memberQueryService.findById(memberId);
@@ -65,11 +65,11 @@ public class ChatService {
 		List<ChatMessage> messages = chatQueryService.findAllChatMessageByChatRoom(chatRoom);
 
 		List<ChatMessageResponse> messagesList = messages.stream()
-			.map(message -> ChatMessageResponse.of(message))
+			.map(ChatMessageResponse::of)
 			.collect(Collectors.toList());
 
-		ChatProductResponse chatProduct = ChatProductResponse.from(product);
+		ChatProductResponse chatProductResponse = ChatProductResponse.from(product);
 
-		return ChatRoomDetailsDto.of(chatProduct, product.getMember().getNickname(), chatRoom.getId(), messagesList);
+		return ChatRoomDetailsResponse.of(chatProductResponse, product, chatRoom, messagesList);
 	}
 }

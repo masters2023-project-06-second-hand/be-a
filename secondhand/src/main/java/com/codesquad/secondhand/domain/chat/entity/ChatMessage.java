@@ -61,4 +61,8 @@ public class ChatMessage {
 	public void updateReadStatusToTrue() {
 		this.isRead = true;
 	}
+
+	public boolean isSentByOpponent(Long memberId) {
+		return !this.getMember().getId().equals(memberId);
+	}
 }

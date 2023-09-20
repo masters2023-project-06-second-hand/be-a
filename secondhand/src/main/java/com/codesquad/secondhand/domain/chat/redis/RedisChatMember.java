@@ -26,4 +26,11 @@ public class RedisChatMember {
 		this.chatRoomId = chatRoomId;
 		this.memberId = memberId;
 	}
+
+	public static RedisChatMember of(Long chatRoomId, Long memberId) {
+		return RedisChatMember.builder()
+			.chatRoomId(chatRoomId)
+			.memberId(memberId)
+			.build();
+	}
 }

@@ -41,11 +41,10 @@ public class ProductController {
 
 	@PostMapping("/products")
 	public ResponseEntity<Map<String, Long>> save(
-		@Valid @RequestBody ProductSaveAndUpdateRequest productSaveAndUpdateRequest,
-		HttpServletRequest request) {
+		@Valid @RequestBody ProductSaveAndUpdateRequest productSaveAndUpdateRequest, HttpServletRequest request) {
 		Long memberId = extractMemberId(request);
 		Long productId = productService.save(productSaveAndUpdateRequest, memberId);
-		return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("id", productId));
+		return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("productId", productId));
 	}
 
 	@GetMapping("/products/{productId}")

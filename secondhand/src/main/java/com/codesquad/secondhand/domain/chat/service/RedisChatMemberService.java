@@ -21,10 +21,7 @@ public class RedisChatMemberService {
 	// 채팅방 생성
 	@Transactional
 	public void connectChatRoom(Long chatRoomId, Long memberId) {
-		RedisChatMember redisChatMember = RedisChatMember.builder()
-			.memberId(memberId)
-			.chatRoomId(chatRoomId)
-			.build();
+		RedisChatMember redisChatMember = RedisChatMember.of(chatRoomId, memberId);
 		redisChatMemberQueryService.save(redisChatMember);
 	}
 
@@ -38,8 +35,8 @@ public class RedisChatMemberService {
 
 		// chatMessages 중 상대방이 보낸 message 에 isRead 값을 모두 true 로 바꾼다.
 		chatMessages.stream()
-			.filter(chatMessage -> chatMessage.getMember().getId().equals(memberId))
-			.forEach(chatMessage -> chatMessage.updateReadStatusToTrue());
+			.filter(chatMessage -> chatMessage.isSentByOpponent(memberId))
+			.forEach(ChatMessage::updateReadStatusToTrue);
 	}
 
 	@Transactional

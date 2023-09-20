@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.codesquad.secondhand.domain.chat.dto.request.ChatRequest;
 import com.codesquad.secondhand.domain.chat.dto.request.MessageRequest;
-import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomDetailsDto;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomDetailsResponse;
 import com.codesquad.secondhand.domain.chat.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,11 +36,11 @@ public class ChatController {
 	}
 
 	@GetMapping("/api/chats")
-	public ResponseEntity<ChatRoomDetailsDto> getChatRoom(@RequestBody ChatRequest chatRequest,
+	public ResponseEntity<ChatRoomDetailsResponse> getChatRoom(@RequestBody ChatRequest chatRequest,
 		HttpServletRequest request) {
 		Long memberId = extractMemberId(request);
-		ChatRoomDetailsDto chatRoomDetailsDto = chatService.getChatRoom(chatRequest, memberId);
-		return ResponseEntity.ok(chatRoomDetailsDto);
+		ChatRoomDetailsResponse chatRoomDetailsResponse = chatService.getChatRoom(chatRequest, memberId);
+		return ResponseEntity.ok(chatRoomDetailsResponse);
 	}
 
 }

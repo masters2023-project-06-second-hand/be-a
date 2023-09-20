@@ -25,7 +25,6 @@ public class RedisChatMemberQueryService {
 	}
 
 	public List<RedisChatMember> findByChatRoomId(Long chatRoomId) {
-		return chatMemberRedisRepository.findByChatRoomId(
-			chatRoomId);
+		return chatMemberRedisRepository.findByChatRoomId(chatRoomId);
 	}
 }
