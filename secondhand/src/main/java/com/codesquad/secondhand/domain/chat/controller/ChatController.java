@@ -38,8 +38,8 @@ public class ChatController {
 	@GetMapping("/api/chats")
 	public ResponseEntity<ChatRoomDetailsResponse> getChatRoom(@RequestBody ChatRequest chatRequest,
 		HttpServletRequest request) {
-		Long memberId = extractMemberId(request);
-		ChatRoomDetailsResponse chatRoomDetailsResponse = chatService.getChatRoom(chatRequest, memberId);
+		Long participantId = extractMemberId(request);
+		ChatRoomDetailsResponse chatRoomDetailsResponse = chatService.getChatRoom(chatRequest, participantId);
 		return ResponseEntity.ok(chatRoomDetailsResponse);
 	}
 

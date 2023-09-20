@@ -65,13 +65,9 @@ public class StompInterceptor implements ChannelInterceptor {
 		//채팅방 입장 처리 -> Redis에 입장 내역 저장
 		redisChatMemberService.connectChatRoom(chatRoomId, memberId);
 
-		//읽지 않은 채팅을 전부 읽음 처리
-		redisChatMemberService.updateReadMessage(chatRoomId, memberId);
-
 		//todo 메세지를 보낸 상대방의 1을 없애는 로직이 필요함
 	}
 
-	//todo chatRoomId 어떻게 발급할지 얘기해봐 (얘기 해보고 예외 처리하자)
 	private Long getChatRoomId(StompHeaderAccessor accessor) {
 		return Long.valueOf(accessor.getFirstNativeHeader("chatRoomId"));
 	}

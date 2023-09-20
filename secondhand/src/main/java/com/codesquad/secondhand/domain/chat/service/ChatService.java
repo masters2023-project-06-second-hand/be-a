@@ -54,22 +54,32 @@ public class ChatService {
 	}
 
 	@Transactional
-	public ChatRoomDetailsResponse getChatRoom(ChatRequest chatRequest, Long memberId) {
+	public ChatRoomDetailsResponse getChatRoom(ChatRequest chatRequest, Long participantId) {
 		//1. chatRoom 있는지 없는지 확인 / 없다면 chatRoom 생성후 response 보내기
 		Product product = productQueryService.findById(chatRequest.getProductId());
-		Member sender = memberQueryService.findById(memberId);
+		Member participant = memberQueryService.findById(participantId);
 
-		ChatRoom chatRoom = chatQueryService.findOrSaveChatRoom(memberId, product, sender);
+		ChatRoom chatRoom = chatQueryService.findOrSaveChatRoom(participantId, product, participant);
 
-		//2. 메세지 및 그외 데이터 가져오기
-		List<ChatMessage> messages = chatQueryService.findAllChatMessageByChatRoom(chatRoom);
+		//2. 메세지 데이터 가져오기
+		List<ChatMessage> chatMessages = chatQueryService.findAllChatMessageByChatRoom(chatRoom);
 
-		List<ChatMessageResponse> messagesList = messages.stream()
+		//3. 모든 메세지중 상대방이 보낸 읽지 않은 메세지들의 isRead 를 true 로 변경한다.
+		updateReadMessage(chatMessages);
+
+		List<ChatMessageResponse> messagesList = chatMessages.stream()
 			.map(ChatMessageResponse::of)
 			.collect(Collectors.toList());
 
 		ChatProductResponse chatProductResponse = ChatProductResponse.from(product);
 
 		return ChatRoomDetailsResponse.of(chatProductResponse, product, chatRoom, messagesList);
+	}
+
+	private void updateReadMessage(List<ChatMessage> chatMessages) {
+		// chatMessages 중 상대방이 보낸 message 에 isRead 값을 모두 true 로 바꾼다.
+		chatMessages.stream()
+			.filter(chatMessage -> chatMessage.getIsRead().equals(false))
+			.forEach(ChatMessage::updateReadStatusToTrue);
 	}
 }
