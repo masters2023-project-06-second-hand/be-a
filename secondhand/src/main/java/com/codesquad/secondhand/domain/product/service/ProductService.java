@@ -24,6 +24,7 @@ import com.codesquad.secondhand.domain.product.utils.ProductStatus;
 import com.codesquad.secondhand.domain.reaction.service.ReactionQueryService;
 import com.codesquad.secondhand.domain.region.entity.Region;
 import com.codesquad.secondhand.domain.region.service.RegionQueryService;
+import com.codesquad.secondhand.redis.util.RedisUtil;
 
 import lombok.RequiredArgsConstructor;
 
@@ -38,6 +39,7 @@ public class ProductService {
 	private final MemberQueryService memberQueryService;
 	private final ImageQueryService imageQueryService;
 	private final ReactionQueryService reactionQueryService;
+	private final RedisUtil redisUtil;
 
 	@Transactional
 	public Long save(ProductSaveAndUpdateRequest productSaveAndUpdateRequest, Long memberId) {
@@ -51,7 +53,10 @@ public class ProductService {
 		return productQueryService.save(product);
 	}
 
-	public ProductDetailResponse findDetail(Long productId) {
+	public ProductDetailResponse findDetail(Long productId, Long memberId) {
+		if (memberId != null) {
+			redisUtil.addViewCount(productId, memberId);
+		}
 		return ProductDetailResponse.from(productQueryService.findById(productId));
 	}
 
