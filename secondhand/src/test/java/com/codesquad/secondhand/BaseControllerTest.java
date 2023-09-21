@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.codesquad.secondhand.amazon.S3Uploader;
+import com.codesquad.secondhand.domain.chat.service.ChatService;
 import com.codesquad.secondhand.domain.image.service.ImageQueryService;
 import com.codesquad.secondhand.domain.image.service.ImageService;
 import com.codesquad.secondhand.domain.jwt.domain.Jwt;
@@ -68,6 +69,9 @@ public abstract class BaseControllerTest {
 
 	@Autowired
 	public RedisUtil redisUtil;
+
+	@Autowired
+	public ChatService chatService;
 
 	@BeforeEach
 	void init() {
