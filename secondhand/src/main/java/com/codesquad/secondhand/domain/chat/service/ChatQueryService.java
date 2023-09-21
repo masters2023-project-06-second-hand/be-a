@@ -39,4 +39,7 @@ public class ChatQueryService {
 		return chatMessageJpaRepository.save(chatMessage);
 	}
 
+	public Long countByProduct(Product product) {
+		return chatRoomJpaRepository.countByProduct(product);
+	}
 }

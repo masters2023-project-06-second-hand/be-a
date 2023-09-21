@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.category.entity.Category;
 import com.codesquad.secondhand.domain.category.service.CategoryQueryService;
+import com.codesquad.secondhand.domain.chat.service.ChatQueryService;
 import com.codesquad.secondhand.domain.image.service.ImageQueryService;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.service.MemberQueryService;
@@ -18,6 +19,7 @@ import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
 import com.codesquad.secondhand.domain.product.dto.response.ProductResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductStatResponse;
 import com.codesquad.secondhand.domain.product.entity.Image;
 import com.codesquad.secondhand.domain.product.entity.Product;
 import com.codesquad.secondhand.domain.product.utils.ProductStatus;
@@ -39,6 +41,7 @@ public class ProductService {
 	private final MemberQueryService memberQueryService;
 	private final ImageQueryService imageQueryService;
 	private final ReactionQueryService reactionQueryService;
+	private final ChatQueryService chatQueryService;
 	private final RedisUtil redisUtil;
 
 	@Transactional
@@ -120,5 +123,15 @@ public class ProductService {
 		imagesId.stream()
 			.map(imageId -> imageQueryService.findById(imageId))
 			.forEach(imageFromDb -> imageFromDb.updateProduct(product));
+	}
+
+	public ProductStatResponse findStat(Long productId, Long memberId) {
+		Product product = productQueryService.findById(productId);
+		Long viewCount = redisUtil.getViewCount(productId) + product.getViewCount();
+		Long reactionCount = reactionQueryService.countByProduct(product);
+		Long chattingCount = chatQueryService.countByProduct(product);
+		Boolean isLiked = reactionQueryService.isLiked(memberId, product);
+
+		return ProductStatResponse.of(viewCount, reactionCount, chattingCount, isLiked);
 	}
 }
