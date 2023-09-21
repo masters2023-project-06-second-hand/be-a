@@ -114,8 +114,9 @@ public class ProductService {
 	}
 
 	private ProductResponse mapToProductResponse(Product product) {
-		long reactionCount = reactionQueryService.countByProduct(product);
-		return ProductResponse.of(product, reactionCount);
+		Long chattingCount = chatQueryService.countByProduct(product);
+		Long reactionCount = reactionQueryService.countByProduct(product);
+		return ProductResponse.of(product, reactionCount, chattingCount);
 	}
 
 	@Transactional
