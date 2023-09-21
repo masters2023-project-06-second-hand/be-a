@@ -48,8 +48,9 @@ public class ProductController {
 	}
 
 	@GetMapping("/products/{productId}")
-	public ResponseEntity<ProductDetailResponse> findDetail(@PathVariable Long productId) {
-		ProductDetailResponse productDetailResponse = productService.findDetail(productId);
+	public ResponseEntity<ProductDetailResponse> findDetail(@PathVariable Long productId, HttpServletRequest request) {
+		Long memberId = extractMemberId(request);
+		ProductDetailResponse productDetailResponse = productService.findDetail(productId, memberId);
 		return ResponseEntity.ok().body(productDetailResponse);
 	}
 
