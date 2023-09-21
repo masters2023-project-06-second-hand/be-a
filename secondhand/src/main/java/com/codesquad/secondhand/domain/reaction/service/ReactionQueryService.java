@@ -36,4 +36,8 @@ public class ReactionQueryService {
 	public long countByProduct(Product product) {
 		return reactionJpaRepository.countByProduct(product);
 	}
+
+	public Boolean isLiked(Long memberId, Product product) {
+		return reactionJpaRepository.existsByMemberIdAndProductId(memberId, product.getId());
+	}
 }
