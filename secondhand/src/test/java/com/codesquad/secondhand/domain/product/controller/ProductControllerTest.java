@@ -39,7 +39,7 @@ class ProductControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
-			.andExpect(jsonPath("$.id").exists())
+			.andExpect(jsonPath("$.productId").exists())
 			.andExpect(status().isCreated());
 	}
 
