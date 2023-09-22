@@ -16,7 +16,13 @@ public class RequestParser {
 	}
 
 	public static Long extractMemberId(HttpServletRequest request) {
-		return Long.valueOf(String.valueOf(request.getAttribute(MEMBER_ID)));
+		Object attribute = request.getAttribute(MEMBER_ID);
+		if (attribute == null) {
+			return null;
+		}
+
+		String memberId = attribute.toString();
+		return Long.valueOf(memberId);
 	}
 
 	public static String extractEmail(HttpServletRequest request) {

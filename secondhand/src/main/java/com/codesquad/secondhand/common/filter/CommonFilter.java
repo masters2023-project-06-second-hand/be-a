@@ -39,7 +39,8 @@ public abstract class CommonFilter extends OncePerRequestFilter {
 		new WhiteListUri("^/connect/[0-9]*$", Set.of("GET")),
 		new WhiteListUri("^/oauth2/authorization/[^/]+$", Set.of("GET")),
 		new WhiteListUri("^/login/oauth2/code/.*$", Set.of("GET")),
-		new WhiteListUri("^/api/regions$", Set.of("GET"))
+		new WhiteListUri("^/api/regions$", Set.of("GET")),
+		new WhiteListUri("^/api/products/[0-9]*/stat$", Set.of("GET"))
 	);
 
 	protected JwtProvider jwtProvider;
