@@ -11,6 +11,10 @@ import com.codesquad.secondhand.domain.chat.dto.request.MessageRequest;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatMessageResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatProductResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomDetailsResponse;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomListResponse;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomMessageResponse;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomOpponentResponse;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomProductResponse;
 import com.codesquad.secondhand.domain.chat.entity.ChatMessage;
 import com.codesquad.secondhand.domain.chat.entity.ChatRoom;
 import com.codesquad.secondhand.domain.chat.redis.RedisChatMember;
@@ -91,5 +95,40 @@ public class ChatService {
 		chatMessages.stream()
 			.filter(chatMessage -> chatMessage.isSentByOpponent(participantId)) // 이게 chatMessage의 member 가 아니면 true 여야해
 			.forEach(ChatMessage::updateReadStatusToTrue);
+	}
+
+	public List<ChatRoomListResponse> getChatRoomList(Long memberId) {
+		List<ChatRoom> chatRooms = chatQueryService.findAllChatRoomByMember(memberId);
+		List<ChatRoomListResponse> chatRoomListResponses = chatRooms.stream()
+			.map(chatRoom -> {
+				ChatRoomProductResponse productResponse = mapToChatRoomProduct(chatRoom);
+				ChatRoomOpponentResponse opponentResponse = mapToChatRoomOpponent(chatRoom, memberId);
+				ChatRoomMessageResponse chatRoomMessageResponse = mapToChatRoomMessage(chatRoom, memberId);
+				return ChatRoomListResponse.of(chatRoom.getId(), productResponse, opponentResponse,
+					chatRoomMessageResponse);
+			}).collect(Collectors.toList());
+		return chatRoomListResponses;
+	}
+
+	private ChatRoomProductResponse mapToChatRoomProduct(ChatRoom chatRoom) {
+		return ChatRoomProductResponse.from(chatRoom);
+	}
+
+	private ChatRoomOpponentResponse mapToChatRoomOpponent(ChatRoom chatRoom, Long memberId) {
+		Member member = findOpponentMember(chatRoom, memberId);
+		return ChatRoomOpponentResponse.of(member.getNickname(), member.getProfileImg());
+	}
+
+	private ChatRoomMessageResponse mapToChatRoomMessage(ChatRoom chatRoom, Long memberId) {
+		ChatMessage message = chatQueryService.findLastMessage(chatRoom);
+		Member member = findOpponentMember(chatRoom, memberId);
+		Long count = chatQueryService.getUnReadCount(member, chatRoom);
+		return ChatRoomMessageResponse.of(message, count);
+	}
+
+	private Member findOpponentMember(ChatRoom chatRoom, Long memberId) {
+		Member loginedMember = memberQueryService.findById(memberId);
+		Long opponentId = chatRoom.findOpponentId(loginedMember);
+		return memberQueryService.findById(opponentId);
 	}
 }
