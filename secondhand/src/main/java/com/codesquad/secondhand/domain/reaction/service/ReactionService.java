@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.category.dto.response.CategoryResponse;
+import com.codesquad.secondhand.domain.chat.service.ChatQueryService;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.member.service.MemberQueryService;
 import com.codesquad.secondhand.domain.product.dto.response.ProductResponse;
@@ -26,6 +27,7 @@ public class ReactionService {
 	private final ReactionQueryService reactionQueryService;
 	private final MemberQueryService memberQueryService;
 	private final ProductQueryService productQueryService;
+	private final ChatQueryService chatQueryService;
 
 	@Transactional
 	public void update(Long productId, Long memberId, ReactionUpdateRequest reactionUpdateRequest) {
@@ -69,7 +71,8 @@ public class ReactionService {
 
 	private ProductResponse mapToProductResponse(Reaction reaction) {
 		Product product = reaction.getProduct();
-		long reactionCount = reactionQueryService.countByProduct(product);
-		return ProductResponse.of(product, reactionCount);
+		Long reactionCount = reactionQueryService.countByProduct(product);
+		Long chattingCount = chatQueryService.countByProduct(product);
+		return ProductResponse.of(product, reactionCount, chattingCount);
 	}
 }

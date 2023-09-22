@@ -39,7 +39,7 @@ class ProductControllerTest extends BaseControllerTest {
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(request))
-			.andExpect(jsonPath("$.id").exists())
+			.andExpect(jsonPath("$.productId").exists())
 			.andExpect(status().isCreated());
 	}
 
@@ -453,5 +453,29 @@ class ProductControllerTest extends BaseControllerTest {
 		String responseBody = result.getResponse().getContentAsString();
 		JSONArray jsonArray = new JSONArray(responseBody);
 		Assertions.assertThat(jsonArray.length()).isEqualTo(1);
+	}
+
+	@Test
+	@DisplayName("채팅개수, 좋아요개수, 조회수, 로그인한 회원이 좋아요를 누른 상품인지의 정보를 포함한 응답을 보낸다.")
+	void findStat() throws Exception {
+		// given
+
+		//1. 이미지 저장
+		saveDummyImage("imageTest1");
+		saveDummyImage("imageTest2");
+
+		//2. 상품저장
+		ProductSaveAndUpdateRequest productRequestCat1Reg1 = new ProductSaveAndUpdateRequest("상품명", 1L, 100000L, "상품내용",
+			1L, Arrays.asList(1L, 2L));
+		Long productId = productService.save(productRequestCat1Reg1, MEMBER_ID);
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/api/products/{productId}/stat", productId)
+				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + jwt.getAccessToken())
+				.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.chattingCount").exists())
+			.andExpect(jsonPath("$.likeCount").exists())
+			.andExpect(jsonPath("$.viewCount").exists())
+			.andExpect(jsonPath("$.isLiked").exists());
 	}
 }

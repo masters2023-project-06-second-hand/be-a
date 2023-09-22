@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.MalformedJwtException;
 
 @Component
@@ -44,7 +45,9 @@ public class WhiteListTokenCheckFilter extends CommonFilter {
 		if (whiteListCheck(request)) {
 			try {
 				String jwt = extractAccessToken(request);
-				jwtProvider.getClaims(jwt);
+				Claims claims = jwtProvider.getClaims(jwt);
+				Object emailObj = claims.get("memberId");
+				request.setAttribute("memberId", emailObj);
 			} catch (StringIndexOutOfBoundsException | NullPointerException e) {
 				request.setAttribute("role", "guest");
 			} catch (MalformedJwtException e) {

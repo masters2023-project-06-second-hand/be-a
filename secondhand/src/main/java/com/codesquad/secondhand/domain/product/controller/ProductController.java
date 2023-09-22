@@ -28,6 +28,7 @@ import com.codesquad.secondhand.domain.product.dto.request.ProductUpdateRequest;
 import com.codesquad.secondhand.domain.product.dto.response.ProductDetailResponse;
 import com.codesquad.secondhand.domain.product.dto.response.ProductFindAllResponse;
 import com.codesquad.secondhand.domain.product.dto.response.ProductResponse;
+import com.codesquad.secondhand.domain.product.dto.response.ProductStatResponse;
 import com.codesquad.secondhand.domain.product.service.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -48,8 +49,9 @@ public class ProductController {
 	}
 
 	@GetMapping("/products/{productId}")
-	public ResponseEntity<ProductDetailResponse> findDetail(@PathVariable Long productId) {
-		ProductDetailResponse productDetailResponse = productService.findDetail(productId);
+	public ResponseEntity<ProductDetailResponse> findDetail(@PathVariable Long productId, HttpServletRequest request) {
+		Long memberId = extractMemberId(request);
+		ProductDetailResponse productDetailResponse = productService.findDetail(productId, memberId);
 		return ResponseEntity.ok().body(productDetailResponse);
 	}
 
@@ -88,5 +90,12 @@ public class ProductController {
 	public ResponseEntity<List<ProductResponse>> findSalesProducts(@PathVariable Long memberId,
 		@RequestParam(required = false) Integer statusId) {
 		return ResponseEntity.ok().body(productService.findSalesProducts(memberId, statusId));
+	}
+
+	@GetMapping("/products/{productId}/stat")
+	public ResponseEntity<ProductStatResponse> findStat(@PathVariable Long productId, HttpServletRequest request) {
+		Long memberId = extractMemberId(request);
+		ProductStatResponse productStatResponse = productService.findStat(productId, memberId);
+		return ResponseEntity.ok().body(productStatResponse);
 	}
 }

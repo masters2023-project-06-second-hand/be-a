@@ -13,6 +13,5 @@ public class MessageRequest {
 	private Long chatRoomId;
 	private String message;
 	private Long senderId;
-	private Long productId;
 
 }

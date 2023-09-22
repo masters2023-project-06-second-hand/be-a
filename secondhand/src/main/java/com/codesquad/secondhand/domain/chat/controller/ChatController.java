@@ -3,6 +3,7 @@ package com.codesquad.secondhand.domain.chat.controller;
 import static com.codesquad.secondhand.common.util.RequestParser.*;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.codesquad.secondhand.domain.chat.dto.request.ChatRequest;
 import com.codesquad.secondhand.domain.chat.dto.request.MessageRequest;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomDetailsResponse;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomListResponse;
 import com.codesquad.secondhand.domain.chat.service.ChatService;
 
 import lombok.RequiredArgsConstructor;
@@ -53,6 +55,12 @@ public class ChatController {
 		Long participantId = extractMemberId(request);
 		ChatRoomDetailsResponse chatRoomDetailsResponse = chatService.getChatRoomDetail(chatRoomId, participantId);
 		return ResponseEntity.ok(chatRoomDetailsResponse);
+	}
+
+	@GetMapping("/api/members/{memberId}/chats")
+	public ResponseEntity<List<ChatRoomListResponse>> getChatRoomList(@PathVariable Long memberId) {
+		List<ChatRoomListResponse> response = chatService.getChatRoomList(memberId);
+		return ResponseEntity.ok(response);
 	}
 
 }

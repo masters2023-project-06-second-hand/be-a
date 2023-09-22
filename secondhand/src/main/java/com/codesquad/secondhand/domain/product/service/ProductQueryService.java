@@ -46,4 +46,10 @@ public class ProductQueryService {
 	public Slice<Product> findAll(Long regionId, Long categoryId, Pageable pageable) {
 		return productQueryRepository.findAll(regionId, categoryId, pageable);
 	}
+
+	@Transactional
+	public void applyViewCntToDB(Long productId, Long viewCount) {
+		Product product = findById(productId);
+		productJpaRepository.updateViewCount(productId, viewCount + product.getViewCount());
+	}
 }
