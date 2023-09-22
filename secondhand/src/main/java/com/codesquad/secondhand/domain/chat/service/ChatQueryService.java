@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.codesquad.secondhand.domain.chat.entity.ChatMessage;
 import com.codesquad.secondhand.domain.chat.entity.ChatRoom;
 import com.codesquad.secondhand.domain.chat.repository.ChatMessageJpaRepository;
+import com.codesquad.secondhand.domain.chat.repository.ChatMessageQueryRepository;
 import com.codesquad.secondhand.domain.chat.repository.ChatRoomJpaRepository;
 import com.codesquad.secondhand.domain.member.entity.Member;
 import com.codesquad.secondhand.domain.product.entity.Product;
@@ -21,6 +22,7 @@ public class ChatQueryService {
 
 	private final ChatRoomJpaRepository chatRoomJpaRepository;
 	private final ChatMessageJpaRepository chatMessageJpaRepository;
+	private final ChatMessageQueryRepository chatMessageQueryRepository;
 
 	public ChatRoom findOrSaveChatRoom(Long participantId, Product product, Member participant) {
 		return chatRoomJpaRepository.findByMemberIdAndProductId(participantId, product.getId())
@@ -39,6 +41,18 @@ public class ChatQueryService {
 		return chatMessageJpaRepository.save(chatMessage);
 	}
 
+	public List<ChatRoom> findAllChatRoomByMember(Long memberId) {
+		return chatRoomJpaRepository.findAllByMemberId(memberId);
+	}
+  
+	public Long getUnReadCount(Member opponent, ChatRoom chatRoom) {
+		return chatMessageJpaRepository.countUnreadMessages(opponent, chatRoom);
+	}
+
+	public ChatMessage findLastMessage(ChatRoom chatRoom) {
+		return chatMessageQueryRepository.findLatestMessage(chatRoom);
+  }
+  
 	public Long countByProduct(Product product) {
 		return chatRoomJpaRepository.countByProduct(product);
 	}
