@@ -23,7 +23,7 @@ public class ProductResponse {
 	private Long likeCount;
 	private Long chattingCount;
 
-	public static ProductResponse of(Product product, long reactionCount) {
+	public static ProductResponse of(Product product, Long reactionCount, Long chattingCount) {
 		return ProductResponse.builder()
 			.id(product.getId())
 			.writerId(product.getMember().getId())
@@ -34,7 +34,7 @@ public class ProductResponse {
 			.status(ProductStatus.fromCode(product.getStatus()).getDescription())
 			.price(product.getPrice())
 			.likeCount(reactionCount)
-			.chattingCount(1L)
+			.chattingCount(chattingCount)
 			.build();
 	}
 }

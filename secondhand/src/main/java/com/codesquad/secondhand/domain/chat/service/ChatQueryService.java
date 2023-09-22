@@ -44,12 +44,16 @@ public class ChatQueryService {
 	public List<ChatRoom> findAllChatRoomByMember(Long memberId) {
 		return chatRoomJpaRepository.findAllByMemberId(memberId);
 	}
-
+  
 	public Long getUnReadCount(Member opponent, ChatRoom chatRoom) {
 		return chatMessageJpaRepository.countUnreadMessages(opponent, chatRoom);
 	}
 
 	public ChatMessage findLastMessage(ChatRoom chatRoom) {
 		return chatMessageQueryRepository.findLatestMessage(chatRoom);
+  }
+  
+	public Long countByProduct(Product product) {
+		return chatRoomJpaRepository.countByProduct(product);
 	}
 }

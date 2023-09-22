@@ -16,4 +16,5 @@ public interface ReactionJpaRepository extends JpaRepository<Reaction, Long> {
 
 	long countByProduct(Product product);
 
+	Boolean existsByMemberIdAndProductId(Long memberId, Long id);
 }
