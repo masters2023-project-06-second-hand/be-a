@@ -131,7 +131,9 @@ public class ProductService {
 		Long viewCount = redisUtil.getViewCount(productId) + product.getViewCount();
 		Long reactionCount = reactionQueryService.countByProduct(product);
 		Long chattingCount = chatQueryService.countByProduct(product);
-		Boolean isLiked = reactionQueryService.isLiked(memberId, product);
+
+		// memberId가 null이 아닐 때만 isLiked를 확인
+		Boolean isLiked = (memberId != null) ? reactionQueryService.isLiked(memberId, product) : false;
 
 		return ProductStatResponse.of(viewCount, reactionCount, chattingCount, isLiked);
 	}
