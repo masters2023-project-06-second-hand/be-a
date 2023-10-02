@@ -1,10 +1,12 @@
 package com.codesquad.secondhand.domain.product.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +37,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class ProductService {
 
+	public static final long NO_VIEWS = 0L;
 	private final ProductQueryService productQueryService;
 	private final CategoryQueryService categoryQueryService;
 	private final RegionQueryService regionQueryService;
@@ -136,5 +139,23 @@ public class ProductService {
 		Boolean isLiked = (memberId != null) ? reactionQueryService.isLiked(memberId, product) : false;
 
 		return ProductStatResponse.of(viewCount, reactionCount, chattingCount, isLiked);
+	}
+
+	@Scheduled(cron = "* */3 * * * ?")
+	@Transactional
+	public void applyViewCountToDB() {
+		Set<String> productKeys = redisUtil.getCurrentProductKeys();
+
+		for (String currentKey : productKeys) {
+			String productIdStr = currentKey.split(":")[1];
+			Long productId = Long.valueOf(productIdStr);
+
+			Long viewCount = redisUtil.getViewCount(productId);
+
+			if (!viewCount.equals(NO_VIEWS)) {
+				productQueryService.applyViewCntToDB(productId, viewCount);
+				redisUtil.copyCurrentToPreviousAndDeleteCurrent(currentKey, productId);
+			}
+		}
 	}
 }
