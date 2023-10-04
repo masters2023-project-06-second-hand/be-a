@@ -14,6 +14,7 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.codesquad.secondhand.domain.chat.dto.request.ChatRequest;
@@ -41,7 +42,7 @@ public class ChatController {
 			messageRequest.getMessage());
 	}
 
-	@GetMapping("/api/chats/room-id")
+	@PostMapping("/api/chats/room-id")
 	public ResponseEntity<Map<String, Long>> getChatRoom(@RequestBody ChatRequest chatRequest,
 		HttpServletRequest request) {
 		Long participantId = extractMemberId(request);

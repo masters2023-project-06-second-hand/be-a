@@ -47,7 +47,7 @@ public class StompInterceptor implements ChannelInterceptor {
 				break;
 			case SEND:
 				//todo apic 에서는 send 할떄 header 에 특정값을 못넣음 따라서 fe 가 개발할때 넣고 테스트해보자.
-				// validateAccessToken(accessor);
+				validateAccessToken(accessor);
 				break;
 			case DISCONNECT:
 				log.info("DISCONNECT !!");
