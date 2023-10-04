@@ -41,7 +41,7 @@ class ChatControllerTest extends BaseControllerTest {
 		String requestJson = objectMapper.writeValueAsString(chatRequest);
 
 		// when & then
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/chats/room-id")
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/chats/room-id")
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + purchaserJwtToken.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))
@@ -71,7 +71,7 @@ class ChatControllerTest extends BaseControllerTest {
 		Long expected = chatService.getChatRoom(chatRequest, PURCHASER_ID);
 
 		// when & then
-		mockMvc.perform(MockMvcRequestBuilders.get("/api/chats/room-id")
+		mockMvc.perform(MockMvcRequestBuilders.post("/api/chats/room-id")
 				.header(AUTHORIZATION, JWT_TOKEN_PREFIX + purchaserJwtToken.getAccessToken())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestJson))

@@ -75,6 +75,15 @@ public class ProductController {
 		return ResponseEntity.noContent().build();
 	}
 
+	/**
+	 * 비회원인경우 regionId=1 즉 역삼동 제품만을 조회할수 있도록 한다.
+	 *
+	 * @param regionId
+	 * @param categoryId
+	 * @param request
+	 * @param page
+	 * @return
+	 */
 	@GetMapping("/products")
 	public ResponseEntity<ProductFindAllResponse> findAll(@RequestParam Long regionId,
 		@RequestParam(required = false) Long categoryId, HttpServletRequest request,
