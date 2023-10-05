@@ -18,9 +18,24 @@ jobs:
   # Job[1]: BACKEND -> docker hub로 build & push
   be-deploy:
     runs-on: ubuntu-latest
+    services:
+      mysql_db:
+        image: mysql:8.0.23
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_DATABASE: second_hand
+          MYSQL_ROOT_PASSWORD: 1234
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+
     defaults:
       run:
         working-directory: ${{ env.BE_WORKING_DIR }}
+
+
     steps:
 
       # 1. Source 단계
@@ -40,12 +55,12 @@ jobs:
           touch '${{ env.APPLICATION_FILE_PATH }}'
           echo '${{ secrets.APPLICATION }}' > '${{ env.APPLICATION_FILE_PATH }}'
 
-      # 3. build 단계
+        # 3. build 단계
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test # 인바운드 IP 설정할 수 있으면 -x test 제거
+        run: ./gradlew clean build -Djasypt.encryptor.password=${{ secrets.JASYPT_SECRET }}
 
       # 4. docker hub로 build & push
       - name: docker build and push

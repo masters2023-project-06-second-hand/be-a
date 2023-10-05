@@ -18,12 +18,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import com.codesquad.secondhand.domain.jwt.domain.Jwt;
 import com.codesquad.secondhand.domain.jwt.domain.JwtProvider;
 import com.codesquad.secondhand.exception.errorcode.JwtException;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class WhiteListTokenCheckFilterTest {
 
 	public static final long MEMBER_ID = 1L;
