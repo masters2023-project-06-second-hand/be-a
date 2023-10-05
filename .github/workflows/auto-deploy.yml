@@ -49,6 +49,12 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
+      # 2. yml 파일 변경
+      - name: Change Spring Active Profile
+        run: |
+          touch '${{ env.APPLICATION_FILE_PATH }}'
+          echo '${{ secrets.APPLICATION }}' > '${{ env.APPLICATION_FILE_PATH }}'
+
         # 3. build 단계
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
