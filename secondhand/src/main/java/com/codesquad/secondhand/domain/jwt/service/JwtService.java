@@ -61,9 +61,9 @@ public class JwtService {
 
 	public ReissueTokenResponse reissueToken(ReissueTokenRequest reissueTokenRequest) {
 		Token token = jwtQueryService.findByRefreshToken(reissueTokenRequest.getRefreshToken());
-		String accessToken = jwtProvider.reissueAccessToken(
+		String reissuedAccessToken = jwtProvider.reissueAccessToken(
 			Collections.singletonMap("memberId", token.getMember().getId()));
-		return new ReissueTokenResponse(accessToken);
+		return ReissueTokenResponse.of(token, reissuedAccessToken);
 	}
 
 }
