@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class ChatService {
 
+	public static final int MAX_CHAT_MEMBERS = 2;
 	private final RedisChatMemberQueryService redisChatMemberQueryService;
 	private final MemberQueryService memberQueryService;
 	private final ProductQueryService productQueryService;
@@ -51,7 +52,7 @@ public class ChatService {
 		List<RedisChatMember> redisChatMembers = redisChatMemberQueryService.findByChatRoomId(
 			messageRequest.getChatRoomId());
 
-		if (redisChatMembers.size() == 2) {
+		if (redisChatMembers.size() == MAX_CHAT_MEMBERS) {
 			// 메세지의 읽음 상태를 true 로 변경 (채팅방에 user 가 2명이기 때문에)
 			chatMessage.updateReadStatusToTrue();
 			return;

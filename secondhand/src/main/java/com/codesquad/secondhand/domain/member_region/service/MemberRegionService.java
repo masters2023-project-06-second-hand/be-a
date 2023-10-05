@@ -25,6 +25,8 @@ import lombok.RequiredArgsConstructor;
 @Transactional(readOnly = true)
 public class MemberRegionService {
 
+	public static final int MIN_REGION_COUNT = 1;
+	public static final int MAX_REGION_COUNT = 2;
 	private final MemberRegionQueryService memberRegionQueryService;
 	private final MemberQueryService memberQueryService;
 	private final RegionQueryService regionQueryService;
@@ -41,7 +43,7 @@ public class MemberRegionService {
 	@Transactional
 	public void deleteRegion(Long memberId, RegionRequest regionRequest) {
 		List<MemberRegion> memberRegions = memberRegionQueryService.findAllMemberRegion(memberId);
-		if (memberRegions.size() == 1) {
+		if (memberRegions.size() == MIN_REGION_COUNT) {
 			throw new CustomRuntimeException(MemberException.MEMBER_REGION_DELETE_FAIlED);
 		}
 		Member member = memberQueryService.findById(memberId);
@@ -80,11 +82,12 @@ public class MemberRegionService {
 
 	/**
 	 * 사용자 지역 설정 최대 갯수가 2개이기 때문에 이미 설정된 지역이 2개이상 이면 예외를 발생시킨다.
+	 *
 	 * @param member
 	 */
 	private void validateSize(Member member) {
 		int count = memberRegionQueryService.countByMember(member);
-		if (count == 2) {
+		if (count == MAX_REGION_COUNT) {
 			throw new CustomRuntimeException(RegionException.REGION_SIZE);
 		}
 	}

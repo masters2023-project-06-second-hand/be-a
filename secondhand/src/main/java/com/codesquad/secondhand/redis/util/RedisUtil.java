@@ -5,9 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.codesquad.secondhand.domain.product.service.ProductQueryService;
 
@@ -47,26 +45,28 @@ public class RedisUtil {
 		return Long.valueOf(newMemberIds.size());
 	}
 
-	@Scheduled(cron = "* */3 * * * ?")
-	@Transactional
-	public void applyViewCountToDB() {
+	/**
+	 * 조회수 로직에 사용되는 메서드이다.
+	 * current에 있는 값들을 previous로 union 한후  current를 삭제한다.
+	 *
+	 * @param currentKey
+	 * @param productId
+	 */
+	public void copyCurrentToPreviousAndDeleteCurrent(String currentKey, Long productId) {
+		redisViewTemplate.opsForSet()
+			.unionAndStore(currentKey, getCurrentSetKey(productId), getPreviousSetKey(productId));
+		redisViewTemplate.delete(currentKey);
+	}
+
+	/**
+	 * 조회수 로직에 사용되는 메서드이다.
+	 * key가 product:*:current 형태인 모든 key 를 return 한다.
+	 *
+	 * @return
+	 */
+	public Set<String> getCurrentProductKeys() {
 		Set<String> productKeys = redisViewTemplate.keys("product:*:current");
-
-		for (String currentKey : productKeys) {
-			String productIdStr = currentKey.split(":")[1];
-			Long productId = Long.valueOf(productIdStr);
-
-			Long viewCount = getViewCount(productId);
-
-			if (!viewCount.equals(0L)) {
-				productQueryService.applyViewCntToDB(productId, viewCount);
-
-				// currentKey 에만 있는 value를 previousKey 에 복사한다.
-				redisViewTemplate.opsForSet()
-					.unionAndStore(currentKey, getCurrentSetKey(productId), getPreviousSetKey(productId));
-				redisViewTemplate.delete(currentKey);
-			}
-		}
+		return productKeys;
 	}
 
 	private static String getCurrentSetKey(Long productId) {
