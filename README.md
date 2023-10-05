@@ -1,6 +1,6 @@
 # second-hand
 > 2023 마스터즈 맥스 네번째 팀 프로젝트
-
+- 미션 기간: `2023-09-21 ~ 2023-10-6` [6 Week]
 중고 거래 서비스
 ## 구성원
 
@@ -40,7 +40,8 @@
 
 ## 사용하는 기술
 ### 프로젝트 관리
-![image](https://img.shields.io/badge/Notion-000000.svg?style=for-the-badge&logo=Notion&logoColor=white)
+[![Notion](https://img.shields.io/badge/Notion-000000.svg?style=for-the-badge&logo=Notion&logoColor=white)](https://placid-fork-b42.notion.site/SecondHand-BE-A-a00c7636a4db4c1f982b4bbe81694b9b?pvs=4)
+
 ### BE
 ![](https://img.shields.io/badge/Java-007396?style=flat&logo=OpenJDK&logoColor=white)
 ![](https://img.shields.io/badge/SpringBoot-6DB33F?style=flat&logo=SpringBoot&logoColor=white)
@@ -52,7 +53,12 @@
 ![](https://img.shields.io/badge/-AWS_S3-569A31?style=flat&amp;logo=Amazon-S3&amp;logoColor=white)
 ![](https://img.shields.io/badge/AWS_RDS-527FFF?style=flat&logo=amazonrds&logoColor=white)
 ![](https://img.shields.io/badge/Redis-FF4D4D?style=flat&logo=redis&logoColor=white)
+
 - Java: `JDK 11`
+- SpringBoot: `ver. 2.7.14`
+- MySQL: `ver. 8.0.33`
+- Redis: `7.2.0`
+- Amazon AWS: `EC2`, `S3`, `RDS`
 
 ## ERD
 ![image](https://github.com/masters2023-project-06-second-hand/be-a/assets/100547825/675dcfcf-5809-445a-98c2-d4cbea8c346a)
