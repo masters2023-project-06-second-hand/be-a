@@ -72,7 +72,7 @@ export const ChatRoom = () => {
     client.deactivate();
   };
 
-  const callback = (message) => {
+  const callback = (message: StompJs.Message) => {
     if (message.body) {
       const newMessage = JSON.parse(message.body);
       setChatList((chats) => [...chats, newMessage.messages]);
