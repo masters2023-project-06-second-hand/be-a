@@ -15,6 +15,7 @@ import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomListResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomMessageResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomOpponentResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomProductResponse;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatSendMessageResponse;
 import com.codesquad.secondhand.domain.chat.entity.ChatMessage;
 import com.codesquad.secondhand.domain.chat.entity.ChatRoom;
 import com.codesquad.secondhand.domain.chat.redis.RedisChatMember;
@@ -39,7 +40,7 @@ public class ChatService {
 	private final NotificationService notificationService;
 
 	@Transactional
-	public void sendMessage(MessageRequest messageRequest) {
+	public ChatSendMessageResponse sendMessage(MessageRequest messageRequest) {
 		//1. chatRoomId 가 존재하는지 검증
 		ChatRoom chatRoom = chatQueryService.findChatRoomByChatRoomId(messageRequest.getChatRoomId());
 
@@ -55,11 +56,12 @@ public class ChatService {
 		if (redisChatMembers.size() == MAX_CHAT_MEMBERS) {
 			// 메세지의 읽음 상태를 true 로 변경 (채팅방에 user 가 2명이기 때문에)
 			chatMessage.updateReadStatusToTrue();
-			return;
+			return ChatSendMessageResponse.of(chatMessage, chatRoom);
 		}
 		//SSE 재요청 알림 보내기
 		Long receiverId = chatRoom.findOpponentId(sender);
 		notificationService.refreshChatRoomList(receiverId);
+		return ChatSendMessageResponse.of(chatMessage, chatRoom);
 	}
 
 	@Transactional
