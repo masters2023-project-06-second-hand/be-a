@@ -22,7 +22,7 @@ import { useToast } from '@components/Toast/useToast';
 import { useChatRoom } from '@api/chat/chat';
 import { Loading } from './Loading';
 import { ErrorPage } from './ErrorPage';
-import { CHAT_SOCKET_URL } from 'envConfig';
+import { CHAT_SOCKET_URL } from '../envConfig';
 
 export const ChatRoom = () => {
   const token = localStorage.getItem('accessToken');
