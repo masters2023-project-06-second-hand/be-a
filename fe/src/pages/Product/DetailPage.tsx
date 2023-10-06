@@ -20,6 +20,7 @@ import {
 import { Product, ProductStatProps, ProductStatus } from '@api/product/types';
 import { QUERY_KEYS } from '@api/queryKey';
 import { useToast } from '@components/Toast/useToast';
+import { usePostChatRoom } from '@api/chat/chat';
 
 export const DetailPage = ({
   productData,
@@ -32,6 +33,7 @@ export const DetailPage = ({
 }) => {
   const [userInfo] = useAtom(userInfoAtom);
   const toast = useToast();
+  const postChatRoom = usePostChatRoom();
   const { navigateToGoBack, navigateToHome } = usePageNavigator();
   const { openModal } = useModal();
   const changeProductStatus = useChangeProductStatusMutation(
@@ -40,6 +42,11 @@ export const DetailPage = ({
   const deleteProduct = useDeleteProductMutation(
     QUERY_KEYS.PRODUCT_DETAIL(productData.id)
   );
+
+  const handleChatButton = () => {
+    const id = { productId: productData.id, sellerId: productData.writer.id };
+    postChatRoom.mutate(id);
+  };
 
   const openConfirmAlert = (productName: string) => {
     openModal('alert', {
@@ -135,6 +142,7 @@ export const DetailPage = ({
           isLiked={productStat.isLiked}
           price={productData.price}
           isWriter={isWriter}
+          handleChatButton={handleChatButton}
         />
       </ActionBar>
     </>

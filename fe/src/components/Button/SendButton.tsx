@@ -21,4 +21,6 @@ const StyledButton = styled.button`
   align-items: center;
   border-radius: 50%;
   background-color: ${({ theme }) => theme.color.accentPrimary};
+  user-select: none;
+  cursor: pointer;
 `;

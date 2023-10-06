@@ -1,4 +1,4 @@
-import { useRef, useCallback } from 'react';
+import { useRef, useCallback, useEffect } from 'react';
 
 type InfiniteScrollProps = {
   isLoading?: boolean;
@@ -9,18 +9,21 @@ type InfiniteScrollProps = {
 
 /* li 태그에 사용할 수 있는 훅 */
 export const useInfiniteScroll = ({
-  isLoading = false,
-  hasNextPage = false,
+  isLoading,
+  hasNextPage,
   fetchNextPage,
-  isFetching = false,
+  isFetching,
 }: InfiniteScrollProps) => {
-  const observer = useRef<IntersectionObserver>();
+  const observer = useRef<IntersectionObserver | null>(null);
 
   const lastElementRef = useCallback(
     (node: HTMLLIElement) => {
-      if (isLoading || isFetching) return;
+      if (observer.current) {
+        observer.current.disconnect();
+        observer.current = null;
+      }
 
-      if (observer.current) observer.current.disconnect();
+      if (isLoading || isFetching || !hasNextPage) return;
 
       observer.current = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting && hasNextPage) {
@@ -30,8 +33,16 @@ export const useInfiniteScroll = ({
 
       if (node) observer.current.observe(node);
     },
-    [isLoading, hasNextPage, fetchNextPage, isFetching]
+    [isLoading, isFetching, hasNextPage, fetchNextPage]
   );
+
+  useEffect(() => {
+    return () => {
+      if (observer.current) {
+        observer.current.disconnect();
+      }
+    };
+  }, []);
 
   return lastElementRef;
 };

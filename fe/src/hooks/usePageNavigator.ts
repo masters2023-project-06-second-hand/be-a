@@ -11,11 +11,12 @@ export const usePageNavigator = () => {
     navigateToLiked: () => navigate(PATH.LIKED),
     navigateToChat: () => navigate(PATH.CHAT),
     navigateToAccount: () => navigate(PATH.ACCOUNT),
-    navigateToDetail: (productId: number) => navigate(PATH.DETAIL(productId)),
+    navigateToDetail: (productId: number) => navigate(`/product/${productId}`),
     navigateToAdd: () => navigate(PATH.ADD),
     navigateToJoin: () => navigate(PATH.JOIN),
     navigateToCallback: () => navigate(PATH.CALLBACK),
     navigateToError: () => navigate(PATH.FALLBACK),
     navigateToGoBack: () => navigate(PATH.GOBACK),
+    navigateToChatRoom: (chatRoomId: number) => navigate(`/chat/${chatRoomId}`),
   };
 };

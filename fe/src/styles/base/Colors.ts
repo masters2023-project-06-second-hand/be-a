@@ -1,9 +1,9 @@
 export const colors = {
   white: '#FFFFFF',
   gray50: '#FAFAFA',
-  gray100: 'rgba(249, 249, 249, 0.2)',
-  gray200: 'rgba(245, 245, 245, 0.3)',
-  gray300: 'rgba(179, 179, 179, 0.88)',
+  gray100: 'rgba(249, 249, 249, 0.8)',
+  gray200: 'rgba(245, 245, 245, 0.7)',
+  gray300: 'rgba(179, 179, 179, 0.12)',
   gray400: '#EFEFF0',
   gray500: 'rgba(179, 179, 179, 0.61)',
   gray600: 'rgba(0, 0, 0, 0.2)',

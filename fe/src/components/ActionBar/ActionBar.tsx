@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   bottom: 0;
   padding: 16px;
   display: flex;
+  gap: 8px;
   align-items: center;
   width: 393px;
   height: 64px;

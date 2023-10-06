@@ -13,4 +13,7 @@ export const QUERY_KEYS = {
     regionId: number,
     categoryId: number | null
   ): [string, QueryParams] => ['products', { regionId, categoryId }],
+  CHAT_LIST: (memberId: number) => ['chatList', memberId],
+  CHAT_ROOM: (chatRoomId: number) => ['chatRoom', chatRoomId],
+  LIKE_CATEGORY: (memberId: number) => ['likeCategory', memberId],
 };

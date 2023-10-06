@@ -16,6 +16,9 @@ export const PageNav: React.FC<Props> = ({ curPage, numberOfPage }) => {
 };
 
 const Wrapper = styled.div`
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
   padding: 8px 16px;
   display: flex;
   justify-content: center;

@@ -12,6 +12,7 @@ import { AddPage } from '@pages/Product/AddPage';
 import { CallbackPage } from '@pages/CallbackPage';
 import { PATH } from '@constants/path';
 import { ProductPage } from '@pages/Product/ProductPage';
+import { ChatRoom } from '@pages/ChatRoom';
 
 const router = createBrowserRouter([
   {
@@ -42,11 +43,15 @@ const router = createBrowserRouter([
             element: <ChatPage />,
           },
           {
+            path: PATH.CHATROOM,
+            element: <ChatRoom />,
+          },
+          {
             path: PATH.ACCOUNT,
             element: <AccountPage />,
           },
           {
-            path: `${PATH.DETAIL}/:id`,
+            path: PATH.DETAIL,
             element: <ProductPage />,
           },
           {

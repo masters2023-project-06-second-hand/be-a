@@ -7,6 +7,7 @@ import { Loading } from '@pages/Loading';
 import { GlobalModal } from '@components/Modal/GlobalModal';
 import { Toast } from '@components/Toast/Toast';
 import router from '@routes/router';
+import { useLoginCheck } from '@hooks/useLoginCheck';
 
 const queryClient = new QueryClient({
   /* options */
@@ -19,6 +20,8 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+  useLoginCheck();
+
   return (
     <>
       <QueryClientProvider client={queryClient}>

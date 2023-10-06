@@ -11,6 +11,7 @@ export const useInput = (initialValue: string = '') => {
 
   return {
     value,
+    setValue,
     onChange,
   };
 };

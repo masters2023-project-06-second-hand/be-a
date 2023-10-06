@@ -6,15 +6,24 @@ import { privateApi } from '@api/index';
 import { API_ENDPOINTS } from '@constants/endpoints';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { QUERY_KEYS } from '@api/queryKey';
+import { usePageNavigator } from '@hooks/usePageNavigator';
 
 type Props = {
   id: number;
   isLiked: boolean;
   price: number;
   isWriter: boolean;
+  handleChatButton: () => void;
 };
 
-export const PostBar: React.FC<Props> = ({ id, isLiked, price, isWriter }) => {
+export const PostBar: React.FC<Props> = ({
+  id,
+  isLiked,
+  price,
+  isWriter,
+  handleChatButton,
+}) => {
+  const { navigateToChat } = usePageNavigator();
   const changeProductLiked = async () => {
     const requestData = {
       isLiked: !isLiked,
@@ -51,9 +60,8 @@ export const PostBar: React.FC<Props> = ({ id, isLiked, price, isWriter }) => {
       <Button
         backgroundColor="accentPrimary"
         size="S"
-        text={isWriter ? '대화 중인 채팅방' : '채팅방'}
-        // 채팅 관련 API가 나오면 클릭 이벤트 변경
-        onClick={isWriter ? () => {} : () => {}}
+        text={isWriter ? '대화 중인 채팅방' : '채팅하기'}
+        onClick={isWriter ? navigateToChat : handleChatButton}
       />
     </Bar>
   );

@@ -1,12 +1,13 @@
 import { privateApi, publicApi } from '../index';
 import { API_ENDPOINTS } from '@constants/endpoints';
 import axios from 'axios';
-import { userInfoAtom } from '@atoms/userAtom';
+import { userInfoAtom, userRegionsAtom } from '@atoms/userAtom';
 import { useAtom, useSetAtom } from 'jotai';
 import { isLoginAtom, signupTokenAtom } from '@atoms/loginAtom';
 import { fetchUserInfo } from './userInfo';
 import { BASE_API_URL } from '../../envConfig';
 import { useToast } from '@components/Toast/useToast';
+import { DEFAULT_REGIONS } from '@constants/constants';
 
 /* TODO. 코드들 분리하기 */
 type LoginData = {
@@ -48,6 +49,8 @@ export const fetchSignup = async (body: SignupBody, signupToken: string) => {
 export const useHandleLogout = () => {
   const setUserInfo = useSetAtom(userInfoAtom);
   const setIsLogin = useSetAtom(isLoginAtom);
+  const setRegionsAtom = useSetAtom(userRegionsAtom);
+
   const toast = useToast();
 
   const logout = async () => {
@@ -58,6 +61,13 @@ export const useHandleLogout = () => {
 
     setUserInfo(null);
     setIsLogin(false);
+    setRegionsAtom({
+      selectedRegion: {
+        id: DEFAULT_REGIONS.id,
+        name: DEFAULT_REGIONS.name,
+      },
+      regions: [DEFAULT_REGIONS],
+    });
     toast.success('로그아웃 성공!');
   };
 

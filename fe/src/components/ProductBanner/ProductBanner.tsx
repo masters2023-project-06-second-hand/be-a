@@ -32,6 +32,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: 80px;
   background-color: white;
+  border-bottom: 0.8px solid ${({ theme: { color } }) => color.neutralBorder};
 `;
 
 const ProductImg = styled.img`
