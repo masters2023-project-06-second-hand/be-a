@@ -2,6 +2,8 @@ package com.codesquad.secondhand.domain.chat.repository;
 
 import static com.codesquad.secondhand.domain.chat.entity.QChatMessage.*;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Repository;
 
 import com.codesquad.secondhand.domain.chat.entity.ChatMessage;
@@ -15,12 +17,12 @@ import lombok.RequiredArgsConstructor;
 public class ChatMessageQueryRepository {
 	private final JPAQueryFactory query;
 
-	public ChatMessage findLatestMessage(ChatRoom chatRoom) {
+	public Optional<ChatMessage> findLatestMessage(ChatRoom chatRoom) {
 		ChatMessage latestMessage = query
 			.selectFrom(chatMessage)
 			.where(chatMessage.chatRoom.eq(chatRoom))
 			.orderBy(chatMessage.sendAt.desc())
 			.fetchFirst();
-		return latestMessage;
+		return Optional.ofNullable(latestMessage);
 	}
 }

@@ -74,6 +74,7 @@ public class StompInterceptor implements ChannelInterceptor {
 	private Long validateAccessToken(StompHeaderAccessor accessor) {
 		try {
 			String token = extractAccessTokenFromAccessor(accessor);
+			log.info("token : {}", token);
 			return jwtProvider.getClaims(token).get("memberId", Long.class);
 		} catch (RuntimeException e) {
 			throw new CustomRuntimeException(JwtException.from(e));

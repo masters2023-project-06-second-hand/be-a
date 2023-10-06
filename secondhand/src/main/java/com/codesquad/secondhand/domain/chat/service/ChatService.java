@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.chat.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomListResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomMessageResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomOpponentResponse;
 import com.codesquad.secondhand.domain.chat.dto.response.ChatRoomProductResponse;
+import com.codesquad.secondhand.domain.chat.dto.response.ChatSendMessageResponse;
 import com.codesquad.secondhand.domain.chat.entity.ChatMessage;
 import com.codesquad.secondhand.domain.chat.entity.ChatRoom;
 import com.codesquad.secondhand.domain.chat.redis.RedisChatMember;
@@ -39,7 +41,7 @@ public class ChatService {
 	private final NotificationService notificationService;
 
 	@Transactional
-	public void sendMessage(MessageRequest messageRequest) {
+	public ChatSendMessageResponse sendMessage(MessageRequest messageRequest) {
 		//1. chatRoomId 가 존재하는지 검증
 		ChatRoom chatRoom = chatQueryService.findChatRoomByChatRoomId(messageRequest.getChatRoomId());
 
@@ -55,11 +57,12 @@ public class ChatService {
 		if (redisChatMembers.size() == MAX_CHAT_MEMBERS) {
 			// 메세지의 읽음 상태를 true 로 변경 (채팅방에 user 가 2명이기 때문에)
 			chatMessage.updateReadStatusToTrue();
-			return;
+			return ChatSendMessageResponse.of(chatMessage, chatRoom);
 		}
 		//SSE 재요청 알림 보내기
 		Long receiverId = chatRoom.findOpponentId(sender);
 		notificationService.refreshChatRoomList(receiverId);
+		return ChatSendMessageResponse.of(chatMessage, chatRoom);
 	}
 
 	@Transactional
@@ -104,7 +107,8 @@ public class ChatService {
 			.map(chatRoom -> {
 				ChatRoomProductResponse productResponse = mapToChatRoomProduct(chatRoom);
 				ChatRoomOpponentResponse opponentResponse = mapToChatRoomOpponent(chatRoom, memberId);
-				ChatRoomMessageResponse chatRoomMessageResponse = mapToChatRoomMessage(chatRoom, memberId);
+				ChatRoomMessageResponse chatRoomMessageResponse = mapToChatRoomMessage(chatRoom, memberId)
+					.orElseGet(() -> new ChatRoomMessageResponse());
 				return ChatRoomListResponse.of(chatRoom.getId(), productResponse, opponentResponse,
 					chatRoomMessageResponse);
 			}).collect(Collectors.toList());
@@ -120,11 +124,15 @@ public class ChatService {
 		return ChatRoomOpponentResponse.of(member.getNickname(), member.getProfileImg());
 	}
 
-	private ChatRoomMessageResponse mapToChatRoomMessage(ChatRoom chatRoom, Long memberId) {
-		ChatMessage message = chatQueryService.findLastMessage(chatRoom);
+	private Optional<ChatRoomMessageResponse> mapToChatRoomMessage(ChatRoom chatRoom, Long memberId) {
+		Optional<ChatMessage> optionalMessage = chatQueryService.findLastMessage(chatRoom);
+		if (!optionalMessage.isPresent()) {
+			return Optional.empty();
+		}
+		ChatMessage message = optionalMessage.get();
 		Member member = findOpponentMember(chatRoom, memberId);
 		Long count = chatQueryService.getUnReadCount(member, chatRoom);
-		return ChatRoomMessageResponse.of(message, count);
+		return Optional.of(ChatRoomMessageResponse.of(message, count));
 	}
 
 	private Member findOpponentMember(ChatRoom chatRoom, Long memberId) {
