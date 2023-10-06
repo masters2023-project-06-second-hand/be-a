@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.chat.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +61,7 @@ public class ChatQueryService {
 		return chatMessageJpaRepository.countUnreadMessages(opponent, chatRoom);
 	}
 
-	public ChatMessage findLastMessage(ChatRoom chatRoom) {
+	public Optional<ChatMessage> findLastMessage(ChatRoom chatRoom) {
 		return chatMessageQueryRepository.findLatestMessage(chatRoom);
 	}
 

@@ -1,6 +1,7 @@
 package com.codesquad.secondhand.domain.chat.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -123,7 +124,11 @@ public class ChatService {
 	}
 
 	private ChatRoomMessageResponse mapToChatRoomMessage(ChatRoom chatRoom, Long memberId) {
-		ChatMessage message = chatQueryService.findLastMessage(chatRoom);
+		Optional<ChatMessage> optionalMessage = chatQueryService.findLastMessage(chatRoom);
+		if (!optionalMessage.isPresent()) {
+			return null;
+		}
+		ChatMessage message = optionalMessage.get();
 		Member member = findOpponentMember(chatRoom, memberId);
 		Long count = chatQueryService.getUnReadCount(member, chatRoom);
 		return ChatRoomMessageResponse.of(message, count);
