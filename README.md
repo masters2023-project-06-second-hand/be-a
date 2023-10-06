@@ -65,7 +65,8 @@
 
 
 ## Infra
-<img width="1140" alt="image" src="https://github.com/masters2023-project-06-second-hand/be-a/assets/98310007/b22129e7-7307-4f9f-bdd2-77d179c028c2">
+<img width="942" alt="image" src="https://github.com/masters2023-project-06-second-hand/be-a/assets/98310007/dd8a03e8-a3a7-4965-8246-7966b8a22af0">
+
 
 
 
