@@ -107,7 +107,8 @@ public class ChatService {
 			.map(chatRoom -> {
 				ChatRoomProductResponse productResponse = mapToChatRoomProduct(chatRoom);
 				ChatRoomOpponentResponse opponentResponse = mapToChatRoomOpponent(chatRoom, memberId);
-				ChatRoomMessageResponse chatRoomMessageResponse = mapToChatRoomMessage(chatRoom, memberId);
+				ChatRoomMessageResponse chatRoomMessageResponse = mapToChatRoomMessage(chatRoom, memberId)
+					.orElseGet(() -> new ChatRoomMessageResponse());
 				return ChatRoomListResponse.of(chatRoom.getId(), productResponse, opponentResponse,
 					chatRoomMessageResponse);
 			}).collect(Collectors.toList());
@@ -123,15 +124,15 @@ public class ChatService {
 		return ChatRoomOpponentResponse.of(member.getNickname(), member.getProfileImg());
 	}
 
-	private ChatRoomMessageResponse mapToChatRoomMessage(ChatRoom chatRoom, Long memberId) {
+	private Optional<ChatRoomMessageResponse> mapToChatRoomMessage(ChatRoom chatRoom, Long memberId) {
 		Optional<ChatMessage> optionalMessage = chatQueryService.findLastMessage(chatRoom);
 		if (!optionalMessage.isPresent()) {
-			return null;
+			return Optional.empty();
 		}
 		ChatMessage message = optionalMessage.get();
 		Member member = findOpponentMember(chatRoom, memberId);
 		Long count = chatQueryService.getUnReadCount(member, chatRoom);
-		return ChatRoomMessageResponse.of(message, count);
+		return Optional.of(ChatRoomMessageResponse.of(message, count));
 	}
 
 	private Member findOpponentMember(ChatRoom chatRoom, Long memberId) {
